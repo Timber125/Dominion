@@ -1,0 +1,124 @@
+
+Adventurer - 6 gold - Action
+	Reveal cards from your deck until you reveal 2 treasure cards. 
+	Put those treasure cards into your hand and discard the other revealed cards. 
+	
+Bureaucrat - 4 gold - Action Attack
+	Gain a silver card.
+	Put it on top of your deck. 
+	Each other player reveals a victory card from his hand and puts it on hi deck. (Or reveals a hand without victory cards). 
+	
+	
+Cellar - 2 gold - Action 
+	+1 Action 
+	Discard any number of cards. 
+	+1 Card per card discarded. 
+	
+Chancellor - 3 gold - Action
+	+2 gold
+	You may immideately (at the start of your turn) put your deck into your discard pile. 
+
+Chapel - 2 gold - Action
+	Trash up to 4 cards from your hand. 
+	
+Councilroom - 5 gold - Action
+	+4 cards.
+	+1 buy.
+	Each other player draws a card.
+	
+
+	
+Feast - 4 gold - Action 
+	Trash this card. Gain a card costing up to 5 gold. 
+	
+Festival - 5 gold - Action 
+	+2 Actions 
+	+1 Buy 
+	+2 gold 
+	
+Gardens - 4 gold - Victory 
+	Worth 1 victory for every 10 cards
+	
+Laboratory - 5 gold - Action 
+	+2 Card 
+	+1 Action 
+	
+Library - 5 gold - Action 
+	Draw until you have 7 cards in hand. 
+	You may et aside any action card drawn this way, as you draw them: discard the set aside card after you finish drawing. 
+	
+Market - 5 gold - Action 
+	+1 Card 
+	+1 Action 
+	+1 Buy 
+	+1 Gold 
+	
+Militia - 4 gold - Action Attack 
+	+2 gold 
+	Each other player discards down to 3 cards in his hand. 
+	
+Mine - 5 gold - Action 
+	Trash a treasure card from your hand. 
+	Gain a treasure card costing up to 3 gold more. Put it in your hand. 
+	
+Moat - 2 gold - Action Reaction 
+	When another player plays an attack card, you may reveal this card from your hand. 
+	If you do, you are unaffected by the attack. 
+	
+Moneylender - 4 gold - Action 
+	Trash a copper card from your hand. 
+	If you do, +3 gold. 
+	
+Remodel - 4 gold - Action 
+	Trash a card from your hand. 
+	Gain a card costing up to 2 gold more than the trashed card. 
+	
+Smithy - 4 gold - Action 
+	+ 3 Cards 
+	
+Spy - 4 gold - Action Attack
+	+ 1 Card 
+	+ 1 Action 
+	Each player, including you, reveals the top card of his deck and either discards it, or puts it back, your (player who played spy) choice.
+	
+Thief - 4 gold - Action Attack
+	Each other player reveals the top 2 cards of his deck. 
+	If they revealed any treasure card, they trash one of them that you choose. 
+	You may gain any or all of these trashed cards. They (other players) discard the other revealed cards. 
+	
+Throneroom - 4 gold - Action 
+	Choose an action card in your hand. Play it twice. 
+	
+Village - 3 gold - Action 
+	+ 1 Card 
+	+ 2 Actions 
+	
+Witch - 5 gold - Action Attack 
+	+ 2 Cards 
+	Each other player gains a curse card. 
+	
+Workshop - 3 gold - Action 
+	Gain a card costing up to 4 gold. 
+	
+Curse - 0 gold - Coin 
+	-1 Victory
+	
+Copper - 0 gold - Coin 
+	+1 gold 
+	
+Silver - 3 gold - Coin 
+	+2 gold 
+	
+Gold - 6 gold - Coin 
+	+3 gold 
+	
+Estate - 2 gold - Land 
+	+1 Victory 
+	
+Duchy - 5 gold - Land 
+	+3 Victory 
+	
+Province - 8 gold - Land
+	+6 Victory 
+	
+
