@@ -28,6 +28,7 @@ public class JSonListener extends ConnectionListener{
                 if(JSONUtilities.JSON.isJSON(s)){
                     buffer.offer(s);
                     handler.invalidated(this);
+                    System.err.println("Received a valid json from client.");
                 }else{
                     System.err.println("Flushed a non-json message from client.");
                 }

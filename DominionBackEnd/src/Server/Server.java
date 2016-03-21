@@ -6,6 +6,8 @@
 
 package Server;
 
+import Server.Service.ChatService;
+import Server.Service.ServiceBroker;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -26,7 +28,7 @@ public class Server implements Runnable{
     private int port;
     
     // Thread-race on clients; SYNCHRONIZE before access!
-    private ArrayList<ConnectionHandler> clients;
+    public ArrayList<ConnectionHandler> clients;
     
     public Server(String ip, int port){
         this.ip = ip;
@@ -67,6 +69,8 @@ public class Server implements Runnable{
     @Override
     public void run() {
         active = true;
+        ServiceBroker.instance.addService(new ChatService(this));
+        ServiceBroker.instance.start();
         try {
             serverSocket = new ServerSocket(port);
             while(active){
@@ -84,6 +88,7 @@ public class Server implements Runnable{
             System.err.println(ex);
             System.err.flush();
         }
+        ServiceBroker.instance.shutdown();
     }
 
     

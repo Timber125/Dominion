@@ -6,6 +6,7 @@
 
 package Server;
 
+import Server.Service.ServiceBroker;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.InvalidationListener;
+import org.json.JSONObject;
 
 /**
  *
@@ -40,6 +42,24 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
     public void InitiateConnection(){
         Thread t = new Thread(this);
         t.start();
+    }
+    
+    public void write(String s){
+        client_out.println(s);
+    }
+    
+    public void write(JSONObject json){
+        client_out.println(json.toString());
+    }
+    
+    @Deprecated
+    public String read(){
+        return client_in.buffer.poll();
+    }
+    
+    @Deprecated
+    public boolean canRead(){
+        return !client_in.buffer.isEmpty();
     }
     
     @Override
@@ -72,17 +92,16 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
         System.out.println("Client accepted: ");
         System.out.println("Hostname: " + hostName);
         System.out.println("Hostaddress: " + hostAddress);
-        System.out.println("Connected: " + client.isConnected());
     }
 
     private void startWriter(PrintWriter out){
         client_out = new PrintWriter(out,true);
-        client_out.println("Connection accepted.");
+        client_out.println(JSONUtilities.JSON.create("sysout", "Server accepted connection").toString());
     }
     
     private void startListener(BufferedReader in){
         //client_in = new ConnectionListener(in);
-        client_in = new JSonListener(in);
+        client_in = new JSonListener(in); // Only accepts valid json strings.
         client_in.addListener(this);
         Thread listen = new Thread(client_in);
         listen.start();
@@ -90,15 +109,16 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
 
     @Override
     public void invalidated(javafx.beans.Observable o) {
-         // The retreiving of objects in buffer and storing them into the arraylist temporarily is not efficient
+        // The retreiving of objects in buffer and storing them into the arraylist temporarily is not efficient
         // Remove later, but keep for now -> readability
         ArrayList<String> messagelist = new ArrayList<>();
         while(!client_in.buffer.isEmpty()) messagelist.add(client_in.buffer.poll());
-        for(String message : messagelist){
+        for(String json_stringified : messagelist){
             System.out.println("Client message: ");
             System.out.println("================");
-            System.out.println(message);
+            System.out.println(json_stringified);
             System.out.println("================");
+            ServiceBroker.instance.offerRequest(json_stringified);
         }
         
     }

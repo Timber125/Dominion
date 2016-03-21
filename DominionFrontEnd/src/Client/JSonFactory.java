@@ -6,6 +6,7 @@
 
 package Client;
 
+import javax.swing.JOptionPane;
 import org.json.JSONObject;
 
 /**
@@ -18,12 +19,12 @@ public class JSonFactory {
         
     }
     
-    public JSONObject protocol_message(String message){
+    public JSONObject protocol_chat(String author, String message){
         JSONObject obj = new JSONObject();
 
-        obj.put("type", "message");
-        obj.put("content", message);
-        obj.put("time_created", System.currentTimeMillis());
+        obj.put("service_type", "chat");
+        obj.put("author", author);
+        obj.put("message", message);
 
         return obj;
     }

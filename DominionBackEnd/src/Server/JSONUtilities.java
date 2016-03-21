@@ -33,4 +33,25 @@ public class JSONUtilities {
     public boolean isJSON(String msg){
         return (toJSON(msg) != null);
     }
+    
+    public String toString(JSONObject obj){
+        return obj.toString();
+    }
+    
+    public JSONObject addKeyValuePair(String key, String value, JSONObject json){
+        json.put(key, value);
+        return json;
+    }
+    
+    public String addKeyValuePair(String key, String value, String json){
+        JSONObject obj = toJSON(json);
+        obj.put(key, value);
+        return obj.toString();
+    }
+    
+    public JSONObject create(String key, String value){
+        JSONObject json = new JSONObject();
+        json.put(key, value);
+        return json;
+    }
 }
