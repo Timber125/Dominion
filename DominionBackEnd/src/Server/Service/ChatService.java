@@ -33,7 +33,8 @@ public class ChatService extends Service{
         String author = json.getString("author");
         String message = json.getString("message");
         String writeback = author + ": " + message;
-        JSONObject reply = JSONUtilities.JSON.create("sysout", writeback);
+        JSONObject reply = JSONUtilities.JSON.create("action", "sysout");
+        reply = JSONUtilities.JSON.addKeyValuePair("sysout", writeback, reply);
         for(ConnectionHandler ch : server.clients){
             ch.write(reply);
         }

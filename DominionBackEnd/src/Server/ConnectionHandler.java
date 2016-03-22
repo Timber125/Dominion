@@ -96,7 +96,10 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
 
     private void startWriter(PrintWriter out){
         client_out = new PrintWriter(out,true);
-        client_out.println(JSONUtilities.JSON.create("sysout", "Server accepted connection").toString());
+        String act = "sysout";
+        JSONObject handshake = JSONUtilities.JSON.create(act, "Server accepted connection");
+        handshake = JSONUtilities.JSON.addKeyValuePair("action", act, handshake);
+        client_out.println(handshake.toString());
     }
     
     private void startListener(BufferedReader in){
