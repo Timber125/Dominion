@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <children>
+    <Pane fx:id="DominionPane" layoutX="0.0" layoutY="0.0" prefHeight="300.0" prefWidth="600.0" style="-fx-background-image: url(&quot;./resources/background.jpg&quot;);" />
+    <Pane fx:id="ChatPane" layoutX="350.0" layoutY="300.0" prefHeight="100.0" prefWidth="250.0" style="-fx-background-color:BLACK;">
+      <children>
+        <Button fx:id="ChatButton" layoutX="198.0" layoutY="76.0" mnemonicParsing="false" text="Send" />
+        <TextField fx:id="ChatText" layoutX="3.0" layoutY="76.0" prefWidth="190.00009999999747" />
+        <TextArea fx:id="ChatArea" editable="false" layoutX="3.0" layoutY="3.0" prefHeight="70.0" prefWidth="244.0" wrapText="true" />
+      </children>
+    </Pane>
+    <Pane fx:id="Pane1" layoutX="0.0" layoutY="300.0" prefHeight="99.99990000000253" prefWidth="350.0" style="-fx-background-color:BLACK;" />
+  </children>
+</AnchorPane>
