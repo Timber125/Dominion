@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONObject;
 
 
 /**
@@ -27,6 +28,7 @@ public class Server implements Runnable{
     private ServerSocket serverSocket;
     private final String ip;
     private int port;
+    
     
     // Thread-race on clients; SYNCHRONIZE before access!
     public ArrayList<ConnectionHandler> clients;
@@ -48,15 +50,37 @@ public class Server implements Runnable{
     protected void notifyClose(){
         synchronized(clients){
             ArrayList<ConnectionHandler> updated_clients = new ArrayList<>();
+            ArrayList<String> disconnected_sessions = new ArrayList<>();
             for(ConnectionHandler ch : clients){
-                if(ch.client.isConnected()) updated_clients.add(ch);
+                // Null = hard disconnect, Closed = soft disconnect
+                if((ch.client != null) && (!ch.client.isClosed())) updated_clients.add(ch);
+                else{
+                    disconnected_sessions.add(ch.my_session_token);
+                }
             }
             this.clients = updated_clients;
+            for(String s : disconnected_sessions){
+                JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
+                obj = JSONUtilities.JSON.addKeyValuePair("sysout", "Client [" + s + "] disconnected.", obj);
+                for(ConnectionHandler ch : updated_clients){
+                    ch.write(obj.toString());
+                }
+                
+            }
+            System.err.println("Close notified: cleaned up [" + disconnected_sessions.size() + "] disconnects.");
         }
     }
     
     public void shutdown(){
         active = false;
+        // Give all connections a warning that server is shutting down. 
+        JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
+        obj = JSONUtilities.JSON.addKeyValuePair("sysout", "Server shutting down. You will be disconnected.", obj);
+        
+        for(ConnectionHandler ch : clients){
+            ch.write(obj);
+        }
+        
         try {
             // Give myself a connection to catch shutdown signal
             Socket s = new Socket("localhost", 13337);
@@ -99,7 +123,12 @@ public class Server implements Runnable{
                 if(active){ // Catch shutdown signals, don't add them to clients.
                     ConnectionHandler connection = new ConnectionHandler(this, client_connecting);
                     connection.InitiateConnection();
+                    JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
+                    obj = JSONUtilities.JSON.addKeyValuePair("sysout", "Client connected", obj);
                     synchronized(clients){
+                        for(ConnectionHandler ch : clients){
+                            ch.write(obj);
+                        }
                         clients.add(connection);
                     }
                 }

@@ -15,6 +15,9 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.InvalidationListener;
@@ -26,9 +29,26 @@ import org.json.JSONObject;
  */
 public class ConnectionHandler implements Runnable, InvalidationListener{
 
+    /* These variables are not related to ConnectionHandler objects!
+     There is only 1 of each per "program", and it is only accessible for each ConnectionHandler object. 
+     You create variables like this (1 per program, accessible only for these objects) by using the "private static" keyword.
+     If you want it to be available throughout the whole program, make it "public static". This can be avoided in most cases by good design. 
+     If you ever need a public static variable, consider every other possible way, because public static is ugly. 
+     As you probably know, adding keyword "final" makes it a constant. 
+    */
+    
+    private static Map<String, ConnectionHandler> sessions = new HashMap<>();
+    final private static String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#@";
+    final private static int tokensize = 13;
+    /************************************************************/
+    
+    
     private String hostName;
     private String hostAddress;
     public Socket client;
+    protected String my_session_token;
+
+    
     
     private PrintWriter client_out;
     private ConnectionListener client_in;
@@ -37,6 +57,7 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
     
     public ConnectionHandler(Server server, Socket client){
         this.server = server;
+        my_session_token = createSessionToken();
         initialize(client);
     }
     
@@ -85,8 +106,10 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
         } catch (IOException ex) {
             // Client is probably alreay closed. 
             // Not a problem.
+            client = null;
         }
         server.notifyClose();
+        sessions.remove(my_session_token);
     }
     
     private void initialize(Socket client) {
@@ -98,6 +121,7 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
         System.out.println("Client accepted: ");
         System.out.println("Hostname: " + hostName);
         System.out.println("Hostaddress: " + hostAddress);
+        System.out.println("Session token: " + my_session_token);
     }
 
     private void startWriter(PrintWriter out){
@@ -105,7 +129,11 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
         String act = "sysout";
         JSONObject handshake = JSONUtilities.JSON.create(act, "Server accepted connection");
         handshake = JSONUtilities.JSON.addKeyValuePair("action", act, handshake);
+        //handshake = JSONUtilities.JSON.addKeyValuePair("session", my_session_token, handshake);
         client_out.println(handshake.toString());
+        JSONObject sessioninitializer = JSONUtilities.JSON.create("action", "session");
+        sessioninitializer = JSONUtilities.JSON.addKeyValuePair("session", my_session_token, sessioninitializer);
+        client_out.println(sessioninitializer.toString());
     }
     
     private void startListener(BufferedReader in){
@@ -127,13 +155,41 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
         ArrayList<String> messagelist = new ArrayList<>();
         while(!client_in.buffer.isEmpty()) messagelist.add(client_in.buffer.poll());
         for(String json_stringified : messagelist){
-            System.out.println("Client message: ");
-            System.out.println("================");
-            System.out.println(json_stringified);
-            System.out.println("================");
-            ServiceBroker.instance.offerRequest(json_stringified);
+            if(validSession(json_stringified)){
+                System.out.println("Client message: ");
+                System.out.println("================");
+                System.out.println(json_stringified);
+                System.out.println("================");
+                ServiceBroker.instance.offerRequest(json_stringified);
+            }else{
+                System.out.println("Intercepted a crafted/invalid session token!");
+            }
         }
         
+    }
+
+    private String createSessionToken() {
+        String s = "";
+        while((s.equals("")) || (sessions.containsKey(s))){
+            s = "";
+            Random r = new Random(System.currentTimeMillis()); // Create a random seed 
+            for(int i = 0; i < tokensize; i++){
+                int b = r.nextInt(alphabet.length());
+                char c = alphabet.charAt(b);
+                s += c;
+            }
+        }
+        return s;
+    }
+    
+    // Extract crafted json-communication before it is sent to the services!
+    public boolean validSession(String json){
+        JSONObject obj = JSONUtilities.JSON.toJSON(json);
+        String given_session = obj.getString("session");
+        return (given_session.equals(my_session_token));
+        // Short form for:
+        // ==> IF equals THEN return true
+        // ==> IF not equals THEN return false
     }
 
     

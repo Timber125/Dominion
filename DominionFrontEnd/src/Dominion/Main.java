@@ -8,6 +8,7 @@ package Dominion;
 
 import Client.ConnectionManager;
 import Client.PrintService;
+import Client.SessionService;
 import Client.Testing.ChatView;
 import java.io.IOException;
 import javafx.application.Application;
@@ -27,43 +28,15 @@ public class Main extends Application{
 
     @Override
     public void start(Stage stage) throws Exception {
-        ConnectionManager connection = new ConnectionManager("localhost", 13337);
-        PrintService printerservice = PrintService.create();
-        connection.registerModel(printerservice);
-        ExampleControl control = new ExampleControl(JOptionPane.showInputDialog(null,"Enter your chat-alias: "));
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Example.fxml"));
-        fxmlLoader.setController(control);
-        
-        try { 
-            Parent root = (Parent) fxmlLoader.load();
-            stage.setTitle("Dominion Interface");
-            stage.setScene(new Scene(root, 600, 400));
-            
-            stage.setResizable(false);
-            stage.show();
-            stage.setOnCloseRequest(new EventHandler<WindowEvent>(){
-
-                @Override
-                public void handle(WindowEvent t) {
-                    System.exit(0);
-                }
-                
-            });
-        } catch (IOException ex) {
-            System.err.println("IOException : Example.fxml niet gevonden");
-        }
-    
-       
-    control.initialize();
-    printerservice.setOutput(control.getDisplay());
-    control.setConnection(connection);
-    System.out.println("Server started: " + connection.init_server());
+        Main main = new Main(stage, "localhost", 13337);
     }
     
     public Main(Stage stage, String address, int port){
-        ConnectionManager connection = new ConnectionManager(address, port);
+        ConnectionManager connection = new ConnectionManager("localhost", 13337);
         PrintService printerservice = PrintService.create();
+        SessionService sessionservice = SessionService.create();
         connection.registerModel(printerservice);
+        connection.registerModel(sessionservice);
         ExampleControl control = new ExampleControl(JOptionPane.showInputDialog(null,"Enter your chat-alias: "));
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Example.fxml"));
         fxmlLoader.setController(control);
@@ -90,6 +63,7 @@ public class Main extends Application{
        
     control.initialize();
     printerservice.setOutput(control.getDisplay());
+    sessionservice.setConnectionManager(connection);
     control.setConnection(connection);
     System.out.println("Server started: " + connection.init_server());
     }

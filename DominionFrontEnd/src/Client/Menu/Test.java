@@ -28,7 +28,7 @@ public class Test extends Application{
         manager = new MVCManager(stage, "MVC.fxml", "MVC EXAMPLE", 500, 500);
         
         // Roep na 5 seconden de client op. 
-        /*Thread.sleep(5000);
-        manager.Finish("localhost", 13337);*/
+        /*Thread.sleep(5000);*/
+        manager.Finish("localhost", 13337);
     }
 }
