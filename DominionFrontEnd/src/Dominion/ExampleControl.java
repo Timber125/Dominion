@@ -15,6 +15,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
 /**
@@ -50,9 +52,11 @@ public class ExampleControl {
     public void initialize(){
         ChatButton.setOnAction(displayError());
         String image = this.getClass().getResource("/resources/background.jpg").toExternalForm();
+        System.err.println(this.getClass().getResource("/resources/background.jpg").toExternalForm());
         DominionPane.setStyle("-fx-background-image: url('" + image + "'); " +
            "-fx-background-position: center center; " +
            "-fx-background-repeat: stretch;");
+    
     }
     
     public void setConnection(ConnectionManager manager){

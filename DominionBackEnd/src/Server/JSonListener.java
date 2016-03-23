@@ -30,7 +30,8 @@ public class JSonListener extends ConnectionListener{
                     handler.invalidated(this);
                     System.err.println("Received a valid json from client.");
                 }else{
-                    System.err.println("Flushed a non-json message from client.");
+                    System.err.println("Flushed a non-json message from client:");
+                    System.err.println(s);
                 }
             } catch (IOException ex) {
                 System.err.println("IOException");
