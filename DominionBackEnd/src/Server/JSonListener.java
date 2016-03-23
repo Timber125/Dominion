@@ -35,6 +35,8 @@ public class JSonListener extends ConnectionListener{
             } catch (IOException ex) {
                 System.err.println("IOException");
                 System.err.println(ex);
+                handler.invalidated(null); // Send teardown signal
+                break;
             }
             
         }

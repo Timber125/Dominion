@@ -36,6 +36,7 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
     private Server server;
     
     public ConnectionHandler(Server server, Socket client){
+        this.server = server;
         initialize(client);
     }
     
@@ -76,10 +77,15 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
         
     }
 
-    public void cleanUp() throws IOException{
+    public void cleanUp(){
         client_out.close();
         client_in.removeListener(this);
-        client.close();
+        try {
+            client.close();
+        } catch (IOException ex) {
+            // Client is probably alreay closed. 
+            // Not a problem.
+        }
         server.notifyClose();
     }
     
@@ -114,6 +120,10 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
     public void invalidated(javafx.beans.Observable o) {
         // The retreiving of objects in buffer and storing them into the arraylist temporarily is not efficient
         // Remove later, but keep for now -> readability
+        if(o == null){
+            cleanUp();
+            return;
+        }
         ArrayList<String> messagelist = new ArrayList<>();
         while(!client_in.buffer.isEmpty()) messagelist.add(client_in.buffer.poll());
         for(String json_stringified : messagelist){
@@ -125,5 +135,6 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
         }
         
     }
+
     
 }

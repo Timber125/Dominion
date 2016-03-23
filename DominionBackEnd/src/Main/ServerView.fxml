@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="200.0" prefWidth="337.0" style="-fx-background-color:BLACK" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <children>
+    <Pane layoutX="14.0" layoutY="14.0" prefHeight="172.0" prefWidth="309.0" style="-fx-background-color:BLACK;">
+      <children>
+        <Label layoutX="14.0" layoutY="6.0" prefHeight="19.9609375" prefWidth="140.5" text="Server port:" textFill="WHITE" />
+        <TextField fx:id="PortField" layoutX="155.0" layoutY="5.0" prefWidth="80.0" />
+        <Label layoutX="14.0" layoutY="37.0" prefHeight="19.9609375" prefWidth="140.5" text="Server Address:" textFill="WHITE" />
+        <Button fx:id="Start" layoutX="23.0" layoutY="104.0" mnemonicParsing="false" text="Start" />
+        <Button fx:id="Stop" layoutX="231.0" layoutY="103.0" mnemonicParsing="false" style="" text="Stop" />
+        <Label alignment="CENTER" layoutX="68.0" layoutY="105.0" prefWidth="163.0" text="Server Status:" textAlignment="CENTER" textFill="WHITE" />
+        <Label fx:id="Status" alignment="CENTER" layoutX="68.0" layoutY="135.0" prefHeight="40.9609375" prefWidth="163.0" style="-fx-background-color:BLACK;&#10;-fx-text-fill:#FF0000;" text="OFFLINE" textAlignment="CENTER" textFill="BLACK">
+          <font>
+            <Font size="24.0" />
+          </font>
+        </Label>
+        <Label layoutX="14.0" layoutY="70.0" prefWidth="140.5" text="External address:" textFill="WHITE" />
+        <TextField fx:id="ExternalAddress" layoutX="155.0" layoutY="67.0" prefWidth="147.0" />
+        <ComboBox fx:id="InternalAddress" layoutX="155.0" layoutY="36.0" prefHeight="21.0" prefWidth="147.0" promptText="">
+          <items>
+            <FXCollections fx:factory="observableArrayList">
+              <String fx:value="Item 1" />
+              <String fx:value="Item 2" />
+              <String fx:value="Item 3" />
+            </FXCollections>
+          </items>
+        </ComboBox>
+      </children>
+    </Pane>
+  </children>
+</AnchorPane>

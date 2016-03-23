@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 /**
  *
  * @author admin
@@ -24,16 +25,24 @@ public class Server implements Runnable{
     private boolean active = false;
     
     private ServerSocket serverSocket;
-    private String ip;
+    private final String ip;
     private int port;
     
     // Thread-race on clients; SYNCHRONIZE before access!
     public ArrayList<ConnectionHandler> clients;
     
+    public synchronized boolean isActive(){
+        return active;
+    }
+    
     public Server(String ip, int port){
         this.ip = ip;
         this.port = port;
         clients = new ArrayList<>();
+    }
+    
+    public void setPort(int new_port){
+        this.port = new_port;
     }
     
     protected void notifyClose(){
@@ -53,6 +62,18 @@ public class Server implements Runnable{
             Socket s = new Socket("localhost", 13337);
         } catch (IOException ex) {
             System.err.println("Server was down before shutdown signal!!!");
+        } finally {
+            System.err.println("Server shutdown signal sent");
+        }
+        
+        for(ConnectionHandler ch : clients){
+            ch.cleanUp();
+        }
+        
+        try {
+            serverSocket.close();
+        } catch (IOException ex) {
+            System.err.println("Cant close serversocket!");
         }
     }
     
