@@ -59,4 +59,38 @@ public class Main extends Application{
     control.setConnection(connection);
     System.out.println("Server started: " + connection.init_server());
     }
+    
+    public Main(Stage stage, String address, int port){
+        ConnectionManager connection = new ConnectionManager(address, port);
+        PrintService printerservice = PrintService.create();
+        connection.registerModel(printerservice);
+        ExampleControl control = new ExampleControl(JOptionPane.showInputDialog(null,"Enter your chat-alias: "));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Example.fxml"));
+        fxmlLoader.setController(control);
+        
+        try { 
+            Parent root = (Parent) fxmlLoader.load();
+            stage.setTitle("Dominion Interface");
+            stage.setScene(new Scene(root, 600, 400));
+            
+            stage.setResizable(false);
+            stage.show();
+            stage.setOnCloseRequest(new EventHandler<WindowEvent>(){
+
+                @Override
+                public void handle(WindowEvent t) {
+                    System.exit(0);
+                }
+                
+            });
+        } catch (IOException ex) {
+            System.err.println("IOException : Example.fxml niet gevonden");
+        }
+    
+       
+    control.initialize();
+    printerservice.setOutput(control.getDisplay());
+    control.setConnection(connection);
+    System.out.println("Server started: " + connection.init_server());
+    }
 }
