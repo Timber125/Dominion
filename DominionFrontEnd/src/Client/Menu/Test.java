@@ -27,8 +27,8 @@ public class Test extends Application{
         // Stage, FXML name, Screen title, width, height. 
         manager = new MVCManager(stage, "MVC.fxml", "MVC EXAMPLE", 500, 500);
         
-        // Roep na 5 seconden de client op. 
-        /*Thread.sleep(5000);*/
+        // Roep na 2 seconden de client op. 
+        Thread.sleep(2000);
         manager.Finish("localhost", 13337);
     }
 }

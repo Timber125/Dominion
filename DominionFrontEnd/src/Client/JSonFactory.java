@@ -67,4 +67,12 @@ public class JSonFactory {
 
         return obj;
     }
+    public JSONObject protocol_dominion(String phase, String operation, Integer repeats){
+        JSONObject obj = new JSONObject();
+        obj.put("service_type", "dominion");
+        obj.put("phase", phase);
+        obj.put("operation", operation);
+        obj.put("repeat", repeats.toString());
+        return obj;
+    }
 }

@@ -7,6 +7,7 @@
 package Dominion;
 
 import Client.ConnectionManager;
+import Client.JSonFactory;
 import Client.PrintService;
 import Client.SessionService;
 import Client.Testing.ChatView;
@@ -31,20 +32,22 @@ public class Main extends Application{
         Main main = new Main(stage, "localhost", 13337);
     }
     
+    public ConnectionManager connection;
+    
     public Main(Stage stage, String address, int port){
-        ConnectionManager connection = new ConnectionManager("localhost", 13337);
+        connection = new ConnectionManager("localhost", 13337);
         PrintService printerservice = PrintService.create();
         SessionService sessionservice = SessionService.create();
         connection.registerModel(printerservice);
         connection.registerModel(sessionservice);
-        ExampleControl control = new ExampleControl(JOptionPane.showInputDialog(null,"Enter your chat-alias: "));
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Example.fxml"));
+        ClientControl control = new ClientControl(JOptionPane.showInputDialog(null,"Enter your chat-alias: "), this);
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ClientInterface.fxml"));
         fxmlLoader.setController(control);
         
         try { 
             Parent root = (Parent) fxmlLoader.load();
             stage.setTitle("Dominion Interface");
-            stage.setScene(new Scene(root, 600, 400));
+            stage.setScene(new Scene(root, 1080, 600));
             
             stage.setResizable(false);
             stage.show();
@@ -57,14 +60,18 @@ public class Main extends Application{
                 
             });
         } catch (IOException ex) {
-            System.err.println("IOException : Example.fxml niet gevonden");
+            System.err.println("IOException : ClientInterface.fxml niet gevonden");
         }
-    
-       
-    control.initialize();
+    control.init();
     printerservice.setOutput(control.getDisplay());
     sessionservice.setConnectionManager(connection);
     control.setConnection(connection);
     System.out.println("Server started: " + connection.init_server());
+    }
+    
+    
+    public void control_card_clicked(){
+        System.out.println("You clicked the card.");
+        connection.write(JSonFactory.JSON.protocol_dominion("draw", "draw_cards", 1));
     }
 }
