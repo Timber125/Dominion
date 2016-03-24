@@ -160,6 +160,7 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
                 System.out.println("================");
                 System.out.println(json_stringified);
                 System.out.println("================");
+                json_stringified = inject_client_information(json_stringified);
                 ServiceBroker.instance.offerRequest(json_stringified);
             }else{
                 System.out.println("Intercepted a crafted/invalid session token!");
@@ -190,6 +191,11 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
         // Short form for:
         // ==> IF equals THEN return true
         // ==> IF not equals THEN return false
+    }
+
+    private String inject_client_information(String json_stringified) {
+        // Nothing to inject: session is given by client.
+        return json_stringified;
     }
 
     

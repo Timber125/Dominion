@@ -7,6 +7,7 @@
 package Server;
 
 import Server.Service.ChatService;
+import Server.Service.DominionService;
 import Server.Service.ServiceBroker;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -115,6 +116,7 @@ public class Server implements Runnable{
     public void run() {
         active = true;
         ServiceBroker.instance.addService(new ChatService(this));
+        ServiceBroker.instance.addService(new DominionService(this));
         ServiceBroker.instance.start();
         try {
             serverSocket = new ServerSocket(port);
