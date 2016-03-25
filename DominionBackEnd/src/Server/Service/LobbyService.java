@@ -18,6 +18,12 @@ import org.json.JSONObject;
  * @author admin
  */
 public class LobbyService extends Service{
+    
+    private final int min_players = 2;
+    private final int max_players = 4;
+    
+    private boolean start_was_possible = false;
+    
     private DominionService game;
     private String gameHostID;
     private HashMap<String, Boolean> lobbyClients;
@@ -79,8 +85,6 @@ public class LobbyService extends Service{
                         server.sendAll(replyVoteChanged(sessionID));
                         notifyLobbyChange();
                     }
-                    
-                    
                 }else{
                     // The lobby package is not valid, don't take action
                 }
@@ -96,8 +100,36 @@ public class LobbyService extends Service{
         
     }
 
+    private boolean isStartPossible(){
+        int playercount = lobbyClients.keySet().size();
+        boolean playercount_ok = false;
+        boolean allready = true;
+        if((playercount >= min_players) && (playercount <= max_players)){
+            playercount_ok = true;
+        }
+        for(String session : lobbyClients.keySet()){
+            if(!lobbyClients.get(session)) {
+                allready = false;
+                break;
+            }
+        }
+        
+        return (playercount_ok && allready);
+    }
+    
     private void notifyLobbyChange() {
-        // unused
+        boolean start_is_possible = isStartPossible();
+        if(start_is_possible == start_was_possible) return;
+        else{
+            if(start_is_possible){
+                // start just became possible
+                notifyStartPossible();
+            }else{
+                // start is not possible anymore
+                notifyStartImpossible();
+            }
+        }
+        start_was_possible = start_is_possible;
     }
     
     private JSONObject replyVoteChanged(String session){
@@ -115,6 +147,25 @@ public class LobbyService extends Service{
     private JSONObject replyLobbyDisconnect(String session, String nickname){
         JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
         obj = JSONUtilities.JSON.addKeyValuePair("sysout", "[" + nickname + "] left the table!", obj);
+        return obj;
+    }
+
+    private void notifyStartPossible() {
+        server.sendAll(replyStartGamePossible());
+    }
+
+    private void notifyStartImpossible() {
+        server.sendAll(replyStartGameImpossible());
+    }
+        
+    private JSONObject replyStartGamePossible(){
+        JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
+        obj = JSONUtilities.JSON.addKeyValuePair("sysout", "[LOBBY] Game can now start.", obj);
+        return obj;
+    }
+    private JSONObject replyStartGameImpossible(){
+        JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
+        obj = JSONUtilities.JSON.addKeyValuePair("sysout", "[LOBBY] Game can no longer start.", obj);
         return obj;
     }
 }
