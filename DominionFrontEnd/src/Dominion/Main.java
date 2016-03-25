@@ -35,12 +35,13 @@ public class Main extends Application{
     public ConnectionManager connection;
     
     public Main(Stage stage, String address, int port){
+        String initname = JOptionPane.showInputDialog(null,"Enter your chat-alias: ");
         connection = new ConnectionManager("localhost", 13337);
         PrintService printerservice = PrintService.create();
-        SessionService sessionservice = SessionService.create();
+        SessionService sessionservice = SessionService.create(initname);
         connection.registerModel(printerservice);
         connection.registerModel(sessionservice);
-        ClientControl control = new ClientControl(JOptionPane.showInputDialog(null,"Enter your chat-alias: "), this);
+        ClientControl control = new ClientControl(initname, this);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ClientInterface.fxml"));
         fxmlLoader.setController(control);
         

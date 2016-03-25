@@ -46,19 +46,30 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
     private String hostName;
     private String hostAddress;
     public Socket client;
-    protected String my_session_token;
-
     
+    protected String my_session_token;
+    protected String my_nickname = "guest";
     
     private PrintWriter client_out;
     private ConnectionListener client_in;
     
     private Server server;
     
+    
+    
     public ConnectionHandler(Server server, Socket client){
         this.server = server;
         my_session_token = createSessionToken();
         initialize(client);
+    }
+    
+    // Be careful, should only be accessed from within communication protocols
+    public void changeNickname(String nickname){
+        my_nickname = nickname;
+    }
+    
+    public String getNickname(){
+        return my_nickname;
     }
     
     public void InitiateConnection(){
@@ -122,6 +133,7 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
         System.out.println("Hostname: " + hostName);
         System.out.println("Hostaddress: " + hostAddress);
         System.out.println("Session token: " + my_session_token);
+        System.out.println("Nickname : " + my_nickname + " (will be changed in a few milliseconds)");
     }
 
     private void startWriter(PrintWriter out){
@@ -182,7 +194,9 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
         }
         return s;
     }
-    
+    public boolean validSession(JSONObject json){
+        return (json.getString("session").equals(my_session_token));
+    }
     // Extract crafted json-communication before it is sent to the services!
     public boolean validSession(String json){
         JSONObject obj = JSONUtilities.JSON.toJSON(json);
@@ -193,9 +207,30 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
         // ==> IF not equals THEN return false
     }
 
+    
+        // remove potentially crafted authors
+        // Add the valid author name registered on server
+        // Send through
+    
     private String inject_client_information(String json_stringified) {
-        // Nothing to inject: session is given by client.
-        return json_stringified;
+        JSONObject obj = JSONUtilities.JSON.toJSON(json_stringified);
+        obj.put("author", my_nickname);
+        return obj.toString();
+    }
+    
+    private String inject_client_information(JSONObject obj){
+        obj.put("author", my_nickname);
+        return obj.toString();
+    }
+    
+    private JSONObject inject_client_information_json(String json_stringified){
+        JSONObject obj = JSONUtilities.JSON.toJSON(json_stringified);
+        obj.put("author", my_nickname);
+        return obj;
+    }
+    private JSONObject inject_client_information_json(JSONObject obj){
+        obj.put("author", my_nickname);
+        return obj;
     }
 
     

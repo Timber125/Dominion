@@ -11,6 +11,8 @@ import Client.JSonFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -61,10 +63,14 @@ public class ClientControl {
     }
     
     
-    public void init() throws IOException {
+    public void init() {
         ChatButton.setOnAction(displayError());
-        // loadImage laadt de kaart uit het programma, niet van op de C schijf. 
-        CardsHandView.setImage(loadImage("moat"));
+        try {
+            // loadImage laadt de kaart uit het programma, niet van op de C schijf.
+            CardsHandView.setImage(loadImage("moat"));
+        } catch (IOException ex) {
+            System.err.println("Could not load image 'moat'.");
+        }
         CardsHandView.setOnMouseClicked(JordyCheckDit());
     }
     

@@ -6,6 +6,7 @@
 
 package Server.Service;
 
+import Server.JSONUtilities;
 import Server.Server;
 import org.json.JSONObject;
 
@@ -14,14 +15,29 @@ import org.json.JSONObject;
  * @author admin
  */
 public class DominionService extends Service{
+    
+    public boolean active;
 
     public DominionService(Server server){
         super(server);
         known_service_types.add("dominion");
+        active = true;
+    }
+    
+    public void activate(){
+        active = true;
+    }
+    
+    public void deactivate(){
+        active = false;
     }
     
     @Override
     public void handleType(String type, JSONObject json) {
+        if(!active){
+            server.getClient(json.getString("session")).write(gameNotStartedMessage());
+            return;
+        }
         // Service_type = dominion. 
         // Implemented requests:
         // service_type="dominion", phase="draw", operation="draw_cards", repeat="5"
@@ -77,4 +93,10 @@ public class DominionService extends Service{
         }
     }
     
+    
+    private JSONObject gameNotStartedMessage(){
+        JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
+        obj = JSONUtilities.JSON.addKeyValuePair("sysout", "The game hasn't started yet.", obj);
+        return obj;
+    }
 }

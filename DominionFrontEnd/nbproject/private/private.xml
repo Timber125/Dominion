@@ -8,8 +8,8 @@
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/Main.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Menu/MVCModel.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/SessionService.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Testing/MVCExample/MVCModel.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Testing/Main.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Testing/MVCExample/MVCModel.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Testing/MVCExample/MVCController.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/ServiceModel.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Testing/MVCExample/MVCManager.java</file>
@@ -20,9 +20,8 @@
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Testing/MVCExample/Test.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Testing/ChatView.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Menu/MVCManager.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/Example.fxml</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/PrintService.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/ExampleControl.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/ClientControl.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Menu/Test.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Menu/MVCController.java</file>
         </group>

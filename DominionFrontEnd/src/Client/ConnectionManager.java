@@ -28,6 +28,8 @@ public class ConnectionManager {
     public String address;
     public int port;
     private String session_token = "unidentified";
+    private String nickname = "unidentified";
+    
     public ConnectionManager(String address, int port){
         this.address = address;
         this.port = port;
@@ -35,6 +37,10 @@ public class ConnectionManager {
     
     protected void setSessionToken(String session){
         this.session_token = session;
+    }
+    
+    protected void setNickName(String nickname){
+        this.nickname = nickname;
     }
     
     public synchronized void registerModel(ServiceModel model){

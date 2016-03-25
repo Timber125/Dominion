@@ -8,11 +8,13 @@ package Server;
 
 import Server.Service.ChatService;
 import Server.Service.DominionService;
+import Server.Service.LobbyService;
 import Server.Service.ServiceBroker;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONObject;
@@ -44,6 +46,8 @@ public class Server implements Runnable{
         clients = new ArrayList<>();
     }
     
+    
+    
     public void setPort(int new_port){
         this.port = new_port;
     }
@@ -51,23 +55,29 @@ public class Server implements Runnable{
     protected void notifyClose(){
         synchronized(clients){
             ArrayList<ConnectionHandler> updated_clients = new ArrayList<>();
-            ArrayList<String> disconnected_sessions = new ArrayList<>();
+            HashMap<String, String> disconnected_sessions = new HashMap<>();
             for(ConnectionHandler ch : clients){
                 // Null = hard disconnect, Closed = soft disconnect
                 if((ch.client != null) && (!ch.client.isClosed())) updated_clients.add(ch);
                 else{
-                    disconnected_sessions.add(ch.my_session_token);
+                    disconnected_sessions.put(ch.my_session_token, ch.my_nickname);
                 }
             }
-            this.clients = updated_clients;
-            for(String s : disconnected_sessions){
+            
+            for(String s : disconnected_sessions.keySet()){
                 JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
-                obj = JSONUtilities.JSON.addKeyValuePair("sysout", "Client [" + s + "] disconnected.", obj);
+                obj = JSONUtilities.JSON.addKeyValuePair("sysout", "Client [" + disconnected_sessions.get(s) + "] disconnected.", obj);
                 for(ConnectionHandler ch : updated_clients){
                     ch.write(obj.toString());
                 }
+                JSONObject lobbyDisconnect = JSONUtilities.JSON.create("service_type", "lobby");
+                lobbyDisconnect = JSONUtilities.JSON.addKeyValuePair("session", s, lobbyDisconnect);
+                lobbyDisconnect = JSONUtilities.JSON.addKeyValuePair("author", disconnected_sessions.get(s), lobbyDisconnect);
+                lobbyDisconnect = JSONUtilities.JSON.addKeyValuePair("operation", "disconnect", lobbyDisconnect);
+                ServiceBroker.instance.offerRequest(lobbyDisconnect.toString());
                 
             }
+            this.clients = updated_clients;
             System.err.println("Close notified: cleaned up [" + disconnected_sessions.size() + "] disconnects.");
         }
     }
@@ -116,7 +126,9 @@ public class Server implements Runnable{
     public void run() {
         active = true;
         ServiceBroker.instance.addService(new ChatService(this));
-        ServiceBroker.instance.addService(new DominionService(this));
+        DominionService ds = new DominionService(this);
+        ServiceBroker.instance.addService(ds);
+        ServiceBroker.instance.addService(new LobbyService(this,ds));
         ServiceBroker.instance.start();
         try {
             serverSocket = new ServerSocket(port);
@@ -126,7 +138,7 @@ public class Server implements Runnable{
                     ConnectionHandler connection = new ConnectionHandler(this, client_connecting);
                     connection.InitiateConnection();
                     JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
-                    obj = JSONUtilities.JSON.addKeyValuePair("sysout", "Client connected", obj);
+                    obj = JSONUtilities.JSON.addKeyValuePair("sysout", "guest connected from " + client_connecting.getInetAddress().getHostAddress(), obj);
                     synchronized(clients){
                         for(ConnectionHandler ch : clients){
                             ch.write(obj);
@@ -143,5 +155,26 @@ public class Server implements Runnable{
         ServiceBroker.instance.shutdown();
     }
 
+    public ConnectionHandler getClient(String session){
+        for(ConnectionHandler ch : clients){
+            if(ch.validSession(JSONUtilities.JSON.create("session", session))) return ch;
+        }
+        return null;
+    }
     
+    public String getNickname(String session){
+        return getClient(session).getNickname();
+    }
+    
+    public void sendAll(JSONObject packet){
+        for(ConnectionHandler ch : clients){
+            ch.write(packet);
+        }
+    }
+    
+    public void sendOne(JSONObject packet, String session){
+        for(ConnectionHandler ch : clients){
+            if(ch.validSession(JSONUtilities.JSON.create("session",session))) ch.write(packet);
+        }
+    }
 }

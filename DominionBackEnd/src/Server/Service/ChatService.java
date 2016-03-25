@@ -47,7 +47,32 @@ public class ChatService extends Service{
     }
     
     public void handle_command(String command, JSONObject json){
+        if(command.startsWith("rename ")){
+            ConnectionHandler ch = server.getClient(json.getString("session"));
+            String rename = command.substring(7).trim();
+            String oldname = ch.getNickname();
+            ch.changeNickname(rename);
+            ch.write(RenameReply(rename));
+            server.sendAll(RenameAnnouncement(oldname, rename));
+            return;
+        }
         switch(command){
+            case("lobbyconnect"):{
+                ServiceBroker.instance.offerRequest(SimulateLobbyConnect(json.getString("session")).toString());
+                return;
+            }
+            case("lobbydisconnect"):{
+                ServiceBroker.instance.offerRequest(SimulateLobbyDisconnect(json.getString("session")).toString());
+                return;
+            }
+            case("lobbyvote"):{
+                ServiceBroker.instance.offerRequest(SimulateLobbyVote(json.getString("session"), true).toString());
+                return;
+            }
+            case("lobbyunvote"):{
+                ServiceBroker.instance.offerRequest(SimulateLobbyVote(json.getString("session"), false).toString());
+                return;
+            }
             case("finishturn"):{
                 ServiceBroker.instance.offerRequest(SimulateFinishTurn(json.getString("session")).toString());
                 return;
@@ -90,10 +115,27 @@ public class ChatService extends Service{
         helpmessage += "!draw5: Simulates dominion-action draw_card, repeat=5\n";
         helpmessage += "!discardhand: Simulates dominion-action discard_hand, repeat=1\n";
         helpmessage += "!shuffle: Simulates dominion-action shuffle_deck_graveyard, repeat=1\n";
+        helpmessage += "!rename nickname: set a new nickname, no spaces allowed.";
+        helpmessage += "!lobbyconnect: take a seat at the table\n";
+        helpmessage += "!lobbydisconnect: leave the gametable\n";
+        helpmessage += "!lobbyvote: ready to start game\n";
+        helpmessage += "!lobbyunvote: not ready to start game\n";
         helpmessage += "!help: Displays this help message";
         JSONObject help = JSONUtilities.JSON.create("action", "sysout");
         help = JSONUtilities.JSON.addKeyValuePair("sysout", helpmessage, help);
         return help;
+    }
+    
+    private JSONObject RenameReply(String name){
+        JSONObject obj = JSONUtilities.JSON.create("action", "session");
+        JSONUtilities.JSON.addKeyValuePair("newname", name, obj);
+        return obj;
+    }
+    
+    private JSONObject RenameAnnouncement(String old, String newname){
+        JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
+        JSONUtilities.JSON.addKeyValuePair("sysout", "*** " + old + " changed his name to " + newname, obj);
+        return obj;
     }
     
     private JSONObject SimulateFinishTurn(String session){
@@ -129,6 +171,29 @@ public class ChatService extends Service{
         commandObj = JSONUtilities.JSON.addKeyValuePair("operation", "shuffle_deck_graveyard", commandObj);
         commandObj = JSONUtilities.JSON.addKeyValuePair("repeat", "1", commandObj);
         commandObj = JSONUtilities.JSON.addKeyValuePair("phase", "draw", commandObj);
+        return commandObj;
+    }
+    
+    private JSONObject SimulateLobbyConnect(String session){
+        JSONObject commandObj = JSONUtilities.JSON.create("session", session);
+        commandObj = JSONUtilities.JSON.addKeyValuePair("service_type", "lobby", commandObj);
+        commandObj = JSONUtilities.JSON.addKeyValuePair("operation", "connect", commandObj);
+        return commandObj;
+    }
+    
+    private JSONObject SimulateLobbyDisconnect(String session){
+        JSONObject commandObj = JSONUtilities.JSON.create("session", session);
+        commandObj = JSONUtilities.JSON.addKeyValuePair("service_type", "lobby", commandObj);
+        commandObj = JSONUtilities.JSON.addKeyValuePair("operation", "disconnect", commandObj);
+        commandObj = JSONUtilities.JSON.addKeyValuePair("author", server.getNickname(session), commandObj);
+        return commandObj;
+    }
+    
+    private JSONObject SimulateLobbyVote(String session, boolean vote){
+        JSONObject commandObj = JSONUtilities.JSON.create("session", session);
+        commandObj = JSONUtilities.JSON.addKeyValuePair("service_type", "lobby", commandObj);
+        if(vote) commandObj = JSONUtilities.JSON.addKeyValuePair("operation", "vote", commandObj);
+        else commandObj = JSONUtilities.JSON.addKeyValuePair("operation", "unvote", commandObj);
         return commandObj;
     }
 }
