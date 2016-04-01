@@ -55,6 +55,10 @@ public class ChatService extends Service{
             ch.write(RenameReply(rename));
             server.sendAll(RenameAnnouncement(oldname, rename));
             return;
+        }else if(command.startsWith("playcard ")){
+            String cardname = command.substring(8).trim();
+            String session = json.getString("session");
+            ServiceBroker.instance.offerRequest(SimulateCardOffer(session, cardname).toString());
         }
         switch(command){
             case("lobbyconnect"):{
@@ -194,6 +198,15 @@ public class ChatService extends Service{
         commandObj = JSONUtilities.JSON.addKeyValuePair("service_type", "lobby", commandObj);
         if(vote) commandObj = JSONUtilities.JSON.addKeyValuePair("operation", "vote", commandObj);
         else commandObj = JSONUtilities.JSON.addKeyValuePair("operation", "unvote", commandObj);
+        return commandObj;
+    }
+    
+    private JSONObject SimulateCardOffer(String session, String cardname){
+        JSONObject commandObj = JSONUtilities.JSON.create("session", session);
+        commandObj = JSONUtilities.JSON.addKeyValuePair("service_type", "dominion", commandObj);
+        commandObj = JSONUtilities.JSON.addKeyValuePair("phase", "action", commandObj);
+        commandObj = JSONUtilities.JSON.addKeyValuePair("operation", "playcard", commandObj);
+        commandObj = JSONUtilities.JSON.addKeyValuePair("card", cardname, commandObj);
         return commandObj;
     }
 }

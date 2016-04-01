@@ -22,11 +22,13 @@ public class LobbyService extends Service{
     private final int min_players = 2;
     private final int max_players = 4;
     
-    private boolean start_was_possible = false;
+    private boolean is_started = false;
     
-    private DominionService game;
-    private String gameHostID;
+    
+    private final DominionService game;
     private HashMap<String, Boolean> lobbyClients;
+    
+    
     public LobbyService(Server server, DominionService game){
         super(server);
         known_service_types.add("lobby");
@@ -79,7 +81,7 @@ public class LobbyService extends Service{
             }
             case("unvote"):{
                 if(lobbyClients.containsKey(sessionID)){
-                    // Only if the client wasnt already "voted in"
+                    // Only if the client was already "voted in"
                     if(lobbyClients.get(sessionID)){
                         lobbyClients.put(sessionID, false);
                         server.sendAll(replyVoteChanged(sessionID));
@@ -103,33 +105,28 @@ public class LobbyService extends Service{
     private boolean isStartPossible(){
         int playercount = lobbyClients.keySet().size();
         boolean playercount_ok = false;
-        boolean allready = true;
         if((playercount >= min_players) && (playercount <= max_players)){
             playercount_ok = true;
         }
+       
+        return (playercount_ok);
+    }
+    
+    private boolean allReady(){
+        boolean allready = true;
         for(String session : lobbyClients.keySet()){
             if(!lobbyClients.get(session)) {
                 allready = false;
                 break;
             }
         }
-        
-        return (playercount_ok && allready);
+        return allready;
     }
     
     private void notifyLobbyChange() {
-        boolean start_is_possible = isStartPossible();
-        if(start_is_possible == start_was_possible) return;
-        else{
-            if(start_is_possible){
-                // start just became possible
-                notifyStartPossible();
-            }else{
-                // start is not possible anymore
-                notifyStartImpossible();
-            }
+        if(allReady() && isStartPossible()){
+            startGame();
         }
-        start_was_possible = start_is_possible;
     }
     
     private JSONObject replyVoteChanged(String session){
@@ -150,6 +147,10 @@ public class LobbyService extends Service{
         return obj;
     }
 
+    private void notifyStart(){
+        server.sendAll(replyGameStarted());
+    }
+    
     private void notifyStartPossible() {
         server.sendAll(replyStartGamePossible());
     }
@@ -163,9 +164,25 @@ public class LobbyService extends Service{
         obj = JSONUtilities.JSON.addKeyValuePair("sysout", "[LOBBY] Game can now start.", obj);
         return obj;
     }
+    private JSONObject replyGameStarted(){
+        JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
+        obj = JSONUtilities.JSON.addKeyValuePair("sysout", "[LOBBY] Game has started.", obj);
+        return obj;
+    }
     private JSONObject replyStartGameImpossible(){
         JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
         obj = JSONUtilities.JSON.addKeyValuePair("sysout", "[LOBBY] Game can no longer start.", obj);
         return obj;
+    }
+
+    private void startGame() {
+        game.initialize(lobbyClients.keySet());
+        game.activate();
+        notifyStart();
+        is_started = true;
+    }
+    
+    private void pauseGame(){
+        // TODO
     }
 }

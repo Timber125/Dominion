@@ -6,8 +6,12 @@
 
 package Server.Service;
 
+import Game.Engine;
 import Server.JSONUtilities;
 import Server.Server;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
 import org.json.JSONObject;
 
 /**
@@ -17,15 +21,25 @@ import org.json.JSONObject;
 public class DominionService extends Service{
     
     public boolean active;
+    
+    private Engine game;
 
     public DominionService(Server server){
         super(server);
         known_service_types.add("dominion");
-        active = true;
+        active = false; // initialize inactive
+        // Could initliaize active, lobbyservice deactivates this either way. 
+    }
+    
+    protected Engine getEngine(){
+        return game;
     }
     
     public void activate(){
-        active = true;
+        if(game != null) active = true;
+        else {
+            System.err.println("Tried to activate dominionservice but game-engine is null");
+        }
     }
     
     public void deactivate(){
@@ -47,6 +61,10 @@ public class DominionService extends Service{
         if(type.equals("dominion")){
             String phase = json.getString("phase");
             switch(phase){
+                case("action"):{
+                    actionPhase(json);
+                    return;
+                }
                 case("draw"):{
                     drawPhase(json);
                     return;
@@ -58,6 +76,12 @@ public class DominionService extends Service{
         }else{
             System.out.println("Dominion service doesn't know how to handle 'all' addressing. Implement me!");
         }
+        
+    }
+    
+    public void actionPhase(JSONObject json){
+        String operation = json.getString("operation");
+        String session = json.getString("session");
         
     }
     
@@ -98,5 +122,28 @@ public class DominionService extends Service{
         JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
         obj = JSONUtilities.JSON.addKeyValuePair("sysout", "The game hasn't started yet.", obj);
         return obj;
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    private void cardOffer(JSONObject json) {
+        game.process(json);
+    }
+
+    protected void initialize(Collection<String> playersessions) {
+        String[] players = new String[playersessions.size()];
+        players = playersessions.toArray(players);
+        ArrayList<String> listed = new ArrayList<>();
+        for(int i = 0; i < playersessions.size(); i++) listed.add(players[i]);
+        game = new Engine(listed, this.server);
     }
 }

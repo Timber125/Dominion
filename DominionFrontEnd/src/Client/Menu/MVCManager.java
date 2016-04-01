@@ -6,6 +6,7 @@
 
 package Client.Menu;
 
+import Dominion.DynamicCard.MainV2;
 import Dominion.Main;
 import java.io.IOException;
 import javafx.event.EventHandler;
@@ -59,6 +60,6 @@ public class MVCManager {
     }
     
     public void Finish(String address, int port){
-        Main main = new Main(stage, address, port);
+        MainV2 main = new MainV2(stage, address, port);
     }
 }

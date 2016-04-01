@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" minHeight="600.0" prefHeight="600.0" prefWidth="1080.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <children>
+    <Pane fx:id="DominionPane" layoutX="0.0" layoutY="0.0" prefHeight="600.0" prefWidth="1080.0" style="-fx-background-color: TEAL;">
+      <children>
+        <Pane fx:id="HandPane" layoutX="14.0" layoutY="263.0" prefHeight="237.0" prefWidth="1052.0" style="-fx-background-color: DARKBLUE;">
+          <children>
+            <Label alignment="CENTER" layoutX="212.0" layoutY="0.0" prefHeight="37.0" prefWidth="627.000022070315" text="Your Hand:" textAlignment="CENTER" textFill="#fff500">
+              <font>
+                <Font name="System Bold Italic" size="24.0" />
+              </font>
+            </Label>
+            <ScrollPane layoutX="151.0" layoutY="37.0" prefHeight="202.0" prefWidth="752.0" style="-fx-background-color:BLACK;">
+              <content>
+                <AnchorPane id="Content" fx:id="HandCardPane" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="750.0" style="-fx-background-color:BLUE;" />
+              </content>
+            </ScrollPane>
+          </children>
+        </Pane>
+        <Pane fx:id="ChatPane" layoutX="529.0" layoutY="500.0" prefHeight="99.99990000000253" prefWidth="551.0" style="-fx-background-color:BLACK;">
+          <children>
+            <Button fx:id="ChatButton" layoutX="395.0" layoutY="75.0" mnemonicParsing="false" prefWidth="150.0" text="Send" />
+            <TextField fx:id="ChatText" layoutX="3.0" layoutY="74.0" prefHeight="25.0" prefWidth="385.0" />
+            <TextArea fx:id="ChatArea" editable="false" layoutX="3.0" layoutY="2.0" prefHeight="70.0" prefWidth="546.0" wrapText="true" />
+          </children>
+        </Pane>
+        <Pane fx:id="Pane1" layoutX="0.0" layoutY="500.0" prefHeight="99.9998779296875" prefWidth="529.0" style="-fx-background-color:BLACK;" />
+      </children>
+    </Pane>
+  </children>
+</AnchorPane>
