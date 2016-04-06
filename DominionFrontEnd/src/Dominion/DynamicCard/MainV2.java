@@ -42,6 +42,8 @@ public class MainV2 extends Application{
         connection.registerModel(printerservice);
         connection.registerModel(sessionservice);
         ClientControlV2 control = new ClientControlV2(initname, this);
+        ClientModelService modelservice = new ClientModelService(control);
+        connection.registerModel(modelservice);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ClientInterfaceV2.fxml"));
         fxmlLoader.setController(control);
         

@@ -7,6 +7,8 @@
 package Game;
 
 import Cards.Card;
+import Cards.Copper;
+import Cards.Estate;
 import Cards.Market;
 import Cards.Village;
 import java.util.ArrayList;
@@ -34,6 +36,19 @@ public class Deck {
             // testCase == 1
         constructorCode();
         switch(testCase){
+            case(0):{
+                // Standard start-deck.
+                int estate = 3;
+                int copper = 7;
+                for(int es = 0; es < estate; es++){
+                    used.add(new Estate());
+                }
+                for(int co = 0; co < copper; co++){
+                    used.add(new Copper());
+                }
+                break;
+            }
+            
             case(1):{
                 // Create a deck of 3 villages & 3 markets, place in used-pile
                 used.add(new Village());
@@ -44,6 +59,7 @@ public class Deck {
                 used.add(new Market());
                 break;
             }
+            
             default:{
                 constructorCode();
             }

@@ -123,5 +123,10 @@ public class Engine {
         JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
         obj = JSONUtilities.JSON.addKeyValuePair("sysout", "You draw a card: " + cardname, obj);
         server.getClient(session).write(obj);
+        
+        JSONObject act = JSONUtilities.JSON.create("action", "dominion");
+        act = JSONUtilities.JSON.addKeyValuePair("act","gain",act);
+        act = JSONUtilities.JSON.addKeyValuePair("gain",cardname,act);
+        server.getClient(session).write(act);
     }
 }

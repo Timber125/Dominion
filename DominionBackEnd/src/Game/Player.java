@@ -17,7 +17,8 @@ public class Player {
     public Deck deck;
     public Player(String session){
         mySession = session;
-        deck = new Deck(1); // deck-protocol-1: see deck-constructor(s) for explenation. 
+        //deck = new Deck(1); // deck-protocol-1: see deck-constructor(s) for explenation. 
+        deck = new Deck(0); // Standard deck (protocol-0)
     }
     public Card drawCard(){
         if(deck == null) return null;

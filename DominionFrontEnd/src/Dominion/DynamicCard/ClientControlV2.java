@@ -80,6 +80,7 @@ public class ClientControlV2 {
             System.err.println("Could not load image 'moat'.");
         }
         CardsHandView.setOnMouseClicked(onCardPress());*/
+        /*
         addCardToHand("moat");
         addCardToHand("lol");
         addCardToHand("adventurer");
@@ -92,6 +93,7 @@ public class ClientControlV2 {
         addCardToHand("torturer");
         addCardToHand("copper");
         addCardToHand("estate");
+        */
     }
     
     private void cardSwap(){
@@ -280,7 +282,7 @@ public class ClientControlV2 {
         -> Image requires a loaded "image", don't give null images or anything... :)
         -> String requires the name of the card you want to display (in lowercase). 
     */
-    private void addCardToHand(ImageView iv){
+    protected void addCardToHand(ImageView iv){
         Pair<Integer, Integer> location = getLocationForNextCard();
         iv.setVisible(false);
         HandCardPane.getChildren().add(iv);
@@ -288,12 +290,12 @@ public class ClientControlV2 {
         iv.setVisible(true);
         card_count ++;
     }
-    private void addCardToHand(Image i){
+    protected void addCardToHand(Image i){
         ImageView iv = createCardDisplay();
         iv.setImage(i);
         addCardToHand(iv);
     }
-    private void addCardToHand(String cardname){
+    public void addCardToHand(String cardname){
         ImageView iv = createCardDisplayFor(cardname);
         addCardToHand(iv);
     }
