@@ -24,6 +24,21 @@
                 <AnchorPane id="Content" fx:id="HandCardPane" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="750.0" style="-fx-background-color:BLUE;" />
               </content>
             </ScrollPane>
+            <Button fx:id="EndPhase" layoutX="917.0" layoutY="39.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="121.0" text="End Phase" textAlignment="CENTER">
+              <font>
+                <Font name="System Bold" size="18.0" />
+              </font>
+            </Button>
+            <Label layoutX="917.0" layoutY="89.0" text="Actions:" textFill="WHITE">
+              <font>
+                <Font name="System Bold" size="16.0" fx:id="x1" />
+              </font>
+            </Label>
+            <Label font="$x1" layoutX="917.0" layoutY="119.0" text="Buys:" textFill="WHITE" />
+            <Label font="$x1" layoutX="917.0" layoutY="150.0" text="Coins:" textFill="WHITE" />
+            <Label fx:id="ActionCount" font="$x1" layoutX="1010.0" layoutY="89.0" prefWidth="28.0" text="0" textFill="WHITE" />
+            <Label fx:id="BuyCount" font="$x1" layoutX="1010.0" layoutY="119.0" prefWidth="28.0" text="0" textFill="WHITE" />
+            <Label fx:id="CoinCount" font="$x1" layoutX="1010.0" layoutY="150.0" prefWidth="28.0" text="0" textFill="WHITE" />
           </children>
         </Pane>
         <Pane fx:id="ChatPane" layoutX="529.0" layoutY="500.0" prefHeight="99.99990000000253" prefWidth="551.0" style="-fx-background-color:BLACK;">

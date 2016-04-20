@@ -18,4 +18,9 @@ public class Copper extends TreasureCard{
         super("copper", 0);
     }
     
+    @Override
+    public int moneygain(){
+        return 1;
+    }
+    
 }

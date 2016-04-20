@@ -65,6 +65,20 @@ public class ClientModelService extends ServiceModel{
                 // Current implementation: Lose the first card with the same cardname. 
                 // Later implemantation: Lose the exact card that you selected
                 //                  You can verify this by checking the ID of the clicked card
+                if(cardname.equals("all")){
+                    currentHand.clear();
+                    Platform.runLater(new Runnable(){
+
+                        @Override
+                        public void run() {
+                            controller.refreshHandView();
+                        }
+                        
+                    });
+                    
+                    break;
+                }
+                
                 ArrayList<Card> nextHand = new ArrayList<>();
                 boolean extracted = false;
                 for(Card c : currentHand){
@@ -99,7 +113,7 @@ public class ClientModelService extends ServiceModel{
             }
             case("turninfo"):{
                 // Turninfo update
-                System.out.println("Turninfo package received but not handled (not implemented yet)");
+                updateTurnInfo(obj);
                 break;
             }
             default:{
@@ -168,10 +182,28 @@ public class ClientModelService extends ServiceModel{
                 }
                 break;
             }
+            case("phase"):{
+                String control = obj.getString("control");
+                controller.EndPhase.setDisable(control.equals("unclickable"));
+            }
             default:{
                 System.err.println("Subject [" + subject +"] not implemented");
             }
         }
+    }
+
+    private void updateTurnInfo(JSONObject obj) {
+        final int actions = Integer.parseInt(obj.getString("actioncount"));
+        final int buys = Integer.parseInt(obj.getString("purchasecount"));
+        final int coins = Integer.parseInt(obj.getString("money"));
+        Platform.runLater(new Runnable(){
+
+            @Override
+            public void run() {
+                controller.updateTurnInfo(actions, buys, coins);
+            }
+            
+        });
     }
     
     

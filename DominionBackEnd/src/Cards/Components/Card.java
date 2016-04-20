@@ -31,4 +31,17 @@ public abstract class Card {
     private void init_standard_actions() {
         // Nothing
     }
+    
+    public int moneygain(){
+        return 0;
+    }
+    public int actiongain(){
+        return 0;
+    }
+    public int purchasegain(){
+        return 0;
+    }
+    public int victorygain(){
+        return 0;
+    }
 }

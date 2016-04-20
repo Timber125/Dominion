@@ -32,6 +32,12 @@ public class Engine {
     
     /* Frontend simulative variables */
     private int current_turn = 0;
+    private int current_phase = 0;
+    
+    private int actions = 0;
+    private int purchases = 0;
+    private int money = 0;
+    
     private HashMap<Integer, String> playerOrder;
     private HashMap<String, Player> players;
     private Environment env;
@@ -117,6 +123,11 @@ public class Engine {
         JSONObject obj = JSONUtilities.JSON.make_client_print("It is your turn.");
         server.getClient(sess).write(obj);
         
+        money = 0;
+        actions = 1;
+        purchases = 1;
+        server.sendAll(JSONUtilities.JSON.make_client_turninfo(actions, purchases, money));
+        
         // Verzend de andere spelers ('sendAllExcept deze sessie') dat het deze speler's beurt is.
         String playerTurnName = server.getNickname(sess);
         server.sendAllExcept(sess, JSONUtilities.JSON.make_client_print("It is now " + playerTurnName + "'s turn."));
@@ -125,7 +136,9 @@ public class Engine {
     }
     
     private void enterActionPhase(){
+        current_phase = 1;
         String sess = getCurrentPlayerSession();
+        server.getClient(sess).write(JSONUtilities.JSON.make_client_nextphase_impossible());
         Player p = players.get(sess);
         boolean has_actions = false;
         Set<String> actioncardnames = new HashSet<>();
@@ -139,6 +152,7 @@ public class Engine {
             server.getClient(sess).write(msg);
             JSONObject obj = JSONUtilities.JSON.make_client_hand_valid(actioncardnames);
             server.getClient(sess).write(obj);
+            server.getClient(sess).write(JSONUtilities.JSON.make_client_nextphase_possible());
         }else{
             JSONObject msg = JSONUtilities.JSON.make_client_print("You skip the action phase, you have no actions.");
             server.getClient(sess).write(msg);
@@ -147,8 +161,10 @@ public class Engine {
         
     }
     private void enterBuyPhase(){
+        current_phase = 2;
         String sess = getCurrentPlayerSession();
         Player p = players.get(sess);
+        server.getClient(sess).write(JSONUtilities.JSON.make_client_nextphase_impossible());
         server.getClient(sess).write(JSONUtilities.JSON.make_client_hand_invalid());
         server.getClient(sess).write(JSONUtilities.JSON.make_client_print("You enter the buy phase."));
         boolean has_gold = false;
@@ -157,10 +173,19 @@ public class Engine {
         treasurecardnames.add("silver");
         treasurecardnames.add("gold");
         server.getClient(sess).write(JSONUtilities.JSON.make_client_hand_valid(treasurecardnames));
+        server.getClient(sess).write(JSONUtilities.JSON.make_client_nextphase_possible());
     }
     private void endTurn(){
+        current_phase = 3;
         String sess = getCurrentPlayerSession();
+        server.getClient(sess).write(JSONUtilities.JSON.make_client_nextphase_impossible());
         Player p = players.get(sess);
+        for(Card c : env.tablecards){
+            p.deck.used.add(c);
+        }
+        env.tablecards.clear();
+        flushHand(sess);
+        nextTurn();
     }
     private void give_card_to_player_hand(String session){
         String cardname = "moat"; // fallback cardname 
@@ -178,12 +203,11 @@ public class Engine {
         server.getClient(session).write(act);
     }
     private void flushHand(String session){
-        JSONObject obj = JSONUtilities.JSON.make_client_print("You discard your hand.");
+        
         Player p = players.get(session);
-        for(Card c : p.hand){
-            server.getClient(session).write(JSONUtilities.JSON.make_client_lose(c.name));
-        }
+        server.getClient(session).write(JSONUtilities.JSON.make_client_lose("all"));
         p.discardHand();
+        JSONObject obj = JSONUtilities.JSON.make_client_print("You discard your hand.");
         for(int i = 0; i < 5;i++) give_card_to_player_hand(session);
     }
 
@@ -223,10 +247,34 @@ public class Engine {
             Player p = getPlayerWhoSent(json);
             String cardname = json.getString("cardname");
             if(doesPlayerHaveCardInHand(p, json.getString("cardname"))){
-                p.playCard(env, cardname, Long.parseLong(json.getString("id")));
+                Card c = p.playCard(env, cardname, Long.parseLong(json.getString("id")));
+                if(c instanceof ActionCard) actions --;
+                if(actions < 0) {
+                    System.err.println("Action card cannot be played -> need more actions!");
+                    return;
+                }
+                money += c.moneygain();
+                actions += c.actiongain();
+                purchases += c.actiongain();
+                
+                server.sendAll(JSONUtilities.JSON.make_client_turninfo(actions, purchases, money));
                 server.sendAll(JSONUtilities.JSON.make_client_print("*" + server.getNickname(json.getString("session")) + " played " + cardname));
                 server.sendOne(JSONUtilities.JSON.make_client_lose(cardname), json.getString("session"));
+                
             }
+        }
+    }
+
+    public void nextPhase(String session) {
+        if(!session.equals(playerOrder.get(current_turn))){
+            System.err.println("Intercepted malicious nextPhase package from client " + server.getNickname(session) +".");
+            return;
+        }
+        if(current_phase == 1){
+            enterBuyPhase();
+        }
+        else if(current_phase == 2){
+            endTurn();
         }
     }
     

@@ -84,4 +84,10 @@ public class JSonFactory {
         obj.put("id", c.getID().toString());
         return obj;
     }
+    public JSONObject protocol_endPhase(){
+        JSONObject obj = new JSONObject();
+        obj.put("service_type", "dominion");
+        obj.put("operation", "endphase");
+        return obj;
+    }
 }

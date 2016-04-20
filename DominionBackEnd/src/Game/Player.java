@@ -45,21 +45,23 @@ public class Player {
         }
         return false;
     }
-    public void playCard(Environment env, String cardname, long id){
+    public Card playCard(Environment env, String cardname, long id){
         // Id is unused, should be checked whether same id gets played twice
         ArrayList<Card> nextHand = new ArrayList<>();
         boolean extracted = false;
+        Card played = null;
         for(Card c : hand){
             if(!extracted){
                 if(c.name.equals(cardname)){
                     extracted = true;
                     env.cardPlayed(c);
+                    played = c;
                     continue;
                 }
             }
             nextHand.add(c);
         }
         hand = nextHand;
-        
+        return played;
     }
 }

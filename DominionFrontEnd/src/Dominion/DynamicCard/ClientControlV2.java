@@ -20,6 +20,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -64,6 +65,18 @@ public class ClientControlV2 {
     ImageView CardsHandView;
     */
     
+    @FXML 
+    Button EndPhase;
+    
+    @FXML
+    Label ActionCount;
+    
+    @FXML
+    Label BuyCount;
+    
+    @FXML
+    Label CoinCount;
+    
     private ConnectionManager connection;
     private final String chat_alias;
     static MainV2 main;
@@ -76,12 +89,21 @@ public class ClientControlV2 {
     
     public void init() {
         ChatButton.setOnAction(displayError());
+        EndPhase.setDisable(true);
     }
     
     
     public void setConnection(ConnectionManager manager){
         this.connection = manager;
         ChatButton.setOnAction(sendToServer());
+        EndPhase.setOnAction(new EventHandler<ActionEvent>(){
+
+            @Override
+            public void handle(ActionEvent t) {
+                main.control_end_phase();
+            }
+            
+        });
     }
     
     public TextArea getDisplay(){
@@ -179,6 +201,12 @@ public class ClientControlV2 {
             }
             
         };
+    }
+    
+    public void updateTurnInfo(int actions, int buys, int coins){
+        ActionCount.setText(actions + "");
+        BuyCount.setText(buys + "");
+        CoinCount.setText(coins + "");
     }
     
 }

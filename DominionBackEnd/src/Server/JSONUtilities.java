@@ -111,5 +111,18 @@ public class JSONUtilities {
         json = addKeyValuePair("items", cardname, json);
         return json;
     }
-    
+    public JSONObject make_client_nextphase_possible(){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control", json);
+        json = addKeyValuePair("subject", "phase", json);
+        json = addKeyValuePair("control", "clickable", json);
+        return json;
+    }
+    public JSONObject make_client_nextphase_impossible(){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control", json);
+        json = addKeyValuePair("subject", "phase", json);
+        json = addKeyValuePair("control", "unclickable", json);
+        return json;
+    }
 }

@@ -50,7 +50,7 @@ public class MainV2 extends Application{
         try { 
             Parent root = (Parent) fxmlLoader.load();
             stage.setTitle("Dominion Interface");
-            stage.setScene(new Scene(root, 1080, 600));
+            stage.setScene(new Scene(root, 1280, 680));
             
             stage.setResizable(false);
             stage.show();
@@ -76,5 +76,10 @@ public class MainV2 extends Application{
     public void control_card_clicked(Card c){
         System.out.println("You clicked the card [" + c.getName() + "] with id[ " + c.getID().toString() +"] .");
         connection.write(JSonFactory.JSON.protocol_cardClicked(c));
+    }
+
+    void control_end_phase() {
+        System.out.println("You clicked EndPhase");
+        connection.write(JSonFactory.JSON.protocol_endPhase());
     }
 }
