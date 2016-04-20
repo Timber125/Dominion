@@ -4,16 +4,21 @@
  * and open the template in the editor.
  */
 
-package Cards;
+package Cards.Basic;
+
+import Cards.Components.ActionCard;
 
 /**
  *
  * @author admin
  */
-public abstract class TreasureCard extends Card{
+public class Village extends ActionCard{
 
-    public TreasureCard(String name, int cost) {
-        super(name, cost);
+    /*
+        Dont make cards like this, village is just to test!
+    */
+    public Village() {
+        super("village", 3);
     }
     
 }

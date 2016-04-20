@@ -4,15 +4,15 @@
  * and open the template in the editor.
  */
 
-package Cards;
+package Cards.Components;
 
 /**
  *
  * @author admin
  */
-public abstract class VictoryCard extends Card{
+public abstract class TreasureCard extends Card{
 
-    public VictoryCard(String name, int cost) {
+    public TreasureCard(String name, int cost) {
         super(name, cost);
     }
     

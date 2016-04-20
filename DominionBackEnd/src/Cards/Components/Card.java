@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package Cards;
+package Cards.Components;
 
 import Actions.Action;
 import Actions.ActionTest;

@@ -6,7 +6,7 @@
 
 package Actions;
 
-import Cards.Card;
+import Cards.Components.Card;
 import Server.JSONUtilities;
 import org.json.JSONObject;
 

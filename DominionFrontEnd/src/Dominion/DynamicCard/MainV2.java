@@ -73,8 +73,8 @@ public class MainV2 extends Application{
     }
     
     
-    public void control_card_clicked(){
-        System.out.println("You clicked the card.");
-        connection.write(JSonFactory.JSON.protocol_dominion("draw", "draw_cards", 1));
+    public void control_card_clicked(Card c){
+        System.out.println("You clicked the card [" + c.getName() + "] with id[ " + c.getID().toString() +"] .");
+        connection.write(JSonFactory.JSON.protocol_cardClicked(c));
     }
 }

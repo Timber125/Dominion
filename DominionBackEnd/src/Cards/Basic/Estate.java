@@ -4,7 +4,9 @@
  * and open the template in the editor.
  */
 
-package Cards;
+package Cards.Basic;
+
+import Cards.Components.VictoryCard;
 
 /**
  *

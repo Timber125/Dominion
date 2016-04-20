@@ -4,16 +4,18 @@
  * and open the template in the editor.
  */
 
-package Cards;
+package Cards.Basic;
+
+import Cards.Components.TreasureCard;
 
 /**
  *
  * @author admin
  */
-public class Market extends ActionCard{
+public class Copper extends TreasureCard{
 
-    public Market() {
-        super("market", 5);
+    public Copper() {
+        super("copper", 0);
     }
     
 }

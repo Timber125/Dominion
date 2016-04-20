@@ -177,4 +177,12 @@ public class Server implements Runnable{
             if(ch.validSession(JSONUtilities.JSON.create("session",session))) ch.write(packet);
         }
     }
+    
+    public void sendAllExcept(String session, JSONObject packet){
+        for(ConnectionHandler ch : clients){
+            if(!ch.validSession(JSONUtilities.JSON.create("session",session))){
+                ch.write(packet);
+            }
+        }
+    }
 }

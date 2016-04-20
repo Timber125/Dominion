@@ -10,6 +10,8 @@ import Client.JSonFactory;
 import Client.ServiceModel;
 import java.util.ArrayList;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 import org.json.JSONObject;
 
 /**
@@ -34,6 +36,8 @@ public class ClientModelService extends ServiceModel{
     
     private ClientControlV2 controller;
     
+    protected ArrayList<Card> currentHand = new ArrayList<Card>();
+    
     public ClientModelService(ClientControlV2 controller) {
         super(keywordprototype);
         this.controller = controller;
@@ -45,13 +49,57 @@ public class ClientModelService extends ServiceModel{
         String action = obj.getString("act");
         switch(action){
             case("gain"):{
-                final String cardname = obj.getString("gain");
+                String cardname = obj.getString("gain");
+                final Card c = new Card(cardname);
+                currentHand.add(c);
                 Platform.runLater(new Runnable(){
                     @Override
                     public void run() {
-                        controller.addCardToHand(cardname);
+                        controller.addCardToHand(c.getView());
                     }
                 });
+                break;
+            }
+            case("lose"):{
+                final String cardname = obj.getString("lose");
+                // Current implementation: Lose the first card with the same cardname. 
+                // Later implemantation: Lose the exact card that you selected
+                //                  You can verify this by checking the ID of the clicked card
+                ArrayList<Card> nextHand = new ArrayList<>();
+                boolean extracted = false;
+                for(Card c : currentHand){
+                    if(!extracted){
+                        if(c.getName().equals(cardname)){
+                            extracted = true;
+                            continue;
+                        }
+                    }
+                    nextHand.add(c);
+                }
+                currentHand = nextHand;
+                
+                // Now lose all cards, and one by one add the remaining cards.
+                Platform.runLater(new Runnable(){
+
+                    @Override
+                    public void run() {
+                        controller.refreshHandView();
+                        for(Card c : currentHand){
+                            controller.addCardToHand(c.getView());
+                        }
+                    }
+                    
+                });
+                break;
+            }
+            case("control"):{
+                // Do some other shit
+                handleControlPackage(obj);
+                break;
+            }
+            case("turninfo"):{
+                // Turninfo update
+                System.out.println("Turninfo package received but not handled (not implemented yet)");
                 break;
             }
             default:{
@@ -59,5 +107,77 @@ public class ClientModelService extends ServiceModel{
             }
         }
     }
+
+    private void handleControlPackage(JSONObject obj) {
+        String subject = obj.getString("subject");
+        switch(subject){
+            case("hand"):{
+                String control = obj.getString("control");
+                switch(control){
+                    case("clickable"):{
+                        ArrayList<Card> itemlist = new ArrayList<>();
+                        if(obj.getString("items").equals("all")){
+                            for(Card c : currentHand){
+                                itemlist.add(c);
+                            }
+                        }
+                        else{
+                            final String[] items = obj.getString("items").split(",");
+                            for(Card c : currentHand){
+                                for(String name : items){
+                                    if(c.getName().equals(name)){
+                                        itemlist.add(c);
+                                        break;
+                                    }
+                                }
+                            }
+                        }    
+                        for(Card c : itemlist){
+                            c.makeClickable();
+                        }
+                        
+                        break;
+                    }
+                    case("unclickable"):{
+                        ArrayList<Card> itemlist = new ArrayList<>();
+                        if(obj.getString("items").equals("all")){
+                            for(Card c : currentHand){
+                                itemlist.add(c);
+                            }
+                        }
+                        else{
+                            final String[] items = obj.getString("items").split(",");
+                            for(Card c : currentHand){
+                                for(String name : items){
+                                    if(c.getName().equals(name)){
+                                        itemlist.add(c);
+                                        break;
+                                    }
+                                }
+                            }
+                        }    
+                        for(Card c : itemlist){
+                            c.makeUnclickable();
+                        }
+                        
+                        break;
+                    }
+                    default:{
+                        System.out.println(control + " is an unknown control for subject " + subject);
+                    }
+                }
+                break;
+            }
+            default:{
+                System.err.println("Subject [" + subject +"] not implemented");
+            }
+        }
+    }
+    
+    
+    
+    
+    
+   
     
 }

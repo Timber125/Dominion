@@ -59,18 +59,13 @@ public class DominionService extends Service{
         // service_type=dominion, phase="draw", operation="discard_hand", repeat="1"
         // service_type=dominion, phase="draw", operation="shuffle_deck_graveyard", repeat="1"
         if(type.equals("dominion")){
-            String phase = json.getString("phase");
-            switch(phase){
-                case("action"):{
-                    actionPhase(json);
-                    return;
-                }
-                case("draw"):{
-                    drawPhase(json);
-                    return;
+            switch(json.getString("operation")){
+                case("cardoffer"):{
+                    game.processCard(json);
+                    break;
                 }
                 default:{
-                    System.out.println("Phase [" + phase + "] has not been implemented (yet?).");
+                    System.out.println("Unknown operation: [" + json.getString("operation") + "]");
                 }
             }
         }else{

@@ -6,7 +6,8 @@
 
 package Game;
 
-import Cards.Card;
+import Cards.Components.Card;
+import java.util.ArrayList;
 
 /**
  *
@@ -15,13 +16,50 @@ import Cards.Card;
 public class Player {
     protected String mySession; 
     public Deck deck;
+    public ArrayList<Card> hand = new ArrayList<>();
     public Player(String session){
         mySession = session;
         //deck = new Deck(1); // deck-protocol-1: see deck-constructor(s) for explenation. 
         deck = new Deck(0); // Standard deck (protocol-0)
     }
     public Card drawCard(){
+        Card drawn = null;
         if(deck == null) return null;
-        else return deck.getNext();
+        else {
+            drawn = deck.getNext();
+            hand.add(drawn);
+            return drawn;
+        }
+    }
+    public void discardHand(){
+        ArrayList<Card> handreplica = new ArrayList<>();
+        handreplica.addAll(hand);
+        for(Card c : handreplica){
+            deck.used.add(c);
+            hand.remove(c);
+        }
+    }
+    public boolean hasCard(String cardname){
+        for(Card c : hand){
+            if(c.name.equals(cardname)) return true;
+        }
+        return false;
+    }
+    public void playCard(Environment env, String cardname, long id){
+        // Id is unused, should be checked whether same id gets played twice
+        ArrayList<Card> nextHand = new ArrayList<>();
+        boolean extracted = false;
+        for(Card c : hand){
+            if(!extracted){
+                if(c.name.equals(cardname)){
+                    extracted = true;
+                    env.cardPlayed(c);
+                    continue;
+                }
+            }
+            nextHand.add(c);
+        }
+        hand = nextHand;
+        
     }
 }

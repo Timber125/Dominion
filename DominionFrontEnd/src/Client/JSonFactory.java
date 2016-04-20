@@ -6,6 +6,7 @@
 
 package Client;
 
+import Dominion.DynamicCard.Card;
 import javax.swing.JOptionPane;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,6 +74,14 @@ public class JSonFactory {
         obj.put("phase", phase);
         obj.put("operation", operation);
         obj.put("repeat", repeats.toString());
+        return obj;
+    }
+    public JSONObject protocol_cardClicked(Card c){
+        JSONObject obj = new JSONObject();
+        obj.put("service_type", "dominion");
+        obj.put("operation", "cardoffer");
+        obj.put("cardname", c.getName());
+        obj.put("id", c.getID().toString());
         return obj;
     }
 }

@@ -6,11 +6,8 @@
 
 package Game;
 
-import Cards.Card;
-import Cards.Copper;
-import Cards.Estate;
-import Cards.Market;
-import Cards.Village;
+import Cards.Basic.*;
+import Cards.Components.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -21,6 +18,7 @@ import java.util.Collections;
 public class Deck {
     public ArrayList<Card> content;
     public ArrayList<Card> used;
+    
     public Deck(){
         constructorCode();
     }
