@@ -90,4 +90,11 @@ public class JSonFactory {
         obj.put("operation", "endphase");
         return obj;
     }
+    public JSONObject protocol_cardBuy(String name){
+        JSONObject obj = new JSONObject();
+        obj.put("service_type", "dominion");
+        obj.put("operation","buy");
+        obj.put("cardname", name);
+        return obj;
+    }
 }

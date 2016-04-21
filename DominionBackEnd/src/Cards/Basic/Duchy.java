@@ -12,15 +12,13 @@ import Cards.Components.VictoryCard;
  *
  * @author admin
  */
-public class Estate extends VictoryCard{
+public class Duchy extends VictoryCard{
 
-    public Estate() {
-        super("estate", 2);
+    public Duchy() {
+        super("duchy", 5);
     }
-    
     @Override
     public int victorygain(){
-        return 1;
+        return 3;
     }
-    
 }

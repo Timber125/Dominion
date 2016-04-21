@@ -77,7 +77,26 @@ public class ClientControlV2 {
     @FXML
     Label CoinCount;
     
+    @FXML
+    ImageView CopperView;
+    
+    @FXML
+    ImageView SilverView;
+    
+    @FXML
+    ImageView GoldView;
+    
+    @FXML
+    ImageView EstateView;
+    
+    @FXML
+    ImageView DuchyView;
+    
+    @FXML
+    ImageView ProvinceView;
+    
     private ConnectionManager connection;
+    private ClientModelService model;
     private final String chat_alias;
     static MainV2 main;
     
@@ -209,4 +228,43 @@ public class ClientControlV2 {
         CoinCount.setText(coins + "");
     }
     
+    
+    public void initialize_treasurebuys() throws IOException{
+        CopperView.setImage(Card.loadImage("copper"));
+        SilverView.setImage(Card.loadImage("silver"));
+        GoldView.setImage(Card.loadImage("gold"));
+        
+        CopperView.setOnMouseClicked(getBuyHandle("copper", CopperView));
+        SilverView.setOnMouseClicked(getBuyHandle("silver", SilverView));
+        GoldView.setOnMouseClicked(getBuyHandle("gold", GoldView));        
+    }
+    
+    public void initialize_victorybuys() throws IOException{
+        EstateView.setImage(Card.loadImage("estate"));
+        DuchyView.setImage(Card.loadImage("duchy"));
+        ProvinceView.setImage(Card.loadImage("province"));
+        
+        EstateView.setOnMouseClicked(getBuyHandle("estate", EstateView));
+        DuchyView.setOnMouseClicked(getBuyHandle("duchy", DuchyView));
+        ProvinceView.setOnMouseClicked(getBuyHandle("province", ProvinceView));
+    }
+    
+    public EventHandler<MouseEvent> getBuyHandle(final String cardname,final ImageView me){
+        return new EventHandler<MouseEvent>(){
+
+            @Override
+            public void handle(MouseEvent t) {
+                model.cardBuy(me, cardname);
+                main.control_buy_card(cardname);
+            }
+            
+        };
+    }
+
+    public void setModel(ClientModelService modelservice) throws IOException {
+        this.model = modelservice;
+        initialize_victorybuys();
+        initialize_treasurebuys();
+        System.out.println("AAAAAAARGG\n\nAAARGH\n\nAAARGH");
+    }
 }

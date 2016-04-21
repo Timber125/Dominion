@@ -79,6 +79,7 @@ public class Engine {
     public void startRoutine(){
         // All actions that server needs to do before any user interaction
         current_turn = players.keySet().size()-1;
+        
         // Deal hands
         for(String session : players.keySet()){
             for(int i = 0; i < 5; i++) give_card_to_player_hand(session);

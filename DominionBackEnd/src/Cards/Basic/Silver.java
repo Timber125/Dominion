@@ -6,21 +6,21 @@
 
 package Cards.Basic;
 
-import Cards.Components.VictoryCard;
+import Cards.Components.TreasureCard;
 
 /**
  *
  * @author admin
  */
-public class Estate extends VictoryCard{
+public class Silver extends TreasureCard{
 
-    public Estate() {
-        super("estate", 2);
+    public Silver() {
+        super("silver", 3);
     }
     
     @Override
-    public int victorygain(){
-        return 1;
+    public int moneygain(){
+        return 2;
     }
     
 }

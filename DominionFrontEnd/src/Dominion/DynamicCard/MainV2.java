@@ -69,6 +69,7 @@ public class MainV2 extends Application{
     printerservice.setOutput(control.getDisplay());
     sessionservice.setConnectionManager(connection);
     control.setConnection(connection);
+    control.setModel(modelservice);
     System.out.println("Server started: " + connection.init_server());
     }
     
@@ -81,5 +82,9 @@ public class MainV2 extends Application{
     void control_end_phase() {
         System.out.println("You clicked EndPhase");
         connection.write(JSonFactory.JSON.protocol_endPhase());
+    }
+    public void control_buy_card(String cardname){
+        System.out.println("You clicked the stack of " + cardname + "'s.");
+        connection.write(JSonFactory.JSON.protocol_cardBuy(cardname));
     }
 }

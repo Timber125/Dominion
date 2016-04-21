@@ -62,7 +62,7 @@ public class Card {
     // Throws IOException -> Blokkeer niet als je de kaart niet vindt. 
     // Als we alle kaarten goed aanroepen, dan is het de user zijn schuld
     //      dat de kaart niet gevonden wordt -> hij heeft hem dan manueel verplaatst. 
-    private Image loadImage(String name) throws IOException {
+    public static Image loadImage(String name) throws IOException {
         Image card = new Image(ClassLoader.getSystemResource( "resources/DominionCards/" + name + ".jpg" ).openStream());
         return card;
     }
@@ -71,7 +71,7 @@ public class Card {
         De "styling" van de kaart-display kan hier aangepast worden. 
         Als je overal je imageviews maakt via deze functie, dan is de styling overal gelijk.
     */
-    private ImageView createCardDisplay(){
+    public static ImageView createCardDisplay(){
         ImageView ivi = new ImageView();
         ivi.setFitHeight(CARD_HEIGHT);
         ivi.setFitWidth(CARD_WIDTH);
@@ -88,7 +88,7 @@ public class Card {
         niet goed geinitialiseerd is. Dat zou niet mogen gebeuren. 
     
     */
-    private ImageView createCardDisplayFor(String imagename){
+    public static ImageView createCardDisplayFor(String imagename){
         Image card;
         try {
             card = loadImage(imagename);

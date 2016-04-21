@@ -20,16 +20,23 @@ public class Environment {
     public ArrayList<Card> trashpile;
     public ArrayList<Card> tablecards;
     /* Should have their own classes, extending Arraylist<T> */
-    public HashMap<Integer, ArrayList<Card>> gamecards;
-    public HashMap<Integer, ArrayList<VictoryCard>> victorycards;
-    public HashMap<Integer, ArrayList<TreasureCard>> treasurecards;
-    
+    public int[] standard_victorycard_counts = new int[3];
+    public int[] standard_treasurecard_counts = new int[3];
+    public HashMap<String, Integer> actioncards = new HashMap<>();
+     
     public Environment(int player_count){
         this.trashpile = new ArrayList<Card>();
         this.tablecards = new ArrayList<Card>();
-        this.gamecards = new HashMap<>();
-        this.victorycards = new HashMap<>();
-        this.treasurecards = new HashMap<>();
+        this.actioncards = new HashMap<>();
+        
+        if(player_count == 2){
+            standard_victorycard_counts[0] = 8;
+            standard_victorycard_counts[1] = 8;
+            standard_victorycard_counts[2] = 8;
+            standard_treasurecard_counts[0] = 60;
+            standard_treasurecard_counts[1] = 50;
+            standard_treasurecard_counts[2] = 40;
+        }
     }
 
     public void cardPlayed(Card c){

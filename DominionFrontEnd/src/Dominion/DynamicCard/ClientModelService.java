@@ -11,6 +11,7 @@ import Client.ServiceModel;
 import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import org.json.JSONObject;
 
@@ -207,6 +208,11 @@ public class ClientModelService extends ServiceModel{
     }
     
     
+    
+    public void cardBuy(ImageView iv, String cardname){
+        // Logic?
+    }
+
     
     
     
