@@ -7,6 +7,8 @@
 package Dominion.DynamicCard;
 
 import java.io.IOException;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.event.EventHandler;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
@@ -17,7 +19,7 @@ import javafx.scene.input.MouseEvent;
  *
  * @author admin
  */
-public class Card {
+public class Card{
     // Static id-counter
     static Long nextID = 0L;
     
@@ -27,11 +29,13 @@ public class Card {
     private final long id;
     private final String name;
     private ImageView iv;
-    public Card(String name){
+    private ClientControlV2 control;
+    public Card(String name, ClientControlV2 incontrol){
         this.name = name;
         this.id = nextID++; // oneliner to make it synchronized in bytecode
         this.iv = createCardDisplayFor(name);
         makeUnclickable();
+        control = incontrol;
     }
     
     public String getName(){
@@ -49,7 +53,7 @@ public class Card {
     public void makeClickable(){
         Glow glow = new Glow(1.0);
         iv.setEffect(glow);
-        iv.setOnMouseClicked(ClientControlV2.enableClick(this));
+        iv.setOnMouseClicked(control.enableClick(this));
     }
     
     public void makeUnclickable(){
@@ -115,6 +119,8 @@ public class Card {
         ivi.setImage(card);
         return ivi;
     }
+
+    
    
     
     

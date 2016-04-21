@@ -49,7 +49,7 @@ public class ClientModelService extends ServiceModel{
         switch(action){
             case("gain"):{
                 String cardname = obj.getString("gain");
-                final Card c = new Card(cardname);
+                final Card c = new Card(cardname, controller);
                 currentHand.add(c);
                 Platform.runLater(new Runnable(){
                     @Override

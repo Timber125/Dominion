@@ -14,6 +14,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -34,7 +36,7 @@ import javafx.util.Pair;
  *
  * @author admin
  */
-public class ClientControlV2 {
+public class ClientControlV2{
     
     
     
@@ -51,7 +53,7 @@ public class ClientControlV2 {
     Button ChatButton;
     
     @FXML
-    static TextArea ChatArea;
+    TextArea ChatArea;
     
     @FXML
     TextField ChatText;
@@ -97,8 +99,8 @@ public class ClientControlV2 {
     
     private ConnectionManager connection;
     private ClientModelService model;
-    private final String chat_alias;
-    static MainV2 main;
+    private String chat_alias;
+    private MainV2 main;
     
     public ClientControlV2(String chat_alias, MainV2 main){
         this.chat_alias = chat_alias;
@@ -200,7 +202,7 @@ public class ClientControlV2 {
         HandCardPane.setPrefHeight(Card.CARD_HEIGHT + 2);
     }
     
-    public static EventHandler<MouseEvent> enableClick(final Card c){
+    public EventHandler<MouseEvent> enableClick(final Card c){
         return new EventHandler<MouseEvent>(){
 
             @Override
@@ -210,13 +212,15 @@ public class ClientControlV2 {
             
         };
     }
-    
-    public static EventHandler<MouseEvent> disableClick(final Card c){
+    public void appendTextToDisplay(String text){
+        ChatArea.appendText(text);
+    }
+    public EventHandler<MouseEvent> disableClick(final Card c){
         return new EventHandler<MouseEvent>(){
 
             @Override
             public void handle(MouseEvent t) {
-                ChatArea.appendText("You cannot play this card right now! [" + c.getName() + "]\n");
+                appendTextToDisplay("You cannot play this card right now! [" + c.getName() + "]\n");
             }
             
         };
@@ -267,4 +271,5 @@ public class ClientControlV2 {
         initialize_treasurebuys();
         System.out.println("AAAAAAARGG\n\nAAARGH\n\nAAARGH");
     }
+
 }
