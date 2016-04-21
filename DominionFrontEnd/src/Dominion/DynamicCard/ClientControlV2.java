@@ -38,8 +38,6 @@ import javafx.util.Pair;
  */
 public class ClientControlV2{
     
-    
-    
     @FXML
     Pane DominionPane;
     
