@@ -17,10 +17,11 @@ import javafx.stage.Stage;
 public class Test extends Application{
     
     MVCManager manager;
-    
+    /*
     public static void main(String[] args){
         System.out.println("Should not start from command line.");
     }
+*/
 
     @Override
     public void start(Stage stage) throws Exception {

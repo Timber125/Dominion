@@ -68,10 +68,11 @@ public class JSONUtilities {
         json = addKeyValuePair("gain", cardname, json);
         return json;
     }
-    public JSONObject make_client_lose(String cardname){
+    public JSONObject make_client_lose(String cardname, String id){
         JSONObject json = create("action", "dominion");
         json = addKeyValuePair("act", "lose", json);
         json = addKeyValuePair("lose", cardname, json);
+        json = addKeyValuePair("loseID", id, json);
         return json;
     }
     public JSONObject make_client_turninfo(int actions, int purchases, int money){

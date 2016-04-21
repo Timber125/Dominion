@@ -69,7 +69,7 @@ public class MainV2 extends Application{
     printerservice.setOutput(control.getDisplay());
     sessionservice.setConnectionManager(connection);
     control.setConnection(connection);
-    control.setModel(modelservice);
+    try{control.setModel(modelservice);} catch (IOException e){System.err.println("IOException");}
     System.out.println("Server started: " + connection.init_server());
     }
     

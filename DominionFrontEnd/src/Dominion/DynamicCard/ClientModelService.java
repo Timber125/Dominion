@@ -63,6 +63,7 @@ public class ClientModelService extends ServiceModel{
             }
             case("lose"):{
                 final String cardname = obj.getString("lose");
+                final Long id = Long.valueOf(obj.getString("loseID"));
                 // Current implementation: Lose the first card with the same cardname. 
                 // Later implemantation: Lose the exact card that you selected
                 //                  You can verify this by checking the ID of the clicked card
@@ -84,7 +85,7 @@ public class ClientModelService extends ServiceModel{
                 boolean extracted = false;
                 for(Card c : currentHand){
                     if(!extracted){
-                        if(c.getName().equals(cardname)){
+                        if(c.getName().equals(cardname) && c.getID() == id){
                             extracted = true;
                             continue;
                         }

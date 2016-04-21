@@ -206,7 +206,7 @@ public class Engine {
     private void flushHand(String session){
         
         Player p = players.get(session);
-        server.getClient(session).write(JSONUtilities.JSON.make_client_lose("all"));
+        server.getClient(session).write(JSONUtilities.JSON.make_client_lose("all", new Long(0).toString()));
         p.discardHand();
         JSONObject obj = JSONUtilities.JSON.make_client_print("You discard your hand.");
         for(int i = 0; i < 5;i++) give_card_to_player_hand(session);
@@ -260,7 +260,7 @@ public class Engine {
                 
                 server.sendAll(JSONUtilities.JSON.make_client_turninfo(actions, purchases, money));
                 server.sendAll(JSONUtilities.JSON.make_client_print("*" + server.getNickname(json.getString("session")) + " played " + cardname));
-                server.sendOne(JSONUtilities.JSON.make_client_lose(cardname), json.getString("session"));
+                server.sendOne(JSONUtilities.JSON.make_client_lose(cardname, json.getString("id")), json.getString("session"));
                 
             }
         }
