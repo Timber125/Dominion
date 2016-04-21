@@ -66,6 +66,11 @@ public class DominionService extends Service{
                 }
                 case("endphase"):{
                     game.nextPhase(json.getString("session"));
+                    break;
+                }
+                case("buy"):{
+                    game.processBuyRequest(json);
+                    break;
                 }
                 default:{
                     System.out.println("Unknown operation: [" + json.getString("operation") + "]");

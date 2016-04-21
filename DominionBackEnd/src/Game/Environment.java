@@ -6,9 +6,8 @@
 
 package Game;
 
+import Cards.Basic.*;
 import Cards.Components.Card;
-import Cards.Components.TreasureCard;
-import Cards.Components.VictoryCard;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -20,24 +19,67 @@ public class Environment {
     public ArrayList<Card> trashpile;
     public ArrayList<Card> tablecards;
     /* Should have their own classes, extending Arraylist<T> */
-    public int[] standard_victorycard_counts = new int[3];
-    public int[] standard_treasurecard_counts = new int[3];
-    public HashMap<String, Integer> actioncards = new HashMap<>();
-     
+    public HashMap<String, ArrayList<Card>> environment_library = new HashMap<>();
+    
     public Environment(int player_count){
         this.trashpile = new ArrayList<Card>();
         this.tablecards = new ArrayList<Card>();
-        this.actioncards = new HashMap<>();
-        
+        ArrayList<Card> estates = new ArrayList<>();
+        ArrayList<Card> duchys = new ArrayList<>();
+        ArrayList<Card> provinces = new ArrayList<>();
+        ArrayList<Card> coppers = new ArrayList<>();
+        ArrayList<Card> silvers = new ArrayList<>();
+        ArrayList<Card> golds = new ArrayList<>();
         if(player_count == 2){
-            standard_victorycard_counts[0] = 8;
-            standard_victorycard_counts[1] = 8;
-            standard_victorycard_counts[2] = 8;
-            standard_treasurecard_counts[0] = 60;
-            standard_treasurecard_counts[1] = 50;
-            standard_treasurecard_counts[2] = 40;
+            for(int i = 0; i < 8; i++){
+                estates.add(new Estate());
+                duchys.add(new Duchy());
+                provinces.add(new Province());
+            }
+            for(int i = 0; i < 40; i++){
+                coppers.add(new Copper());
+                silvers.add(new Silver());
+                golds.add(new Gold());
+            }
+            for(int i = 0; i < 10; i++){
+                coppers.add(new Copper());
+                silvers.add(new Silver());
+            }
+            for(int i = 0; i < 10; i++){
+                coppers.add(new Copper());
+            }
+            
+            environment_library = new HashMap<>();
+            environment_library.put("copper", coppers);
+            environment_library.put("silver", silvers);
+            environment_library.put("gold", golds);
+            environment_library.put("estate", estates);
+            environment_library.put("duchy", duchys);
+            environment_library.put("province", provinces);
+            
+        }else{
+            System.err.println("3 PLAYERS OR MORE NOT IMPLEMENTED IN ENVIRONMENT!");
         }
     }
+    public int environment_amountcheck(String name){
+        return environment_library.get(name).size();
+    }
+    public int environment_pricecheck(String name){
+        ArrayList<Card> cardstack = environment_library.get(name);
+        if(cardstack.isEmpty()) return -1;
+        else return cardstack.get(0).cost;
+    }
+    public Card environment_buy(String name){
+        ArrayList<Card> cardstack = environment_library.get(name);
+        if(cardstack.isEmpty()) return null;
+        else{
+            Card drawn = cardstack.get(0);
+            cardstack.remove(0);
+            environment_library.put(name, cardstack);
+            return drawn;
+        }
+    }
+    
 
     public void cardPlayed(Card c){
         tablecards.add(c);

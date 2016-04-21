@@ -10,9 +10,7 @@ import Client.JSonFactory;
 import Client.ServiceModel;
 import java.util.ArrayList;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import org.json.JSONObject;
 
 /**
@@ -35,9 +33,9 @@ public class ClientModelService extends ServiceModel{
         keywordprototype.add("dominion");
     }
     
-    private ClientControlV2 controller;
+    private final ClientControlV2 controller;
     
-    protected ArrayList<Card> currentHand = new ArrayList<Card>();
+    protected ArrayList<Card> currentHand = new ArrayList<>();
     
     public ClientModelService(ClientControlV2 controller) {
         super(keywordprototype);
@@ -85,7 +83,7 @@ public class ClientModelService extends ServiceModel{
                 boolean extracted = false;
                 for(Card c : currentHand){
                     if(!extracted){
-                        if(c.getName().equals(cardname) && c.getID() == id){
+                        if(c.getName().equals(cardname) && c.getID().equals(id)){
                             extracted = true;
                             continue;
                         }

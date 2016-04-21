@@ -229,7 +229,7 @@ public class Engine {
      * 
      * *******************/
    
-    public boolean isCardFromCurrentTurnPlayer(JSONObject json){
+    public boolean isRequestFromCurrentTurnPlayer(JSONObject json){
         String clientsession = json.getString("session");
         String currentsession = playerOrder.get(current_turn);
         return clientsession.equals(currentsession);
@@ -244,7 +244,7 @@ public class Engine {
     }
     
     public void processCard(JSONObject json) {
-        if(isCardFromCurrentTurnPlayer(json)){
+        if(isRequestFromCurrentTurnPlayer(json)){
             Player p = getPlayerWhoSent(json);
             String cardname = json.getString("cardname");
             if(doesPlayerHaveCardInHand(p, json.getString("cardname"))){
@@ -265,7 +265,33 @@ public class Engine {
             }
         }
     }
-
+    public void processBuyRequest(JSONObject json){
+        String sess = json.getString("session");
+        String card = json.getString("cardname");
+        Player p = getPlayerWhoSent(json);
+        if(current_phase != 2){
+            server.getClient(sess).write(JSONUtilities.JSON.make_client_print("You can only buy in the buy-phase!"));
+        }else if(!isRequestFromCurrentTurnPlayer(json)){
+            server.getClient(sess).write(JSONUtilities.JSON.make_client_print("You can only buy during your own turn!"));
+        }else{
+            int price = env.environment_pricecheck(card);
+            if((money >= price) && (purchases >= 1)){
+                money -= price;
+                purchases -= 1;
+                p.deck.used.add(env.environment_buy(card));
+                // Update turn info to all players
+                // Update environment cardcounts to all players
+                // Update message player bought this card to all players
+                server.sendAll(JSONUtilities.JSON.make_client_turninfo(actions, purchases, money));
+                server.sendAll(JSONUtilities.JSON.make_client_update_environment(card, env.environment_amountcheck(card)));
+                server.sendAll(JSONUtilities.JSON.make_client_print("*" + server.getNickname(sess) + " bought " + card + "."));
+                server.sendAll(JSONUtilities.JSON.make_client_print("there are " + env.environment_amountcheck(card) + " " + card + "'s" + " left on the table."));
+            }
+            if(purchases <= 0){
+                endTurn();
+            }
+        }
+    }
     public void nextPhase(String session) {
         if(!session.equals(playerOrder.get(current_turn))){
             System.err.println("Intercepted malicious nextPhase package from client " + server.getNickname(session) +".");

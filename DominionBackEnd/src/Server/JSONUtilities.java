@@ -126,4 +126,13 @@ public class JSONUtilities {
         json = addKeyValuePair("control", "unclickable", json);
         return json;
     }
+    public JSONObject make_client_update_environment(String stack_identifier, Integer new_count){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control", json);
+        json = addKeyValuePair("subject", "environment", json);
+        json = addKeyValuePair("control", "updatecount", json);
+        json = addKeyValuePair("stack", stack_identifier, json);
+        json = addKeyValuePair("update", new_count.toString(), json);
+        return json;
+    }
 }

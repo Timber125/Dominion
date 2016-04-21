@@ -14,8 +14,8 @@ import Cards.Components.VictoryCard;
  */
 public class Province extends VictoryCard{
 
-    public Province(String name, int cost) {
-        super(name, cost);
+    public Province() {
+        super("province", 8);
     }
     
     @Override
