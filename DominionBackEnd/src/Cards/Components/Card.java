@@ -24,6 +24,13 @@ public abstract class Card {
         this.actions = new ArrayList<>();
         this.init_standard_actions();
     }
+    
+    public int getCost(){
+        return cost;
+    }
+    public String getName(){
+        return name;
+    }
 
     // Standard actions of this will be nothing, but an Action Card-standard action 
     // would be something like 'Player who plays this card -> actions = actions - 1 ' 
@@ -42,6 +49,9 @@ public abstract class Card {
         return 0;
     }
     public int victorygain(){
+        return 0;
+    }
+    public int cardgain(){
         return 0;
     }
 }

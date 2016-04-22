@@ -86,9 +86,10 @@
             </Label>
             <Label font="$x1" layoutX="14.0" layoutY="297.0" text="Buys:" textFill="$x2" />
             <Label font="$x1" layoutX="14.0" layoutY="328.0" text="Coins:" textFill="$x2" />
-            <Label id="ActionCount" font="$x1" layoutX="107.0" layoutY="267.0" prefWidth="28.0" text="0" textFill="$x2" />
-            <Label id="BuyCount" font="$x1" layoutX="107.0" layoutY="297.0" prefWidth="28.0" text="0" textFill="$x2" />
-            <Label id="CoinCount" font="$x1" layoutX="107.0" layoutY="328.0" prefWidth="28.0" text="0" textFill="$x2" />
+            <Label fx:id="ActionCount" font="$x1" layoutX="107.0" layoutY="267.0" prefWidth="28.0" text="0" textFill="$x2" />
+            <Label fx:id="BuyCount" font="$x1" layoutX="107.0" layoutY="297.0" prefWidth="28.0" text="0" textFill="$x2" />
+            <Label fx:id="CoinCount" font="$x1" layoutX="107.0" layoutY="328.0" prefWidth="28.0" text="0" textFill="$x2" />
+            <Pane fx:id="EnvironmentPane" layoutX="14.0" layoutY="107.0" prefHeight="150.0" prefWidth="950.0" />
           </children>
         </Pane>
       </children>

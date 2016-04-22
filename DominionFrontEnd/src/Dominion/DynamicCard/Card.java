@@ -26,6 +26,9 @@ public class Card{
     public static int CARD_WIDTH = 150;
     public static int CARD_HEIGHT = 200;
     
+    public static int CARD_MEDIUM_WIDTH = 90;
+    public static int CARD_MEDIUM_HEIGHT = 120;
+    
     private final long id;
     private final String name;
     private ImageView iv;
@@ -37,7 +40,21 @@ public class Card{
         makeUnclickable();
         control = incontrol;
     }
-    
+    public Card(String name, ClientControlV2 incontrol, String size_identifier){
+        this.name = name;
+        this.id = nextID++; // oneliner to make it synchronized in bytecode
+        switch(size_identifier){
+            case("MEDIUM"):{
+                this.iv = createMediumCardDisplayFor(name);
+                break;
+            }
+            default:{
+                this.iv = createCardDisplayFor(name);
+            }
+        }
+        makeUnclickable();
+        control = incontrol;
+    }
     public String getName(){
         return name;
     }
@@ -82,6 +99,13 @@ public class Card{
         return ivi;
     }
     
+    public static ImageView createMediumCardDisplay(){
+        ImageView ivi = new ImageView();
+        ivi.setFitHeight(CARD_MEDIUM_HEIGHT);
+        ivi.setFitWidth(CARD_MEDIUM_WIDTH);
+        return ivi;
+    }
+    
     /*
         
         Creëert een imageview aan de hand van de functie hierboven, met opgegeven kaart-naam. 
@@ -92,7 +116,36 @@ public class Card{
         niet goed geinitialiseerd is. Dat zou niet mogen gebeuren. 
     
     */
+    
+    public static ImageView createMediumCardDisplayFor(String imagename){
+        Image card;
+        try {
+            card = loadImage(imagename);
+        } catch (IOException ex) {
+            System.err.println("[-] error loading " + imagename + ".jpg !");
+            try {
+                card = loadImage("back");
+            } catch (IOException ex2){
+                System.err.println("[-][-] Resources folder not initialized correctly!");
+                // Return an empty imageview with the right size, so layout is not 'fucked'. 
+                return createMediumCardDisplay();
+            }
+        } catch (NullPointerException typoerror){
+            System.err.println("[-] " + imagename + " is a typo, or not available in the resources folder.");
+            try {
+                card = loadImage("back");
+            } catch (IOException ex2){
+                System.err.println("[-][-] Resources folder not initialized correctly!");
+                // Return an empty imageview with the right size, so layout is not 'fucked'. 
+                return createMediumCardDisplay();
+            }
+        }
+        ImageView ivi = createMediumCardDisplay();
+        ivi.setImage(card);
+        return ivi;
+    }
     public static ImageView createCardDisplayFor(String imagename){
+        
         Image card;
         try {
             card = loadImage(imagename);

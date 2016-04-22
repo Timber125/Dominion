@@ -9,6 +9,7 @@ package Game;
 import Cards.Components.ActionCard;
 import Cards.Components.Card;
 import Server.JSONUtilities;
+import Server.RTIUtilities;
 import Server.Server;
 import Server.Service.DominionService;
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ public class Engine {
     
     /* Accessible */
     protected ArrayList<String> operations_allowed;
+    
+   
     
     /* Frontend simulative variables */
     private int current_turn = 0;
@@ -78,6 +81,15 @@ public class Engine {
     
     public void startRoutine(){
         // All actions that server needs to do before any user interaction
+        
+        // First send the chosen actioncards to all players
+        
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("market", "market", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("village", "village", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("woodcutter", "woodcutter", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("laboratory", "laboratory", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("smithy", "smithy", 10));
+        
         current_turn = players.keySet().size()-1;
         
         // Deal hands
@@ -135,7 +147,16 @@ public class Engine {
         
         enterActionPhase();
     }
-    
+    private void highlight_actions(Player p){
+        Set<String> actioncardnames = new HashSet<>();
+        for(Card c : p.hand){
+            if(c instanceof ActionCard){
+                actioncardnames.add(c.name);
+            }
+        }
+        JSONObject obj = JSONUtilities.JSON.make_client_hand_valid(actioncardnames);
+        server.getClient(p.mySession).write(obj);
+    }
     private void enterActionPhase(){
         current_phase = 1;
         String sess = getCurrentPlayerSession();
@@ -249,18 +270,39 @@ public class Engine {
             String cardname = json.getString("cardname");
             if(doesPlayerHaveCardInHand(p, json.getString("cardname"))){
                 Card c = p.playCard(env, cardname, Long.parseLong(json.getString("id")));
-                if(c instanceof ActionCard) actions --;
-                if(actions < 0) {
-                    System.err.println("Action card cannot be played -> need more actions!");
-                    return;
+                
+                if(c instanceof ActionCard){
+                    actions --;
+                    if(actions < 0) {
+                        System.err.println("Action card cannot be played -> need more actions!");
+                        actions ++;
+                        return;
+                    }
+                    if(current_phase != 1){
+                        System.err.println("Action card cannot be played -> not actionphase!");
+                        actions ++;
+                        return;
+                    }
                 }
+                server.sendOne(JSONUtilities.JSON.make_client_lose(cardname, json.getString("id")), json.getString("session"));
+
                 money += c.moneygain();
                 actions += c.actiongain();
                 purchases += c.actiongain();
-                
+                int cardsgain = c.cardgain();
+                for(int i = 0; i < cardsgain; i++){
+                    give_card_to_player_hand(p.mySession);
+                }
                 server.sendAll(JSONUtilities.JSON.make_client_turninfo(actions, purchases, money));
                 server.sendAll(JSONUtilities.JSON.make_client_print("*" + server.getNickname(json.getString("session")) + " played " + cardname));
-                server.sendOne(JSONUtilities.JSON.make_client_lose(cardname, json.getString("id")), json.getString("session"));
+                if(current_phase == 1){
+                    boolean hasActions = p.hasActionCard();
+                    if(hasActions && (cardsgain > 0)){
+                         highlight_actions(p);
+                    }
+                    if(!hasActions) enterBuyPhase();
+                }
+                
                 
             }
         }

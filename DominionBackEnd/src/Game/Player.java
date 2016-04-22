@@ -6,6 +6,7 @@
 
 package Game;
 
+import Cards.Components.ActionCard;
 import Cards.Components.Card;
 import java.util.ArrayList;
 
@@ -63,5 +64,12 @@ public class Player {
         }
         hand = nextHand;
         return played;
+    }
+
+    public boolean hasActionCard() {
+        for(Card c : hand){
+            if(c instanceof ActionCard) return true;
+        }
+        return false;
     }
 }

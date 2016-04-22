@@ -8,6 +8,7 @@ package Game;
 
 import Cards.Basic.*;
 import Cards.Components.Card;
+import Server.RTIUtilities;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -16,8 +17,13 @@ import java.util.HashMap;
  * @author admin
  */
 public class Environment {
+     /* RTI Utilities, should only be used in engine */
+    final private RTIUtilities RTI = new RTIUtilities();
+    
+    
     public ArrayList<Card> trashpile;
     public ArrayList<Card> tablecards;
+    
     /* Should have their own classes, extending Arraylist<T> */
     public HashMap<String, ArrayList<Card>> environment_library = new HashMap<>();
     
@@ -56,6 +62,41 @@ public class Environment {
             environment_library.put("estate", estates);
             environment_library.put("duchy", duchys);
             environment_library.put("province", provinces);
+            
+            /*
+                We have no other actioncards but these, so we kinda force environment 
+                without further specifications to use these.
+            
+                add actioncards by: increasing num_actioncards, and adding the name of the 
+                card to the actions[] array. 
+            
+            */
+            int num_cards_per_stack = 10;
+            int num_actioncards = 5;
+            String[] actions = new String[num_actioncards];
+            actions[0] = "market";
+            actions[1] = "village";
+            actions[2] = "smithy";
+            actions[3] = "laboratory";
+            actions[4] = "woodcutter";
+            
+            // Auto-setup
+            
+            ArrayList<Card>[] actioncards = new ArrayList[num_actioncards];
+            for(int i = 0; i < num_actioncards; i++){
+                actioncards[i] = new ArrayList<>();
+            }
+            
+            for(int i = 0; i < num_cards_per_stack; i ++){
+                for(int j = 0; j < num_actioncards; j++){
+                    actioncards[j].add(RTI.getCardByName(actions[j]));
+                }
+            }
+            
+            for(int i = 0; i < num_actioncards; i++){
+                environment_library.put(actions[i], actioncards[i]);
+            }
+            
             
         }else{
             System.err.println("3 PLAYERS OR MORE NOT IMPLEMENTED IN ENVIRONMENT!");

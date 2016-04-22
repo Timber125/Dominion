@@ -12,21 +12,19 @@ import Cards.Components.ActionCard;
  *
  * @author admin
  */
-public class Village extends ActionCard{
+public class Woodcutter extends ActionCard{
 
-    /*
-        Dont make cards like this, village is just to test!
-    */
-    public Village() {
-        super("village", 3);
+    public Woodcutter() {
+        super("woodcutter", 3);
     }
     
     @Override
-    public int cardgain(){
+    public int purchasegain(){
         return 1;
     }
+    
     @Override
-    public int actiongain(){
+    public int moneygain(){
         return 2;
     }
     

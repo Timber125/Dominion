@@ -135,4 +135,14 @@ public class JSONUtilities {
         json = addKeyValuePair("update", new_count.toString(), json);
         return json;
     }
+    public JSONObject make_client_initialize_environment(String stack_identifier, String cardname, Integer count){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control", json);
+        json = addKeyValuePair("subject", "environment", json);
+        json = addKeyValuePair("control", "init", json);
+        json = addKeyValuePair("stack", stack_identifier, json);
+        json = addKeyValuePair("update", count.toString(), json);
+        json = addKeyValuePair("identifier", cardname, json);
+        return json;
+    }
 }

@@ -95,6 +95,9 @@ public class ClientControlV2{
     @FXML
     ImageView ProvinceView;
     
+    @FXML
+    Pane EnvironmentPane;
+    
     private ConnectionManager connection;
     private ClientModelService model;
     private String chat_alias;
@@ -267,7 +270,22 @@ public class ClientControlV2{
         this.model = modelservice;
         initialize_victorybuys();
         initialize_treasurebuys();
-        System.out.println("AAAAAAARGG\n\nAAARGH\n\nAAARGH");
     }
 
+   
+    
+    /**************************
+     * 
+     * Environment variables
+     * 
+     **************************/
+    public void initializeActionStack(Card actionstack){
+        this.EnvironmentPane.getChildren().add(actionstack.getView());
+        actionstack.getView().relocate(action_cards_initialized * (Card.CARD_MEDIUM_WIDTH + 5),15);
+        action_cards_initialized ++;
+        actionstack.getView().setOnMouseClicked(getBuyHandle(actionstack.getName(), actionstack.getView()));
+    }
+    
+    public int action_cards_initialized = 0;
+    
 }

@@ -18,4 +18,23 @@ public class Market extends ActionCard{
         super("market", 5);
     }
     
+    @Override
+    public int cardgain(){
+        return 1;
+    }
+    
+    @Override
+    public int actiongain(){
+        return 1;
+    }
+    
+    @Override
+    public int purchasegain(){
+        return 1;
+    }
+    
+    @Override 
+    public int moneygain(){
+        return 1;
+    }
 }

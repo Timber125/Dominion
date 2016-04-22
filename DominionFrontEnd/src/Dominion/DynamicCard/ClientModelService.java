@@ -185,6 +185,33 @@ public class ClientModelService extends ServiceModel{
             case("phase"):{
                 String control = obj.getString("control");
                 controller.EndPhase.setDisable(control.equals("unclickable"));
+                break;
+            }
+            case("environment"):{
+                String control = obj.getString("control");
+                switch(control){
+                    case("init"):{
+                        // Initialize actioncards in environment
+                        // Does not make use of "count" yet -> TODO!
+                        final Card actionStack = new Card(obj.getString("stack"), controller, "MEDIUM");
+                        Platform.runLater(new Runnable(){
+
+                            @Override
+                            public void run() {
+                                controller.initializeActionStack(actionStack);
+                            }
+                        
+                        });
+                        
+                    
+                        break;
+                    }
+                    case("updatecount"):{
+                        // Update count of environment cardstacks
+                        break;
+                    }
+                }
+                break;
             }
             default:{
                 System.err.println("Subject [" + subject +"] not implemented");
