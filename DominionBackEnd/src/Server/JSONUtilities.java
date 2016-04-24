@@ -6,6 +6,7 @@
 
 package Server;
 
+import Cards.Components.Card;
 import java.util.ArrayList;
 import java.util.Set;
 import org.json.*;
@@ -143,6 +144,37 @@ public class JSONUtilities {
         json = addKeyValuePair("stack", stack_identifier, json);
         json = addKeyValuePair("update", count.toString(), json);
         json = addKeyValuePair("identifier", cardname, json);
+        return json;
+    }
+    public JSONObject make_client_environment_valid(Set<Card> cards){
+        String items = "";
+        for(Card c : cards){
+            items += "," + c.getName();
+        }
+        items = items.substring(1);
+        
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control" ,json);
+        json = addKeyValuePair("subject", "environment", json);
+        json = addKeyValuePair("items", items, json);
+        json = addKeyValuePair("control", "clickable", json);
+        return json;
+    }
+    public JSONObject make_client_environment_invalid(){
+        String items = "all";
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control", json);
+        json = addKeyValuePair("subject", "environment", json);
+        json = addKeyValuePair("items", items, json);
+        json = addKeyValuePair("control", "unclickable", json);
+        return json;
+    }
+    public JSONObject make_client_environment_valid(String items){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control" ,json);
+        json = addKeyValuePair("subject", "environment", json);
+        json = addKeyValuePair("items", items, json);
+        json = addKeyValuePair("control", "clickable", json);
         return json;
     }
 }

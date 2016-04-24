@@ -196,6 +196,7 @@ public class Engine {
         treasurecardnames.add("gold");
         server.getClient(sess).write(JSONUtilities.JSON.make_client_hand_valid(treasurecardnames));
         server.getClient(sess).write(JSONUtilities.JSON.make_client_nextphase_possible());
+        server.getClient(sess).write(JSONUtilities.JSON.make_client_environment_valid(env.getAllBuyables(money)));
     }
     private void endTurn(){
         current_phase = 3;
@@ -301,6 +302,8 @@ public class Engine {
                          highlight_actions(p);
                     }
                     if(!hasActions) enterBuyPhase();
+                }else if(current_phase == 2){
+                    refreshBuyPhase();
                 }
                 
                 
@@ -331,6 +334,8 @@ public class Engine {
             }
             if(purchases <= 0){
                 endTurn();
+            }else{
+                refreshBuyPhase();
             }
         }
     }
@@ -345,6 +350,10 @@ public class Engine {
         else if(current_phase == 2){
             endTurn();
         }
+    }
+
+    private void refreshBuyPhase() {
+        server.getClient(playerOrder.get(current_turn)).write(JSONUtilities.JSON.make_client_environment_valid(env.getAllBuyables(money)));
     }
     
     

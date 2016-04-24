@@ -252,6 +252,8 @@ public class ClientControlV2{
         EstateView.setOnMouseClicked(getBuyHandle("estate", EstateView));
         DuchyView.setOnMouseClicked(getBuyHandle("duchy", DuchyView));
         ProvinceView.setOnMouseClicked(getBuyHandle("province", ProvinceView));
+        
+
     }
     
     public EventHandler<MouseEvent> getBuyHandle(final String cardname,final ImageView me){
@@ -270,6 +272,8 @@ public class ClientControlV2{
         this.model = modelservice;
         initialize_victorybuys();
         initialize_treasurebuys();
+        // Initialize victories and treasures just like action environment! 
+        // TODO
     }
 
    

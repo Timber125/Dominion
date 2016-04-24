@@ -130,4 +130,13 @@ public class Environment {
         // Not implemented yet: 
             // Purpose = create a game with specified action-cards to buy. 
     }
+    public String getAllBuyables(int maxmoney){
+        String s = "";
+        for(String key : environment_library.keySet()){
+            int c = environment_library.get(key).get(0).getCost();
+            if(maxmoney >= c) s += "," + environment_library.get(key).get(0).getName();
+        }
+        if(s.length() > 1) return s.substring(1);
+        else return "";
+    }
 }

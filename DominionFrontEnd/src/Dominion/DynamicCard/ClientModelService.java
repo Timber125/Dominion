@@ -9,6 +9,7 @@ package Dominion.DynamicCard;
 import Client.JSonFactory;
 import Client.ServiceModel;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import org.json.JSONObject;
@@ -36,7 +37,7 @@ public class ClientModelService extends ServiceModel{
     private final ClientControlV2 controller;
     
     protected ArrayList<Card> currentHand = new ArrayList<>();
-    
+    protected HashMap<String, Card> environment = new HashMap<>();
     public ClientModelService(ClientControlV2 controller) {
         super(keywordprototype);
         this.controller = controller;
@@ -194,6 +195,7 @@ public class ClientModelService extends ServiceModel{
                         // Initialize actioncards in environment
                         // Does not make use of "count" yet -> TODO!
                         final Card actionStack = new Card(obj.getString("stack"), controller, "MEDIUM");
+                        environment.put(obj.getString("stack"), actionStack);
                         Platform.runLater(new Runnable(){
 
                             @Override
@@ -208,6 +210,24 @@ public class ClientModelService extends ServiceModel{
                     }
                     case("updatecount"):{
                         // Update count of environment cardstacks
+                        break;
+                    }
+                    case("clickable"):{
+                        String names = obj.getString("items");
+                        String[] namelist = names.split(",");
+                        for(String cardname : namelist){
+                            environment.get(cardname).makeClickable();
+                        }
+                        break;
+                    }
+                    case("unclickable"):{
+                        if(obj.getString("items").equals("all")){
+                            for(String s : environment.keySet()){
+                                environment.get(s).makeUnclickable();
+                            }
+                        }else{
+                            System.err.println("NOT IMPLEMENTED YET -> unclickable environment specified cards");
+                        }
                         break;
                     }
                 }
