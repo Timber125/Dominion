@@ -76,6 +76,9 @@ public class ClientControlV2{
     
     @FXML
     Label CoinCount;
+    /*
+    
+    Replaced by dynamic cards. 
     
     @FXML
     ImageView CopperView;
@@ -94,9 +97,16 @@ public class ClientControlV2{
     
     @FXML
     ImageView ProvinceView;
-    
+    */
     @FXML
     Pane EnvironmentPane;
+    
+    @FXML
+    Pane TreasurePane;
+    
+    @FXML
+    Pane VictoryPane;
+    
     
     private ConnectionManager connection;
     private ClientModelService model;
@@ -233,7 +243,7 @@ public class ClientControlV2{
         CoinCount.setText(coins + "");
     }
     
-    
+    /*
     public void initialize_treasurebuys() throws IOException{
         CopperView.setImage(Card.loadImage("copper"));
         SilverView.setImage(Card.loadImage("silver"));
@@ -255,7 +265,7 @@ public class ClientControlV2{
         
 
     }
-    
+    */
     public EventHandler<MouseEvent> getBuyHandle(final String cardname,final ImageView me){
         return new EventHandler<MouseEvent>(){
 
@@ -270,8 +280,8 @@ public class ClientControlV2{
 
     public void setModel(ClientModelService modelservice) throws IOException {
         this.model = modelservice;
-        initialize_victorybuys();
-        initialize_treasurebuys();
+        //initialize_victorybuys();
+        //initialize_treasurebuys();
         // Initialize victories and treasures just like action environment! 
         // TODO
     }
@@ -290,6 +300,71 @@ public class ClientControlV2{
         actionstack.getView().setOnMouseClicked(getBuyHandle(actionstack.getName(), actionstack.getView()));
     }
     
+    public void initializeTreasureStack(){
+        initializeGold();
+        initializeSilver();
+        initializeCopper();
+    }
+    public void initializeVictoryStack(){
+        initializeProvince();
+        initializeDuchy();
+        initializeEstate();
+    }
+    
     public int action_cards_initialized = 0;
+
+    private void initializeGold() {
+        int offsetX = 0;
+        int offsetY = 0;
+        Card c = model.environment.get("gold");
+        TreasurePane.getChildren().add(c.getView());
+        c.getView().relocate(offsetX, offsetY);
+        c.getView().setOnMouseClicked(getBuyHandle("gold", c.getView()));
+    }
+
+    private void initializeSilver() {
+        int offsetX = 0;
+        int offsetY = Card.CARD_HEIGHT;
+        Card c = model.environment.get("silver");
+        TreasurePane.getChildren().add(c.getView());
+        c.getView().relocate(offsetX, offsetY);
+        c.getView().setOnMouseClicked(getBuyHandle("silver", c.getView()));
+    }
+
+    private void initializeCopper() {
+        int offsetX = 0;
+        int offsetY = 2*Card.CARD_HEIGHT;
+        Card c = model.environment.get("copper");
+        TreasurePane.getChildren().add(c.getView());
+        c.getView().relocate(offsetX, offsetY);
+        c.getView().setOnMouseClicked(getBuyHandle("copper", c.getView()));
+    }
+
+    private void initializeProvince() {
+        int offsetX = 0;
+        int offsetY = 0;
+        Card c = model.environment.get("province");
+        VictoryPane.getChildren().add(c.getView());
+        c.getView().relocate(offsetX, offsetY);
+        c.getView().setOnMouseClicked(getBuyHandle("province", c.getView()));
+    }
+
+    private void initializeDuchy() {
+        int offsetX = 0;
+        int offsetY = Card.CARD_HEIGHT;
+        Card c = model.environment.get("duchy");
+        VictoryPane.getChildren().add(c.getView());
+        c.getView().relocate(offsetX, offsetY);
+        c.getView().setOnMouseClicked(getBuyHandle("duchy", c.getView()));
+    }
+
+    private void initializeEstate() {
+        int offsetX = 0;
+        int offsetY = 2*Card.CARD_HEIGHT;
+        Card c = model.environment.get("estate");
+        VictoryPane.getChildren().add(c.getView());
+        c.getView().relocate(offsetX, offsetY);
+        c.getView().setOnMouseClicked(getBuyHandle("estate", c.getView()));
+    }
     
 }

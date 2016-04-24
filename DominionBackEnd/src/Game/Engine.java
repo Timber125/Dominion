@@ -81,8 +81,10 @@ public class Engine {
     
     public void startRoutine(){
         // All actions that server needs to do before any user interaction
-        
-        // First send the chosen actioncards to all players
+        // First send initialize-victory and treasures to clients. (no count is checked)
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("Treasure", "Treasure", 40));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("Victory", "Victory", 8));
+        // send the chosen actioncards to all players
         
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("market", "market", 10));
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("village", "village", 10));
@@ -289,7 +291,7 @@ public class Engine {
 
                 money += c.moneygain();
                 actions += c.actiongain();
-                purchases += c.actiongain();
+                purchases += c.purchasegain();
                 int cardsgain = c.cardgain();
                 for(int i = 0; i < cardsgain; i++){
                     give_card_to_player_hand(p.mySession);

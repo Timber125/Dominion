@@ -57,21 +57,9 @@
             </Label>
           </children>
         </Pane>
-        <Pane layoutX="0.0" layoutY="0.0" prefHeight="600.0" prefWidth="150.0" style="-fx-background-color:BLACK;">
-          <children>
-            <ImageView id="ProvincesView" fx:id="ProvinceView" fitHeight="200.0" fitWidth="150.0" layoutX="0.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true" />
-            <ImageView fx:id="DuchyView" fitHeight="200.0" fitWidth="150.0" layoutX="0.0" layoutY="200.0" pickOnBounds="true" preserveRatio="true" />
-            <ImageView fx:id="EstateView" fitHeight="200.0" fitWidth="150.0" layoutX="0.0" layoutY="400.0" pickOnBounds="true" preserveRatio="true" />
-          </children>
-        </Pane>
-        <Pane layoutX="1130.0" layoutY="0.0" prefHeight="600.0" prefWidth="150.0" style="-fx-background-color:BLACK;">
-          <children>
-            <ImageView fx:id="GoldView" fitHeight="200.0" fitWidth="150.0" layoutX="0.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true" />
-            <ImageView fx:id="SilverView" fitHeight="200.0" fitWidth="150.0" layoutX="0.0" layoutY="200.0" pickOnBounds="true" preserveRatio="true" />
-            <ImageView fx:id="CopperView" fitHeight="200.0" fitWidth="150.0" layoutX="0.0" layoutY="400.0" pickOnBounds="true" preserveRatio="true" />
-          </children>
-        </Pane>
-        <Pane layoutX="150.0" layoutY="0.0" prefHeight="363.0" prefWidth="980.0" style="-fx-background-image: url(&quot;@/../../../background.jpg&quot;);">
+        <Pane fx:id="VictoryPane" layoutX="0.0" layoutY="0.0" prefHeight="600.0" prefWidth="150.0" style="-fx-background-color:BLACK;" />
+        <Pane fx:id="TreasurePane" layoutX="1130.0" layoutY="0.0" prefHeight="600.0" prefWidth="150.0" style="-fx-background-color:BLACK;" />
+        <Pane fx:id="PaneInTheAss" layoutX="150.0" layoutY="0.0" prefHeight="363.0" prefWidth="980.0" style="-fx-background-image: url(&quot;@/../../../background.jpg&quot;);">
           <children>
             <StackPane layoutX="0.0" layoutY="0.0" prefHeight="363.0" prefWidth="980.0" />
             <ImageView id="background_online" fitHeight="363.0" fitWidth="980.0" layoutX="0.0" layoutY="0.0" pickOnBounds="true">

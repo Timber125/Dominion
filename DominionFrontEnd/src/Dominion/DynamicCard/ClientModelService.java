@@ -192,6 +192,29 @@ public class ClientModelService extends ServiceModel{
                 String control = obj.getString("control");
                 switch(control){
                     case("init"):{
+                        if(obj.getString("stack").equals("Treasure")){
+                            init_treasure();
+                            Platform.runLater(new Runnable(){ 
+
+                                @Override
+                                public void run() {
+                                    controller.initializeTreasureStack();
+                                }
+                                
+                            });
+                            return;
+                        }else if(obj.getString("stack").equals("Victory")){
+                            init_victory();
+                            Platform.runLater(new Runnable(){
+
+                                @Override
+                                public void run() {
+                                    controller.initializeVictoryStack();
+                                }
+                                
+                            });
+                            return;
+                        }
                         // Initialize actioncards in environment
                         // Does not make use of "count" yet -> TODO!
                         final Card actionStack = new Card(obj.getString("stack"), controller, "MEDIUM");
@@ -216,14 +239,19 @@ public class ClientModelService extends ServiceModel{
                         String names = obj.getString("items");
                         String[] namelist = names.split(",");
                         for(String cardname : namelist){
-                            environment.get(cardname).makeClickable();
+                            //environment.get(cardname).makeClickable();
+                            // CAUSES BUG -> Imageviews cannot be made clickable, 
+                            // Because the imageview does not link the view of the card. 
+                            // Changing the cardview therefore will not have affected the glow
+                            // And so the client crashes. 
                         }
                         break;
                     }
                     case("unclickable"):{
                         if(obj.getString("items").equals("all")){
                             for(String s : environment.keySet()){
-                                environment.get(s).makeUnclickable();
+                                //environment.get(s).makeUnclickable();
+                                // See above bug.
                             }
                         }else{
                             System.err.println("NOT IMPLEMENTED YET -> unclickable environment specified cards");
@@ -257,6 +285,24 @@ public class ClientModelService extends ServiceModel{
     
     public void cardBuy(ImageView iv, String cardname){
         // Logic?
+    }
+
+    private void init_treasure() {
+        Card copper = new Card("copper", controller);
+        Card silver = new Card("silver", controller);
+        Card gold = new Card("gold", controller);
+        environment.put("copper", copper);
+        environment.put("silver", silver);
+        environment.put("gold", gold);
+    }
+    
+    private void init_victory() {
+        Card estate = new Card("estate", controller);
+        Card duchy = new Card("duchy", controller);
+        Card province = new Card("province", controller);
+        environment.put("estate", estate);
+        environment.put("duchy", duchy);
+        environment.put("province", province);
     }
 
     
