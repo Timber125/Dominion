@@ -8,6 +8,7 @@ package Dominion.DynamicCard;
 
 import Client.ConnectionManager;
 import Client.JSonFactory;
+import Dominion.DynamicStack.Stack;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -21,6 +22,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -266,7 +268,7 @@ public class ClientControlV2{
 
     }
     */
-    public EventHandler<MouseEvent> getBuyHandle(final String cardname,final ImageView me){
+    public EventHandler<MouseEvent> getBuyHandle(final String cardname,final Parent me){
         return new EventHandler<MouseEvent>(){
 
             @Override
@@ -293,78 +295,72 @@ public class ClientControlV2{
      * Environment variables
      * 
      **************************/
-    public void initializeActionStack(Card actionstack){
+    public void initializeActionStack(Stack actionstack){
         this.EnvironmentPane.getChildren().add(actionstack.getView());
         actionstack.getView().relocate(action_cards_initialized * (Card.CARD_MEDIUM_WIDTH + 5),15);
         action_cards_initialized ++;
-        actionstack.getView().setOnMouseClicked(getBuyHandle(actionstack.getName(), actionstack.getView()));
+        actionstack.getView().setOnMouseClicked(getBuyHandle(actionstack.getCard().getName(), actionstack.getView()));
     }
     
-    public void initializeTreasureStack(){
-        initializeGold();
-        initializeSilver();
-        initializeCopper();
+    public void initializeTreasureStack(Stack copper, Stack silver, Stack gold){
+        initializeGold(gold);
+        initializeSilver(silver);
+        initializeCopper(copper);
     }
-    public void initializeVictoryStack(){
-        initializeProvince();
-        initializeDuchy();
-        initializeEstate();
+    public void initializeVictoryStack(Stack estate, Stack duchy, Stack province){
+        initializeProvince(province);
+        initializeDuchy(duchy);
+        initializeEstate(estate);
     }
     
     public int action_cards_initialized = 0;
 
-    private void initializeGold() {
+    private void initializeGold(Stack gold) {
         int offsetX = 0;
         int offsetY = 0;
-        Card c = model.environment.get("gold");
-        TreasurePane.getChildren().add(c.getView());
-        c.getView().relocate(offsetX, offsetY);
-        c.getView().setOnMouseClicked(getBuyHandle("gold", c.getView()));
+        TreasurePane.getChildren().add(gold.getView());
+        gold.getView().relocate(offsetX, offsetY);
+        gold.getView().setOnMouseClicked(getBuyHandle("gold", gold.getView()));
     }
 
-    private void initializeSilver() {
+    private void initializeSilver(Stack silver) {
         int offsetX = 0;
         int offsetY = Card.CARD_HEIGHT;
-        Card c = model.environment.get("silver");
-        TreasurePane.getChildren().add(c.getView());
-        c.getView().relocate(offsetX, offsetY);
-        c.getView().setOnMouseClicked(getBuyHandle("silver", c.getView()));
+        TreasurePane.getChildren().add(silver.getView());
+        silver.getView().relocate(offsetX, offsetY);
+        silver.getView().setOnMouseClicked(getBuyHandle("silver", silver.getView()));
     }
 
-    private void initializeCopper() {
+    private void initializeCopper(Stack copper) {
         int offsetX = 0;
         int offsetY = 2*Card.CARD_HEIGHT;
-        Card c = model.environment.get("copper");
-        TreasurePane.getChildren().add(c.getView());
-        c.getView().relocate(offsetX, offsetY);
-        c.getView().setOnMouseClicked(getBuyHandle("copper", c.getView()));
+        TreasurePane.getChildren().add(copper.getView());
+        copper.getView().relocate(offsetX, offsetY);
+        copper.getView().setOnMouseClicked(getBuyHandle("copper", copper.getView()));
     }
 
-    private void initializeProvince() {
+    private void initializeProvince(Stack province) {
         int offsetX = 0;
         int offsetY = 0;
-        Card c = model.environment.get("province");
-        VictoryPane.getChildren().add(c.getView());
-        c.getView().relocate(offsetX, offsetY);
-        c.getView().setOnMouseClicked(getBuyHandle("province", c.getView()));
+        VictoryPane.getChildren().add(province.getView());
+        province.getView().relocate(offsetX, offsetY);
+        province.getView().setOnMouseClicked(getBuyHandle("province", province.getView()));
     }
 
-    private void initializeDuchy() {
+    private void initializeDuchy(Stack duchy) {
         int offsetX = 0;
         int offsetY = Card.CARD_HEIGHT;
-        Card c = model.environment.get("duchy");
-        VictoryPane.getChildren().add(c.getView());
-        c.getView().relocate(offsetX, offsetY);
-        c.getView().setOnMouseClicked(getBuyHandle("duchy", c.getView()));
+        VictoryPane.getChildren().add(duchy.getView());
+        duchy.getView().relocate(offsetX, offsetY);
+        duchy.getView().setOnMouseClicked(getBuyHandle("duchy", duchy.getView()));
     }
 
-    private void initializeEstate() {
+    private void initializeEstate(Stack estate) {
         int offsetX = 0;
         int offsetY = 2*Card.CARD_HEIGHT;
-        Card c = model.environment.get("estate");
-        VictoryPane.getChildren().add(c.getView());
-        c.getView().relocate(offsetX, offsetY);
-        c.getView().setOnMouseClicked(getBuyHandle("estate", c.getView()));
+        VictoryPane.getChildren().add(estate.getView());
+        estate.getView().relocate(offsetX, offsetY);
+        estate.getView().setOnMouseClicked(getBuyHandle("estate", estate.getView()));
     }
     
 }

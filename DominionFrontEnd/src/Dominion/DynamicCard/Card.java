@@ -33,6 +33,11 @@ public class Card{
     private final String name;
     private ImageView iv;
     private ClientControlV2 control;
+    public Card(String name){
+        this.name = name;
+        this.id = nextID++;
+        this.iv = createCardDisplayFor(name);
+    }
     public Card(String name, ClientControlV2 incontrol){
         this.name = name;
         this.id = nextID++; // oneliner to make it synchronized in bytecode

@@ -8,9 +8,11 @@ package Dominion.DynamicCard;
 
 import Client.JSonFactory;
 import Client.ServiceModel;
+import Dominion.DynamicStack.Stack;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javafx.application.Platform;
+import javafx.scene.Parent;
 import javafx.scene.image.ImageView;
 import org.json.JSONObject;
 
@@ -37,7 +39,7 @@ public class ClientModelService extends ServiceModel{
     private final ClientControlV2 controller;
     
     protected ArrayList<Card> currentHand = new ArrayList<>();
-    protected HashMap<String, Card> environment = new HashMap<>();
+    protected HashMap<String, Stack> environment = new HashMap<>();
     public ClientModelService(ClientControlV2 controller) {
         super(keywordprototype);
         this.controller = controller;
@@ -198,7 +200,7 @@ public class ClientModelService extends ServiceModel{
 
                                 @Override
                                 public void run() {
-                                    controller.initializeTreasureStack();
+                                    controller.initializeTreasureStack(environment.get("copper"), environment.get("silver"), environment.get("gold"));
                                 }
                                 
                             });
@@ -209,7 +211,7 @@ public class ClientModelService extends ServiceModel{
 
                                 @Override
                                 public void run() {
-                                    controller.initializeVictoryStack();
+                                    controller.initializeVictoryStack(environment.get("estate"), environment.get("duchy"), environment.get("province"));
                                 }
                                 
                             });
@@ -218,12 +220,13 @@ public class ClientModelService extends ServiceModel{
                         // Initialize actioncards in environment
                         // Does not make use of "count" yet -> TODO!
                         final Card actionStack = new Card(obj.getString("stack"), controller, "MEDIUM");
-                        environment.put(obj.getString("stack"), actionStack);
+                        final Stack realStack = new Stack(actionStack, 10);
+                        environment.put(obj.getString("stack"), realStack);
                         Platform.runLater(new Runnable(){
 
                             @Override
                             public void run() {
-                                controller.initializeActionStack(actionStack);
+                                controller.initializeActionStack(realStack);
                             }
                         
                         });
@@ -283,7 +286,7 @@ public class ClientModelService extends ServiceModel{
     
     
     
-    public void cardBuy(ImageView iv, String cardname){
+    public void cardBuy(Parent iv, String cardname){
         // Logic?
     }
 
@@ -291,18 +294,30 @@ public class ClientModelService extends ServiceModel{
         Card copper = new Card("copper", controller);
         Card silver = new Card("silver", controller);
         Card gold = new Card("gold", controller);
-        environment.put("copper", copper);
+        Stack copperstack = new Stack(copper, 60);
+        Stack silverstack = new Stack(silver, 50);
+        Stack goldstack = new Stack(gold, 40);
+        /*environment.put("copper", copper);
         environment.put("silver", silver);
-        environment.put("gold", gold);
+        environment.put("gold", gold);*/
+        environment.put("copper", copperstack);
+        environment.put("silver", silverstack);
+        environment.put("gold", goldstack);
     }
     
     private void init_victory() {
         Card estate = new Card("estate", controller);
         Card duchy = new Card("duchy", controller);
         Card province = new Card("province", controller);
-        environment.put("estate", estate);
+        /*environment.put("estate", estate);
         environment.put("duchy", duchy);
-        environment.put("province", province);
+        environment.put("province", province);*/
+        Stack estatestack = new Stack(estate, 8);
+        Stack duchystack = new Stack(duchy, 8);
+        Stack provincestack = new Stack(province, 8);
+        environment.put("estate", estatestack);
+        environment.put("duchy", duchystack);
+        environment.put("province", provincestack);
     }
 
     
