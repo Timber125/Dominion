@@ -27,13 +27,24 @@ public class ConnectionManager {
     
     public String address;
     public int port;
+    private String session_token = "unidentified";
+    private String nickname = "unidentified";
+    
     public ConnectionManager(String address, int port){
         this.address = address;
         this.port = port;
     }
     
+    protected void setSessionToken(String session){
+        this.session_token = session;
+    }
+    
+    protected void setNickName(String nickname){
+        this.nickname = nickname;
+    }
+    
     public synchronized void registerModel(ServiceModel model){
-        int id = models.size()+1;
+        int id = models.keySet().size()+1;
         for(int i = 0; i < models.size(); i++){
             if(models.get(i) == null){
                 id = i;
@@ -53,6 +64,8 @@ public class ConnectionManager {
         
     }
     
+    
+    
     public void handle(String json){
         String action = JSonFactory.JSON.toJSON(json).getString("action");
         if(keywords.containsKey(action)){
@@ -66,12 +79,24 @@ public class ConnectionManager {
     }
     
     public void write(String json){
+        json = appendSessionToken(json);
         server.write(json);
     }
     public void write(JSONObject json){
-        server.write(json.toString());
+        json = appendSessionToken(json);
+        server.write((json).toString());
+    }
+    
+    private String appendSessionToken(String json){
+        System.err.println("appending session token");
+        return JSonFactory.JSON.addKeyValuePair("session", session_token, json);
     }
 
+    private JSONObject appendSessionToken(JSONObject json){
+        System.err.println("appending session token");
+        return JSonFactory.JSON.addKeyValuePair("session", session_token, json);
+    }
+    
     public boolean init_server() {
         try {
             server = new Connection(address, port);
