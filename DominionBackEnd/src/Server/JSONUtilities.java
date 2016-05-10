@@ -6,6 +6,9 @@
 
 package Server;
 
+import Cards.Components.Card;
+import java.util.ArrayList;
+import java.util.Set;
 import org.json.*;
 
 /**
@@ -52,6 +55,126 @@ public class JSONUtilities {
     public JSONObject create(String key, String value){
         JSONObject json = new JSONObject();
         json.put(key, value);
+        return json;
+    }
+    
+    public JSONObject make_client_print(String message){
+        JSONObject json = create("action", "sysout");
+        json = addKeyValuePair("sysout", message, json);
+        return json;
+    }
+    public JSONObject make_client_gain(String cardname){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "gain", json);
+        json = addKeyValuePair("gain", cardname, json);
+        return json;
+    }
+    public JSONObject make_client_lose(String cardname, String id){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "lose", json);
+        json = addKeyValuePair("lose", cardname, json);
+        json = addKeyValuePair("loseID", id, json);
+        return json;
+    }
+    public JSONObject make_client_turninfo(int actions, int purchases, int money){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "turninfo", json);
+        json = addKeyValuePair("actioncount", actions + "", json);
+        json = addKeyValuePair("purchasecount", purchases + "", json);
+        json = addKeyValuePair("money", money + "", json);
+        return json;
+    }
+    public JSONObject make_client_hand_valid(Set<String> cards){
+        String cardEnumeration = "";
+        for(String s : cards){
+            cardEnumeration += "," + s;
+        }
+        cardEnumeration = cardEnumeration.substring(1); // Kap eerste komma weg, gaat sneller dan laatste
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control", json);
+        json = addKeyValuePair("subject", "hand", json);
+        json = addKeyValuePair("items", cardEnumeration, json);
+        json = addKeyValuePair("control", "clickable", json);
+        return json;
+    }
+    public JSONObject make_client_hand_invalid(){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control", json);
+        json = addKeyValuePair("subject", "hand", json);
+        json = addKeyValuePair("items", "all", json);
+        json = addKeyValuePair("control", "unclickable", json);
+        return json;
+    }
+    public JSONObject make_client_show_cardplayed(String cardname){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control", json);
+        json = addKeyValuePair("subject", "table", json);
+        json = addKeyValuePair("control", "display", json);
+        json = addKeyValuePair("items", cardname, json);
+        return json;
+    }
+    public JSONObject make_client_nextphase_possible(){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control", json);
+        json = addKeyValuePair("subject", "phase", json);
+        json = addKeyValuePair("control", "clickable", json);
+        return json;
+    }
+    public JSONObject make_client_nextphase_impossible(){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control", json);
+        json = addKeyValuePair("subject", "phase", json);
+        json = addKeyValuePair("control", "unclickable", json);
+        return json;
+    }
+    public JSONObject make_client_update_environment(String stack_identifier, Integer new_count){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control", json);
+        json = addKeyValuePair("subject", "environment", json);
+        json = addKeyValuePair("control", "updatecount", json);
+        json = addKeyValuePair("stack", stack_identifier, json);
+        json = addKeyValuePair("update", new_count.toString(), json);
+        return json;
+    }
+    public JSONObject make_client_initialize_environment(String stack_identifier, String cardname, Integer count){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control", json);
+        json = addKeyValuePair("subject", "environment", json);
+        json = addKeyValuePair("control", "init", json);
+        json = addKeyValuePair("stack", stack_identifier, json);
+        json = addKeyValuePair("update", count.toString(), json);
+        json = addKeyValuePair("identifier", cardname, json);
+        return json;
+    }
+    public JSONObject make_client_environment_valid(Set<Card> cards){
+        String items = "";
+        for(Card c : cards){
+            items += "," + c.getName();
+        }
+        items = items.substring(1);
+        
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control" ,json);
+        json = addKeyValuePair("subject", "environment", json);
+        json = addKeyValuePair("items", items, json);
+        json = addKeyValuePair("control", "clickable", json);
+        return json;
+    }
+    public JSONObject make_client_environment_invalid(){
+        String items = "all";
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control", json);
+        json = addKeyValuePair("subject", "environment", json);
+        json = addKeyValuePair("items", items, json);
+        json = addKeyValuePair("control", "unclickable", json);
+        return json;
+    }
+    public JSONObject make_client_environment_valid(String items){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control" ,json);
+        json = addKeyValuePair("subject", "environment", json);
+        json = addKeyValuePair("items", items, json);
+        json = addKeyValuePair("control", "clickable", json);
         return json;
     }
 }

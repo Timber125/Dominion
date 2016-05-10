@@ -10,25 +10,14 @@ import Client.Testing.MVCExample.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-/**
- *
- * @author admin
- */
+
 public class Test extends Application{
     
-    MVCManager manager;
-    
-    public static void main(String[] args){
-        System.out.println("Should not start from command line.");
-    }
+    MVCManager manager;    
 
     @Override
     public void start(Stage stage) throws Exception {
         // Stage, FXML name, Screen title, width, height. 
         manager = new MVCManager(stage, "MVC.fxml", "MVC EXAMPLE", 500, 500);
-        
-        // Roep na 5 seconden de client op. 
-        /*Thread.sleep(5000);
-        manager.Finish("localhost", 13337);*/
     }
 }

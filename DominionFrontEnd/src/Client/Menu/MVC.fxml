@@ -6,12 +6,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
   <children>
-    <Pane layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0">
+    <Pane fx:id="field" prefHeight="400.0" prefWidth="600.0">
       <children>
-        <TextField fx:id="Field" layoutX="207.0" layoutY="92.0" prefWidth="200.0" />
-        <Label layoutX="96.0" layoutY="98.0" prefWidth="111.0" text="Set Text" />
+        <TextField fx:id="Field" layoutX="263.0" layoutY="49.0" prefWidth="200.0" />
+        <Label layoutX="61.0" layoutY="43.0" prefWidth="111.0" text="Set Text" />
         <Button fx:id="Enter" layoutX="251.0" layoutY="201.0" mnemonicParsing="false" text="Button" />
         <Label fx:id="Output" layoutX="286.0" layoutY="143.0" prefWidth="208.0" text="Enter text..." />
       </children>
