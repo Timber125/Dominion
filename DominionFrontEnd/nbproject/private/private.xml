@@ -2,9 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-<<<<<<< HEAD
-        <group/>
-=======
         <group>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/DynamicCard/Card.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Client.java</file>
@@ -13,11 +10,11 @@
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/ServiceModel.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/PrintService.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Connection.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Menu/Test.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/DynamicCard/MainV2.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/DynamicCard/ClientControlV2.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/DynamicCard/ClientModelService.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/JSonFactory.java</file>
         </group>
->>>>>>> 788a1d0304db98cef30ec5772458376a6a77179e
     </open-files>
 </project-private>

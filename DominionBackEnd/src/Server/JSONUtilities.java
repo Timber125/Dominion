@@ -177,4 +177,16 @@ public class JSONUtilities {
         json = addKeyValuePair("control", "clickable", json);
         return json;
     }
+    public JSONObject make_client_update_discardpile(String last_discarded_card){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control", json);
+        json = addKeyValuePair("subject", "environment", json);
+        json = addKeyValuePair("control", "updateview", json);
+        json = addKeyValuePair("stack", "discardpile", json);
+        json = addKeyValuePair("update", last_discarded_card, json);
+        return json;
+    }
+    
+    
+    
 }

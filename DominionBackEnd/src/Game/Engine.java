@@ -37,6 +37,8 @@ public class Engine {
     private int current_turn = 0;
     private int current_phase = 0;
     
+    // Player current = players.get(playerOrder.get(current_turn));
+    
     private int actions = 0;
     private int purchases = 0;
     private int money = 0;
@@ -212,29 +214,7 @@ public class Engine {
         flushHand(sess);
         nextTurn();
     }
-    private void give_card_to_player_hand(String session){
-        String cardname = "moat"; // fallback cardname 
-        Player p = players.get(session);
-        if(p == null){
-            System.err.println("Crafted session intercepted");
-            return;
-        }
-        Card drawn = p.drawCard();
-        cardname = drawn.name;
-        JSONObject obj = JSONUtilities.JSON.make_client_print("You draw a card: " + cardname);
-        server.getClient(session).write(obj);
-        
-        JSONObject act = JSONUtilities.JSON.make_client_gain(cardname);
-        server.getClient(session).write(act);
-    }
-    private void flushHand(String session){
-        
-        Player p = players.get(session);
-        server.getClient(session).write(JSONUtilities.JSON.make_client_lose("all", new Long(0).toString()));
-        p.discardHand();
-        JSONObject obj = JSONUtilities.JSON.make_client_print("You discard your hand.");
-        for(int i = 0; i < 5;i++) give_card_to_player_hand(session);
-    }
+    
 
     
     
@@ -282,7 +262,7 @@ public class Engine {
                         return;
                     }
                     if(current_phase != 1){
-                        System.err.println("Action card cannot be played -> not actionphase!");
+                        System.err.println("Action card cannot be played -> not actionphase or nested in an action!");
                         actions ++;
                         return;
                     }
@@ -298,6 +278,10 @@ public class Engine {
                 }
                 server.sendAll(JSONUtilities.JSON.make_client_turninfo(actions, purchases, money));
                 server.sendAll(JSONUtilities.JSON.make_client_print("*" + server.getNickname(json.getString("session")) + " played " + cardname));
+                
+                // Introduce check if the played actioncard has a special phase. 
+                
+                
                 if(current_phase == 1){
                     boolean hasActions = p.hasActionCard();
                     if(hasActions && (cardsgain > 0)){
@@ -352,10 +336,88 @@ public class Engine {
         else if(current_phase == 2){
             endTurn();
         }
+        make_client_update_deck(players.get(session));
+        make_client_update_discardpile(players.get(session));
     }
 
     private void refreshBuyPhase() {
         server.getClient(playerOrder.get(current_turn)).write(JSONUtilities.JSON.make_client_environment_valid(env.getAllBuyables(money)));
+    }
+    
+    
+    
+    /*
+    public void special_phase(int special_ID){
+        current_phase = special_ID;
+    }
+    */
+    
+    
+    /****************
+    *
+    *   Section regarding ingame-functions
+    *
+    ****************/
+    private void give_card_to_player_hand(String session){
+        String cardname = "moat"; // fallback cardname 
+        Player p = players.get(session);
+        if(p == null){
+            System.err.println("Crafted session intercepted");
+            return;
+        }
+        Card drawn = p.drawCard();
+        cardname = drawn.name;
+        JSONObject obj = JSONUtilities.JSON.make_client_print("You draw a card: " + cardname);
+        server.getClient(session).write(obj);
+        
+        JSONObject act = JSONUtilities.JSON.make_client_gain(cardname);
+        server.getClient(session).write(act);
+        make_client_update_deck(p);
+        
+    }
+    private void flushHand(String session){
+        
+        Player p = players.get(session);
+        server.getClient(session).write(JSONUtilities.JSON.make_client_lose("all", new Long(0).toString()));
+        p.discardHand();
+        JSONObject obj = JSONUtilities.JSON.make_client_print("You discard your hand.");
+        for(int i = 0; i < 5;i++) give_card_to_player_hand(session);
+        make_client_update_deck(p);
+        make_client_update_discardpile(p);
+    }
+    
+    private void give_card_to_player_discardpile(String session, Card c){
+        String cardname = c.getName();
+        Player p = players.get(session);
+        if(p == null){
+            System.err.println("Crafted session intercepted");
+            return;
+        }
+        p.deck.add(c);
+        make_client_update_discardpile(p);
+    }
+    
+    
+    /*
+    
+        Ease of access
+    
+    */
+    
+    private void make_client_update_deck(Player p){
+        JSONObject deckupdate = JSONUtilities.JSON.make_client_update_environment("deck", p.deck.content.size());
+        server.getClient(p.mySession).write(deckupdate);
+    }
+    private void make_client_update_discardpile(Player p){
+        int index = p.deck.used.size()-1;
+        String cardname = "back";
+        if(index >= 0){
+            cardname = p.deck.used.get(index).getName();
+        }
+        JSONObject discupdate = JSONUtilities.JSON.make_client_update_discardpile(cardname);
+        server.getClient(p.mySession).write(discupdate);
+        JSONObject disc_count_update = JSONUtilities.JSON.make_client_update_environment("discardpile", index+1);
+        server.getClient(p.mySession).write(disc_count_update);
     }
     
     

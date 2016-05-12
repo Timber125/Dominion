@@ -63,11 +63,39 @@ public class Deck {
             }
         }
     }
-    
+    /*
+        Add to discard pile
+    */
     public void add(Card c){
         used.add(c);
     }
     
+    public void addBottomOfDeck(Card c){
+        content.add(c);
+    }
+    public void addBottomOfDeck(ArrayList<Card> cards){
+        for(Card ca : cards){
+            content.add(ca);
+        }
+    }
+    public void addTopOfDeck(Card c){
+        ArrayList<Card> newDeckOrder = new ArrayList<>();
+        newDeckOrder.add(c);
+        for(Card ca : content){
+            newDeckOrder.add(ca);
+        }
+        this.content = newDeckOrder;
+    }
+    public void addTopOfDeck(ArrayList<Card> cards){
+        ArrayList<Card> newDeckOrder = new ArrayList<>();
+        for(Card ca : cards){
+            newDeckOrder.add(ca);
+        }
+        for(Card ca : content){
+            newDeckOrder.add(ca);
+        }
+        this.content = newDeckOrder;
+    }
     public void reshuffle(){
         content.addAll(used);
         Collections.shuffle(content);

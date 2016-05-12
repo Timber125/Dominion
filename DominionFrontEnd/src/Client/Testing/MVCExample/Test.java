@@ -20,5 +20,7 @@ public class Test extends Application{
 
     @Override
     public void start(Stage stage) throws Exception {
+        Thread.sleep(1000);
+        
     }
 }

@@ -54,4 +54,7 @@ public abstract class Card {
     public int cardgain(){
         return 0;
     }
+    public int special(){
+        return 0;
+    }
 }

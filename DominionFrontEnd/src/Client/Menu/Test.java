@@ -19,5 +19,7 @@ public class Test extends Application{
     public void start(Stage stage) throws Exception {
         // Stage, FXML name, Screen title, width, height. 
         manager = new MVCManager(stage, "MVC.fxml", "MVC EXAMPLE", 500, 500);
+        Thread.sleep(1000);
+        manager.Finish("193.191.179.248", 13337);
     }
 }
