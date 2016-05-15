@@ -48,6 +48,32 @@ public class Engine {
     private Environment env;
     
     
+    /*
+    *
+    *   Baseset functions 
+    
+    +1 Action
+    +1 Card
+    +1 Buy
+    +1 coin
+    Make discard from hand ...
+    Reveal Card from player x deck
+    Put card in Hand player x
+    Put Card in discardpile player x
+    Put Card on top of deck player x
+    Reveal cards from player x hand with/without interaction
+    select cards from Card[]
+    make card selectable
+    gain a card costing up to x
+    play a reaction
+ 
+ 
+    (Trash card y)
+    (Discard card y)
+   
+    *
+    */
+    
     
     /* Engine constructor -> no given game-action-cards */
     public Engine(ArrayList<String> playersessions, Server serv){
@@ -88,11 +114,12 @@ public class Engine {
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("Victory", "Victory", 8));
         // send the chosen actioncards to all players
         
+        
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("market", "market", 10));
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("village", "village", 10));
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("woodcutter", "woodcutter", 10));
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("laboratory", "laboratory", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("smithy", "smithy", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("councilroom", "councilroom", 10));
         
         current_turn = players.keySet().size()-1;
         
@@ -280,7 +307,20 @@ public class Engine {
                 server.sendAll(JSONUtilities.JSON.make_client_print("*" + server.getNickname(json.getString("session")) + " played " + cardname));
                 
                 // Introduce check if the played actioncard has a special phase. 
-                
+                if(c.hasSpecial()){
+                    for(Player victim : players.values()){
+                        if(victim.mySession.equals(p.mySession)) continue; // Don't treat the initiator as a victim
+                        else {
+                            SpecialCase spec = c.special(victim, p);
+                            if(spec instanceof RewardCase){
+                                handleRewards((RewardCase) spec);
+                            }else if(spec instanceof InteractionCase){
+                                // Not implemented yet.
+                                handleInteraction((InteractionCase) spec);
+                            }
+                        }
+                    }
+                }
                 
                 if(current_phase == 1){
                     boolean hasActions = p.hasActionCard();
@@ -418,6 +458,27 @@ public class Engine {
         server.getClient(p.mySession).write(discupdate);
         JSONObject disc_count_update = JSONUtilities.JSON.make_client_update_environment("discardpile", index+1);
         server.getClient(p.mySession).write(disc_count_update);
+    }
+
+    
+    
+    /*
+    *
+    *
+    *   Section regarding special cases and interactive action cards.
+    *
+    *
+    */
+    private void handleRewards(RewardCase rewardCase) {
+        Player victim = rewardCase.getVictim();
+        for(int cardgains = 0; cardgains < rewardCase.cardgain(); cardgains++){
+            give_card_to_player_hand(victim.mySession);
+        }
+        // Other rewards?
+    }
+
+    private void handleInteraction(InteractionCase interactionCase) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     

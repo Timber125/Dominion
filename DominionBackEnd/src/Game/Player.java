@@ -8,6 +8,8 @@ package Game;
 
 import Cards.Components.ActionCard;
 import Cards.Components.Card;
+import Cards.Components.TreasureCard;
+import Cards.Components.VictoryCard;
 import java.util.ArrayList;
 
 /**
@@ -72,4 +74,27 @@ public class Player {
         }
         return false;
     }
+    
+    public ArrayList<Card> getTreasures(){
+        ArrayList<Card> result = new ArrayList<>();
+        for(Card c : hand){
+            if(c instanceof TreasureCard) result.add(c);
+        }
+        return result;
+    }
+    public ArrayList<Card> getVictories(){
+        ArrayList<Card> result = new ArrayList<>();
+        for(Card c : hand){
+            if(c instanceof VictoryCard) result.add(c);
+        }
+        return result;
+    }
+    public ArrayList<Card> getActions(){
+        ArrayList<Card> result = new ArrayList<>();
+        for(Card c : hand){
+            if(c instanceof ActionCard) result.add(c);
+        }
+        return result;
+    }
+    
 }

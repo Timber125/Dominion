@@ -76,7 +76,7 @@ public class Environment {
             String[] actions = new String[num_actioncards];
             actions[0] = "market";
             actions[1] = "village";
-            actions[2] = "smithy";
+            actions[2] = "councilroom";
             actions[3] = "laboratory";
             actions[4] = "woodcutter";
             

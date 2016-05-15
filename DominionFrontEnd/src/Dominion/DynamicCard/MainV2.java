@@ -74,6 +74,7 @@ public class MainV2 extends Application{
     }
     
     
+    // Protocol for sending a card-click on a card in your hand
     public void control_card_clicked(Card c){
         System.out.println("You clicked the card [" + c.getName() + "] with id[ " + c.getID().toString() +"] .");
         connection.write(JSonFactory.JSON.protocol_cardClicked(c));
@@ -83,6 +84,7 @@ public class MainV2 extends Application{
         System.out.println("You clicked EndPhase");
         connection.write(JSonFactory.JSON.protocol_endPhase());
     }
+    // Protocol for sending a card-click on a card in environment
     public void control_buy_card(String cardname){
         System.out.println("You clicked the stack of " + cardname + "'s.");
         connection.write(JSonFactory.JSON.protocol_cardBuy(cardname));

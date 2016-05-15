@@ -214,7 +214,7 @@ public class ClientControlV2{
         
         HandCardPane.setPrefHeight(Card.CARD_HEIGHT + 2);
     }
-    
+   
     public EventHandler<MouseEvent> enableClick(final Card c){
         return new EventHandler<MouseEvent>(){
 
