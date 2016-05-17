@@ -22,10 +22,25 @@ public class MVCModel {
         this.myControl = myControl;
     }
 
-    void EnterPushed() {
-        myManager.Finish("localhost", 13337);
+    public boolean connectPushed(String IPString, String PortString) {
+        
+        /* myManager.Finish("localhost", 13337); */
+        return true;
+    }
+    
+    public boolean loginPushed(String address, int port, String username, String password){
+        myManager.Finish(address, port, username, password);
+        return true;
+    }
+    
+    public boolean registerPushed(String Username, String Password){
+        return true;  
     }
     
     
     
-}
+    }
+    
+    
+    
+

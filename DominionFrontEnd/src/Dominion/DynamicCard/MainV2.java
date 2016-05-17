@@ -11,6 +11,7 @@ import Client.JSonFactory;
 import Client.PrintService;
 import Client.SessionService;
 import Client.Testing.ChatView;
+import Dominion.Confirmation.ConfirmManager;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -29,14 +30,13 @@ public class MainV2 extends Application{
 
     @Override
     public void start(Stage stage) throws Exception {
-        MainV2 main = new MainV2(stage, "localhost", 13337);
+        MainV2 main = new MainV2(stage, "localhost", 13337, "testjiqlmfjsd");
     }
     
     public ConnectionManager connection;
-    
-    public MainV2(Stage stage, String address, int port){
-        String initname = JOptionPane.showInputDialog(null,"Enter your chat-alias: ");
-        connection = new ConnectionManager("localhost", 13337);
+    public MainV2(Stage stage, String address, int port, String username){
+        String initname = username;
+        connection = new ConnectionManager(address, port);
         PrintService printerservice = PrintService.create();
         SessionService sessionservice = SessionService.create(initname);
         connection.registerModel(printerservice);
@@ -74,6 +74,7 @@ public class MainV2 extends Application{
     }
     
     
+    // Protocol for sending a card-click on a card in your hand
     public void control_card_clicked(Card c){
         System.out.println("You clicked the card [" + c.getName() + "] with id[ " + c.getID().toString() +"] .");
         connection.write(JSonFactory.JSON.protocol_cardClicked(c));
@@ -83,6 +84,7 @@ public class MainV2 extends Application{
         System.out.println("You clicked EndPhase");
         connection.write(JSonFactory.JSON.protocol_endPhase());
     }
+    // Protocol for sending a card-click on a card in environment
     public void control_buy_card(String cardname){
         System.out.println("You clicked the stack of " + cardname + "'s.");
         connection.write(JSonFactory.JSON.protocol_cardBuy(cardname));

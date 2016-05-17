@@ -8,12 +8,15 @@ package Dominion.DynamicCard;
 
 import Client.JSonFactory;
 import Client.ServiceModel;
+import Dominion.Confirmation.ConfirmInfo;
+import Dominion.Confirmation.ConfirmManager;
 import Dominion.DynamicStack.Stack;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import org.json.JSONObject;
 
 /**
@@ -40,9 +43,13 @@ public class ClientModelService extends ServiceModel{
     
     protected ArrayList<Card> currentHand = new ArrayList<>();
     protected HashMap<String, Stack> environment = new HashMap<>();
+    protected ConfirmManager confirmationmanager;
+    
     public ClientModelService(ClientControlV2 controller) {
         super(keywordprototype);
         this.controller = controller;
+        confirmationmanager = new ConfirmManager(new Stage(), "ConfirmView.fxml", "Confirm", 640, 740, this);
+        confirmationmanager.hide();
     }
 
     @Override
@@ -117,6 +124,11 @@ public class ClientModelService extends ServiceModel{
             case("turninfo"):{
                 // Turninfo update
                 updateTurnInfo(obj);
+                break;
+            }
+            case("confirm"):{
+                // Confirmation
+                handleConfirmationPackage(obj);
                 break;
             }
             default:{
@@ -222,20 +234,41 @@ public class ClientModelService extends ServiceModel{
                         final Card actionStack = new Card(obj.getString("stack"), controller, "MEDIUM");
                         final Stack realStack = new Stack(actionStack, 10);
                         environment.put(obj.getString("stack"), realStack);
+                        
+                        final Card disc_back = new Card("back", controller, "MEDIUM");
+                        Stack discardpile;
+                        discardpile = new Stack(disc_back, 0);
+                        environment.put("discardpile", discardpile);
+                        
+                        final Card deck_back = new Card("back", controller, "MEDIUM");
+                        Stack deck;
+                        deck = new Stack(deck_back, 10);
+                        environment.put("deck", deck);
+                        
                         Platform.runLater(new Runnable(){
 
                             @Override
                             public void run() {
                                 controller.initializeActionStack(realStack);
+                                controller.initialize_myenvironment(environment.get("deck"), environment.get("discardpile"));
                             }
                         
                         });
-                        
-                    
                         break;
                     }
                     case("updatecount"):{
                         // Update count of environment cardstacks
+                        final Stack st = environment.get(obj.getString("stack"));
+                        final int count = Integer.parseInt(obj.getString("update"));
+                        Platform.runLater(new Runnable(){
+
+                            @Override
+                            public void run() {
+                                st.update(count);
+                            }
+                            
+                        });
+                        // If count == 0 -> should show the back.jpg of the card instead of the front. 
                         break;
                     }
                     case("clickable"):{
@@ -260,6 +293,29 @@ public class ClientModelService extends ServiceModel{
                             System.err.println("NOT IMPLEMENTED YET -> unclickable environment specified cards");
                         }
                         break;
+                    }
+                    case("updateview"):{
+                        String stackname = obj.getString("stack");
+                        // Should be only used with discardpile atm 
+                        
+                        if(stackname.equals("discardpile")){
+                            Stack s = environment.get(stackname);
+                            String cardname = obj.getString("update");
+                            Card medium_print = new Card(cardname, controller, "MEDIUM");
+                            Stack replace = new Stack(medium_print, s.count);
+                            environment.put(stackname, replace);
+                            Platform.runLater(new Runnable(){
+
+                                @Override
+                                public void run() {
+                                    controller.reinitialize_disc(environment.get("discardpile"));
+                                }
+                            
+                            });
+                        }else{
+                            System.err.println("updateview on environment is only implemented (and only used) for discardpile.");
+                        }
+                        
                     }
                 }
                 break;
@@ -318,6 +374,14 @@ public class ClientModelService extends ServiceModel{
         environment.put("estate", estatestack);
         environment.put("duchy", duchystack);
         environment.put("province", provincestack);
+    }
+
+    private void handleConfirmationPackage(JSONObject obj) {
+
+        ConfirmInfo info = new ConfirmInfo(obj);
+        confirmationmanager.insert_information(info);
+        confirmationmanager.show();
+    
     }
 
     

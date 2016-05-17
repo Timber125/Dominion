@@ -18,6 +18,6 @@ public class Test extends Application{
     @Override
     public void start(Stage stage) throws Exception {
         // Stage, FXML name, Screen title, width, height. 
-        manager = new MVCManager(stage, "MVC.fxml", "MVC EXAMPLE", 500, 500);
+        manager = new MVCManager(stage, "MVC.fxml", "Dominion Menu", 500, 500);
     }
 }

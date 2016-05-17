@@ -2,34 +2,40 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-<<<<<<< HEAD
-        <group/>
-=======
         <group>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Adventurer.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Market.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Woodcutter.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Silver.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Estate.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Server/JSONUtilities.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Province.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Game/Environment.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Server/Service/ChatService.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Server/JSonListener.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Duchy.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Chancellor.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Game/Engine.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Game/Deck.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Laboratory.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Cellar.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Copper.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Councilroom.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Chapel.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Game/Player.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Woodcutter.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Bureaucrat.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Estate.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Game/Environment.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Province.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Server/ConnectionHandler.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Village.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Duchy.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Server/JSonListener.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Game/Engine.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Laboratory.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Game/Deck.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Game/RewardCase.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Components/Card.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Game/InteractionCase.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Server/Server.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Copper.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Feast.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Smithy.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Cards/Basic/Gold.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Game/Player.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Server/ConnectionListener.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Game/SpecialCase.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Server/Service/DominionService.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/src/Server/ConnectionListener.java</file>
         </group>
->>>>>>> 788a1d0304db98cef30ec5772458376a6a77179e
     </open-files>
 </project-private>

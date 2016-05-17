@@ -22,14 +22,27 @@ import javafx.scene.control.TextField;
 public class MVCController {
     
     @FXML
-    TextField Field;
+    TextField IP;
 
     @FXML
-    Label Output;
+    TextField Port;
 
     @FXML
-    Button Enter;
-
+    Button Connect;
+    
+    @FXML
+    Button Register;
+    
+    @FXML
+    Button Login;
+    
+    @FXML
+    TextField Username;
+    
+    @FXML
+    TextField Password;
+   
+    
     
     
     public MVCModel model;
@@ -39,15 +52,88 @@ public class MVCController {
 
     void startup() {
         System.out.println("MVC Started");
-        Enter.setOnAction(new EventHandler<ActionEvent>(){
+        Connect.setOnAction(new EventHandler<ActionEvent>(){
 
             @Override
             public void handle(ActionEvent t) {
-                model.EnterPushed();
+                String IPstring = IP.getText();
+                String Portstring = Port.getText();
+                boolean success = model.connectPushed(IPstring, Portstring);
+                if(success) {
+                    IP.setDisable(true);
+                    Port.setDisable(true);
+                    Connect.setDisable(true);
+                }
+                else {
+                   //niets, error?
+                }
             }
+        
             
         });
-    }
+        
+        Register.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                // Hier komt code voor login 
+                String a = Username.getText();
+                String b = Password.getText();
+                boolean succes = model.registerPushed(a, b);
+                if (succes) {
+                    Username.setDisable(true);
+                    Password.setDisable(true);
+                }
+                
+            }
+        });
+        
+        Login.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                // Hier komt code voor login 
+                String a = Username.getText();
+                String b = Password.getText();
+                String c = Port.getText();
+                String d = IP.getText();
+                boolean succes = model.loginPushed(d,Integer.parseInt(c),a,b);
+                if (succes) {
+                
+                }
+                
+            }
+        });
+        
+    }}  
+         
+          
+        
+     /* public count(final String string, final String substring)
+     {
+     int count = 0;
+     int idx = 0;
+
+     while ((idx = string.indexOf(substring, idx)) != -1)
+     {
+        idx++;
+        count++;
+     }
+
+     return count; */
+     
+    /*
+    void Indentify(){
+        System.out.println("Port and IP OK, identify now.");
+        Register.setOnAction(new EventHandler<ActionEvent>(){ 
+            
+        model.LogInPushed();
+        String Usernamestring = Username.getText();
+        Username.setText("");
+        String Passwordstring = Password.getText();
+        Password.setText("");
+         
+        }
+    }  */
+            /*}
+            */              
     
-    
-}
+

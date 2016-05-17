@@ -214,7 +214,7 @@ public class ClientControlV2{
         
         HandCardPane.setPrefHeight(Card.CARD_HEIGHT + 2);
     }
-    
+   
     public EventHandler<MouseEvent> enableClick(final Card c){
         return new EventHandler<MouseEvent>(){
 
@@ -362,5 +362,28 @@ public class ClientControlV2{
         estate.getView().relocate(offsetX, offsetY);
         estate.getView().setOnMouseClicked(getBuyHandle("estate", estate.getView()));
     }
+    
+    private Stack last_initialized_discardstack;
+    
+    public void initialize_myenvironment(Stack deck, Stack disc){
+        initialize_deck(deck);
+        initialize_disc(disc);
+    }
+    public void initialize_deck(Stack deck){
+        HandPane.getChildren().add(deck.getView());
+        deck.getView().relocate(760, 45);
+    }
+    public void initialize_disc(Stack disc){
+        last_initialized_discardstack = disc;
+        HandPane.getChildren().add(last_initialized_discardstack.getView());
+        last_initialized_discardstack.getView().relocate(860, 45);
+    }
+    public void reinitialize_disc(Stack disc){
+        HandPane.getChildren().remove(last_initialized_discardstack);
+        last_initialized_discardstack = disc;
+        HandPane.getChildren().add(last_initialized_discardstack);
+        last_initialized_discardstack.relocate(860, 45);
+    }
+    
     
 }

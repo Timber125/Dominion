@@ -8,6 +8,8 @@ package Cards.Components;
 
 import Actions.Action;
 import Actions.ActionTest;
+import Game.Player;
+import Game.SpecialCase;
 import java.util.ArrayList;
 
 /**
@@ -53,5 +55,17 @@ public abstract class Card {
     }
     public int cardgain(){
         return 0;
+    }
+    public SpecialCase special(Player victim, Player initiator){
+        return null;
+    }
+    public boolean hasSpecial(){
+        return false;
+    }
+    public boolean is_attack(){
+        return false;
+    }
+    public boolean is_block(){
+        return false;
     }
 }

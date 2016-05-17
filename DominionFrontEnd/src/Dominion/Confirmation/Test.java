@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package Client.Testing.MVCExample;
+package Dominion.Confirmation;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -14,13 +14,10 @@ import javafx.stage.Stage;
  * @author admin
  */
 public class Test extends Application{
-    public static void main(String[] args){
-        System.out.println("Should not start from command line.");
-    }
 
     @Override
     public void start(Stage stage) throws Exception {
-        Thread.sleep(1000);
-        
+        ConfirmManager conf = new ConfirmManager(stage, "ConfirmView.fxml", "Confirm", 640, 740);
     }
+    
 }

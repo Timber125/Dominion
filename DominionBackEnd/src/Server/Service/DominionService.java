@@ -137,11 +137,7 @@ public class DominionService extends Service{
     
     
     
-    
-    private void cardOffer(JSONObject json) {
-        game.process(json);
-    }
-
+   
     protected void initialize(Collection<String> playersessions) {
         String[] players = new String[playersessions.size()];
         players = playersessions.toArray(players);

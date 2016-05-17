@@ -37,6 +37,8 @@ public class Engine {
     private int current_turn = 0;
     private int current_phase = 0;
     
+    // Player current = players.get(playerOrder.get(current_turn));
+    
     private int actions = 0;
     private int purchases = 0;
     private int money = 0;
@@ -45,6 +47,34 @@ public class Engine {
     private HashMap<String, Player> players;
     private Environment env;
     
+    
+    private boolean interactionmode = false;
+    
+    /*
+    *
+    *   Baseset functions 
+    
+    +1 Action
+    +1 Card
+    +1 Buy
+    +1 coin
+    Make discard from hand ...
+    Reveal Card from player x deck
+    Put card in Hand player x
+    Put Card in discardpile player x
+    Put Card on top of deck player x
+    Reveal cards from player x hand with/without interaction
+    select cards from Card[]
+    make card selectable
+    gain a card costing up to x
+    play a reaction
+ 
+ 
+    (Trash card y)
+    (Discard card y)
+   
+    *
+    */
     
     
     /* Engine constructor -> no given game-action-cards */
@@ -86,11 +116,12 @@ public class Engine {
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("Victory", "Victory", 8));
         // send the chosen actioncards to all players
         
+        
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("market", "market", 10));
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("village", "village", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("woodcutter", "woodcutter", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("bureaucrat", "bureaucrat", 10));
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("laboratory", "laboratory", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("smithy", "smithy", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("councilroom", "councilroom", 10));
         
         current_turn = players.keySet().size()-1;
         
@@ -122,9 +153,7 @@ public class Engine {
     
     */
     
-    public void process(JSONObject action){
-        
-    }
+    
     private String getCurrentPlayerSession(){
         return playerOrder.get(current_turn);
     }
@@ -157,7 +186,7 @@ public class Engine {
             }
         }
         JSONObject obj = JSONUtilities.JSON.make_client_hand_valid(actioncardnames);
-        server.getClient(p.mySession).write(obj);
+        server.getClient(p.getSession()).write(obj);
     }
     private void enterActionPhase(){
         current_phase = 1;
@@ -212,29 +241,7 @@ public class Engine {
         flushHand(sess);
         nextTurn();
     }
-    private void give_card_to_player_hand(String session){
-        String cardname = "moat"; // fallback cardname 
-        Player p = players.get(session);
-        if(p == null){
-            System.err.println("Crafted session intercepted");
-            return;
-        }
-        Card drawn = p.drawCard();
-        cardname = drawn.name;
-        JSONObject obj = JSONUtilities.JSON.make_client_print("You draw a card: " + cardname);
-        server.getClient(session).write(obj);
-        
-        JSONObject act = JSONUtilities.JSON.make_client_gain(cardname);
-        server.getClient(session).write(act);
-    }
-    private void flushHand(String session){
-        
-        Player p = players.get(session);
-        server.getClient(session).write(JSONUtilities.JSON.make_client_lose("all", new Long(0).toString()));
-        p.discardHand();
-        JSONObject obj = JSONUtilities.JSON.make_client_print("You discard your hand.");
-        for(int i = 0; i < 5;i++) give_card_to_player_hand(session);
-    }
+    
 
     
     
@@ -268,6 +275,10 @@ public class Engine {
     }
     
     public void processCard(JSONObject json) {
+        if(interactionmode) {
+            processInteraction(json);
+            return;
+        }
         if(isRequestFromCurrentTurnPlayer(json)){
             Player p = getPlayerWhoSent(json);
             String cardname = json.getString("cardname");
@@ -282,11 +293,12 @@ public class Engine {
                         return;
                     }
                     if(current_phase != 1){
-                        System.err.println("Action card cannot be played -> not actionphase!");
+                        System.err.println("Action card cannot be played -> not actionphase or nested in an action!");
                         actions ++;
                         return;
                     }
                 }
+                
                 server.sendOne(JSONUtilities.JSON.make_client_lose(cardname, json.getString("id")), json.getString("session"));
 
                 money += c.moneygain();
@@ -294,10 +306,28 @@ public class Engine {
                 purchases += c.purchasegain();
                 int cardsgain = c.cardgain();
                 for(int i = 0; i < cardsgain; i++){
-                    give_card_to_player_hand(p.mySession);
+                    give_card_to_player_hand(p.getSession());
                 }
                 server.sendAll(JSONUtilities.JSON.make_client_turninfo(actions, purchases, money));
                 server.sendAll(JSONUtilities.JSON.make_client_print("*" + server.getNickname(json.getString("session")) + " played " + cardname));
+                
+                // Introduce check if the played actioncard has a special phase. 
+                if(c.hasSpecial()){
+                    System.out.println("- " + c.getName() + " has a special:");
+                    for(Player victim : players.values()){
+                        //if(victim.getSession().equals(p.getSession())) continue; // Do (!!) treat the initiator as a victim
+                            SpecialCase spec = c.special(victim, p);
+                            if(spec instanceof RewardCase){
+                                System.out.println("--RewardCase initialized");
+                                handleRewards((RewardCase) spec);
+                            }else if(spec instanceof InteractionCase){
+                                // in testing
+                                System.out.println("-- InteractionCase initialized");
+                                handleInteraction((InteractionCase) spec);
+                            }
+                    }
+                }
+                
                 if(current_phase == 1){
                     boolean hasActions = p.hasActionCard();
                     if(hasActions && (cardsgain > 0)){
@@ -341,6 +371,7 @@ public class Engine {
             }
         }
     }
+    
     public void nextPhase(String session) {
         if(!session.equals(playerOrder.get(current_turn))){
             System.err.println("Intercepted malicious nextPhase package from client " + server.getNickname(session) +".");
@@ -352,11 +383,199 @@ public class Engine {
         else if(current_phase == 2){
             endTurn();
         }
+        make_client_update_deck(players.get(session));
+        make_client_update_discardpile(players.get(session));
     }
 
     private void refreshBuyPhase() {
         server.getClient(playerOrder.get(current_turn)).write(JSONUtilities.JSON.make_client_environment_valid(env.getAllBuyables(money)));
     }
     
+    
+    
+    /*
+    public void special_phase(int special_ID){
+        current_phase = special_ID;
+    }
+    */
+    
+    
+    /****************
+    *
+    *   Section regarding ingame-functions
+    *
+    ****************/
+    private void give_card_to_player_hand(String session){
+        String cardname = "moat"; // fallback cardname 
+        Player p = players.get(session);
+        if(p == null){
+            System.err.println("Crafted session intercepted");
+            return;
+        }
+        Card drawn = p.drawCard();
+        cardname = drawn.name;
+        JSONObject obj = JSONUtilities.JSON.make_client_print("You draw a card: " + cardname);
+        server.getClient(session).write(obj);
+        
+        JSONObject act = JSONUtilities.JSON.make_client_gain(cardname);
+        server.getClient(session).write(act);
+        make_client_update_deck(p);
+        
+    }
+    private void flushHand(String session){
+        
+        Player p = players.get(session);
+        server.getClient(session).write(JSONUtilities.JSON.make_client_lose("all", new Long(0).toString()));
+        p.discardHand();
+        JSONObject obj = JSONUtilities.JSON.make_client_print("You discard your hand.");
+        for(int i = 0; i < 5;i++) give_card_to_player_hand(session);
+        make_client_update_deck(p);
+        make_client_update_discardpile(p);
+    }
+    
+    private void give_card_to_player_discardpile(String session, Card c){
+        String cardname = c.getName();
+        Player p = players.get(session);
+        if(p == null){
+            System.err.println("Crafted session intercepted");
+            return;
+        }
+        p.deck.add(c);
+        make_client_update_discardpile(p);
+    }
+    
+    
+    /*
+    
+        Ease of access
+    
+    */
+    
+    private void make_client_update_deck(Player p){
+        JSONObject deckupdate = JSONUtilities.JSON.make_client_update_environment("deck", p.deck.content.size());
+        server.getClient(p.getSession()).write(deckupdate);
+    }
+    private void make_client_update_discardpile(Player p){
+        int index = p.deck.used.size()-1;
+        String cardname = "back";
+        if(index >= 0){
+            cardname = p.deck.used.get(index).getName();
+        }
+        JSONObject discupdate = JSONUtilities.JSON.make_client_update_discardpile(cardname);
+        server.getClient(p.getSession()).write(discupdate);
+        JSONObject disc_count_update = JSONUtilities.JSON.make_client_update_environment("discardpile", index+1);
+        server.getClient(p.getSession()).write(disc_count_update);
+    }
+    private void make_clients_update_environment(String cardidentifier){
+        server.sendAll(JSONUtilities.JSON.make_client_turninfo(actions, purchases, money));
+        server.sendAll(JSONUtilities.JSON.make_client_update_environment(cardidentifier, env.environment_amountcheck(cardidentifier)));
+        server.sendAll(JSONUtilities.JSON.make_client_print("there are " + env.environment_amountcheck(cardidentifier) + " " + cardidentifier + "'s" + " left on the table."));
+            
+    }
+    
+    
+    /*
+    *
+    *
+    *   Section regarding special cases and interactive action cards.
+    *
+    *
+    */
+    private void handleRewards(RewardCase rewardCase) {
+        Player victim = rewardCase.getVictim();
+        for(int cardgains = 0; cardgains < rewardCase.cardgain(); cardgains++){
+            give_card_to_player_hand(victim.getSession());
+        }
+        // Other rewards?
+        JSONObject specialbehaviour = rewardCase.reward_behaviour();
+        if(specialbehaviour != null){
+            handleSpecialJSON(specialbehaviour, rewardCase.getVictim());
+        }
+    }
+
+    private void handleInteraction(InteractionCase interactionCase) {
+        // Send an interaction json to every client, based upon the interactioncase specifications. 
+        // We need to block the engine until we receive enough cards to make every ic valid
+        // When every ic is valid, we need to pass the ic's special cards to the initiator 
+        // The initiator gives us back what he selected, + behaviour, in a rewardcase. 
+        interactionCase.getVictim().setInteraction(interactionCase); // link the interactioncase. 
+        System.out.println("--- handling interactioncase ---");
+        if(!interactionCase.isValid()){
+            System.out.println("----- interactioncase was found invalid. Sending confirmation to victim.");
+            this.interactionmode = true;
+            // All the information is in the interactioncase object. 
+            // Right now we use a dummy information source to try trigger the client confirmation stage. 
+            server.getClient(interactionCase.getVictim().getSession()).write(JSONUtilities.JSON.make_client_confirmation_model_empty("You are being attacked!"));
+        }
+        
+    }
+    
+    private void handleSpecialJSON(JSONObject special, Player victim){
+        String special_type = special.getString("type");
+        switch(special_type){
+            case("env_gain"):{
+                Card c = env.environment_buy(special.getString("identifier"));
+                String destination = special.getString("dest");
+                switch(destination){
+                    case("top_of_deck"):{
+                        victim.deck.addTopOfDeck(c);
+                        break;
+                    }
+                    case("bottom_of_deck"):{
+                        victim.deck.addBottomOfDeck(c);
+                        break;
+                    }
+                    case("top_of_discardpile"):{
+                        victim.deck.add(c);
+                        break;
+                    }
+                    default:{
+                        victim.deck.add(c);
+                    }
+                }
+                // Update clients
+                make_clients_update_environment(special.getString("identifier"));
+                make_client_update_deck(victim);
+                make_client_update_discardpile(victim);
+                break;
+            }
+        }
+    }
+
+    private void processInteraction(JSONObject json) {
+        String session = json.getString("session");
+        Player victim = players.get(session);
+        String cardname = json.getString("cardname");
+        Card RTIed = env.CardRTI(cardname);
+        victim.getCurrentInteraction().process(RTIed, true, Long.parseLong(json.getString("id")));
+        if(victim.getCurrentInteraction().isValid()){
+            checkInteractionModeRequirements();
+        }
+    }
+
+    private void checkInteractionModeRequirements() {
+        for(Player p : players.values()){
+            if(p.getCurrentInteraction() != null){
+                if(!p.getCurrentInteraction().isValid()) return;
+            }
+        }
+        proposeInteraction();
+    }
+
+    private void proposeInteraction() {
+        interactionmode = false;
+        
+        for(Player p : players.values()){
+            InteractionCase ic = p.getCurrentInteraction();
+            // Extract values
+            // Add an interaction to the initiator
+            // Stay in interactionmode, but deny all requests not coming from initiator
+            // When initiator gives back a resultJSON, we finish the interactions accordingly. 
+        }
+        // End the interactions given the interactionCases 
+        
+        // We get 3 interactioncases to inject into a JSONobject that should trigger the initiator's confirmframe
+        // Interactionmode is not finished 
+    }
     
 }

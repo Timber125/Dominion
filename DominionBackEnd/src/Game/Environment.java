@@ -76,9 +76,9 @@ public class Environment {
             String[] actions = new String[num_actioncards];
             actions[0] = "market";
             actions[1] = "village";
-            actions[2] = "smithy";
+            actions[2] = "councilroom";
             actions[3] = "laboratory";
-            actions[4] = "woodcutter";
+            actions[4] = "bureaucrat";
             
             // Auto-setup
             
@@ -138,5 +138,9 @@ public class Environment {
         }
         if(s.length() > 1) return s.substring(1);
         else return "";
+    }
+    
+    public Card CardRTI(String cardname){
+        return RTI.getCardByName(cardname);
     }
 }

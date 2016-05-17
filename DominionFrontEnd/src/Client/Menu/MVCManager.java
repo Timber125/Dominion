@@ -59,7 +59,7 @@ public class MVCManager {
         
     }
     
-    public void Finish(String address, int port){
-        MainV2 main = new MainV2(stage, address, port);
+    public void Finish(String address, int port, String username, String password){
+        MainV2 main = new MainV2(stage, address, port, username);
     }
 }

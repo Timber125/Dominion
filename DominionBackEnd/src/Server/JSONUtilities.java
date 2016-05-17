@@ -7,6 +7,7 @@
 package Server;
 
 import Cards.Components.Card;
+import Game.InteractionCase;
 import java.util.ArrayList;
 import java.util.Set;
 import org.json.*;
@@ -177,4 +178,51 @@ public class JSONUtilities {
         json = addKeyValuePair("control", "clickable", json);
         return json;
     }
+    public JSONObject make_client_update_discardpile(String last_discarded_card){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "control", json);
+        json = addKeyValuePair("subject", "environment", json);
+        json = addKeyValuePair("control", "updateview", json);
+        json = addKeyValuePair("stack", "discardpile", json);
+        json = addKeyValuePair("update", last_discarded_card, json);
+        return json;
+    }
+    
+    public JSONObject make_client_confirmation_model_empty(String info){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "confirm", json);
+        json = addKeyValuePair("info", info, json);
+        json = addKeyValuePair("stat0", make_player_public_stats_null().toString(), json);
+        json = addKeyValuePair("stat1", make_player_public_stats_null().toString(), json);
+        json = addKeyValuePair("stat2", make_player_public_stats_null().toString(), json);
+        return json;
+        
+    }
+    
+    public JSONObject make_player_public_stats(String nickname, int decksize, int discardsize, int handsize, int victorypoints, boolean attackblocked){
+        JSONObject json = create("nickname", nickname);
+        json = addKeyValuePair("decksize", decksize + "", json);
+        json = addKeyValuePair("discardsize", discardsize + "", json);
+        json = addKeyValuePair("handsize", handsize + "", json);
+        json = addKeyValuePair("victorypoints", victorypoints + "", json);
+        json = addKeyValuePair("blocked", (attackblocked)?("1"):("0"), json);
+        return json;
+    }
+    public JSONObject make_player_public_stats_null(){
+        return make_player_public_stats("unused", 0, 0, 0, 0, true);
+    }
+    /**
+     * SECTION REGARDING ACTION CARD BEHAVIOUR
+     * @return rewardcase behaviour object
+     */
+    
+    public JSONObject bureaucrat_standard_reward(){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("type", "env_gain", json);
+        json = addKeyValuePair("dest", "top_of_deck", json);
+        json = addKeyValuePair("identifier", "silver", json);
+        return json;
+    }
+    
+    
 }
