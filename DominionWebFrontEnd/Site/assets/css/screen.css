@@ -1,0 +1,12 @@
+
+/*---------------------*/
+/*   GENERAL ELEMENTS  */
+/*---------------------*/
+
+body {
+    font-family: 'Droid Sans', sans-serif;
+    font-size: 1rem;
+    background-color: #FFFFFF;
+    color: #000000;
+    padding-top: 10px;
+}
