@@ -19,6 +19,7 @@ import java.util.ArrayList;
 public class InteractionCase extends SpecialCase{
     
     private ArrayList<Card> selectedSpecials = new ArrayList<>();
+    private ArrayList<Long> selectedIds = new ArrayList<>();
     private Player initiator;
     private Player victim;
     
@@ -37,6 +38,8 @@ public class InteractionCase extends SpecialCase{
     private boolean action_env_enabled = false;
     private boolean action_hand_enabled = false;
     
+    private boolean reaction_only = false;
+    
     private boolean blockable = false;
     
     public InteractionCase(Player victim, Player initiator){
@@ -52,6 +55,24 @@ public class InteractionCase extends SpecialCase{
     }
     public Player getInitiator(){
         return this.initiator;
+    }
+    public boolean isValid(){
+        if(reaction_only){
+            for(Card c : selectedSpecials) if(!c.is_block()) return false;
+            return true;
+        }
+        if((selectedSpecials.size() >= minimum_amount)&&(selectedSpecials.size() <= maximum_amount)){
+            for(Card c : selectedSpecials) if((c.getCost() > maximum_cost)&&(c.getCost() < minimum_cost)) return false;
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public void set_reaction_only(){
+        reaction_only = true;
+    }
+    public void unset_reaction_only(){
+        reaction_only = false;
     }
     public void setMinCost(int min){
         minimum_cost = min;
@@ -131,16 +152,46 @@ public class InteractionCase extends SpecialCase{
     public void disable_blockable(){
         blockable = false;
     }
+    public void enable_hand(){
+        action_hand_enabled = true;
+        victory_hand_enabled = true;
+        treasure_hand_enabled = true;
+    }
+    public void disable_hand(){
+        action_hand_enabled = false;
+        victory_hand_enabled = false;
+        treasure_hand_enabled = false;
+    }
+    public void enable_environment(){
+        action_env_enabled = true;
+        victory_env_enabled = true;
+        treasure_env_enabled = true;
+    }
+    public void disable_environment(){
+        action_env_enabled = false;
+        victory_env_enabled = false;
+        treasure_env_enabled = false;
+    }
     public ArrayList<Card> getSelected(){
         return selectedSpecials;
     }
-    public boolean process(Card c, boolean fromHand){
+    public boolean process(Card c, boolean fromHand, long id){
+        if(reaction_only){
+            if(c.is_block()){
+                selectedSpecials.add(c);
+                selectedIds.add(id);
+                return true;
+            }
+            else return false;
+        }
         String name = c.getName();
         int cost = c.getCost();
         if((cost > maximum_cost) || (cost < minimum_cost)) return false;
         if(selectedSpecials.size() >= maximum_amount) return false;
         
         if(fromHand){
+            if(selectedIds.contains(id)) return false; // Card has been processed already. 
+            
             if(c instanceof ActionCard){
                 if(!action_hand_enabled) return false;
             }else if(c instanceof TreasureCard){
@@ -160,7 +211,13 @@ public class InteractionCase extends SpecialCase{
         
         // If this code is reached, all validations have passed, and nothing returned false.
         selectedSpecials.add(c);
+        selectedIds.add(id);
         return true;
+    }
+    
+    public void manually_add_selectedspecial(Card c, boolean fromhand){
+        selectedSpecials.add(c);
+        selectedIds.add(0L + selectedSpecials.size()); // Manual iterative id's
     }
     
     

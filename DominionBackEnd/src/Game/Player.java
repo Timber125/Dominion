@@ -17,13 +17,18 @@ import java.util.ArrayList;
  * @author admin
  */
 public class Player {
-    protected String mySession; 
+    private String mySession; 
     public Deck deck;
     public ArrayList<Card> hand = new ArrayList<>();
+    private InteractionCase current_interaction = null;
     public Player(String session){
         mySession = session;
         //deck = new Deck(1); // deck-protocol-1: see deck-constructor(s) for explenation. 
         deck = new Deck(0); // Standard deck (protocol-0)
+    }
+    // unsafe?
+    public String getSession(){
+        return mySession;
     }
     public Card drawCard(){
         Card drawn = null;
@@ -48,6 +53,7 @@ public class Player {
         }
         return false;
     }
+   
     public Card playCard(Environment env, String cardname, long id){
         // Id is unused, should be checked whether same id gets played twice
         ArrayList<Card> nextHand = new ArrayList<>();
@@ -96,5 +102,20 @@ public class Player {
         }
         return result;
     }
+    public ArrayList<Card> getReactions(){
+        ArrayList<Card> result = new ArrayList<>();
+        for(Card c : hand){
+            if(c.is_block()) result.add(c);
+        }
+        return result;
+    }
     
+    
+    
+    public void setInteraction(InteractionCase ic){
+        this.current_interaction = ic;
+    }
+    public InteractionCase getCurrentInteraction(){
+        return this.current_interaction;
+    }
 }

@@ -7,6 +7,7 @@
 package Game;
 
 import Cards.Components.Card;
+import org.json.JSONObject;
 
 /**
  *
@@ -14,6 +15,7 @@ import Cards.Components.Card;
  */
 public class RewardCase extends SpecialCase{
     private int cardgain = 0;
+    private JSONObject behaviour = null;
     public RewardCase(Player victim){
         super(victim);
     }
@@ -24,4 +26,11 @@ public class RewardCase extends SpecialCase{
     public void setCardGain(int cardgain){
         this.cardgain = cardgain;
     }
+    public JSONObject reward_behaviour(){
+        return behaviour;
+    }
+    public void setRewardBehaviour(JSONObject obj){
+        this.behaviour = obj;
+    }
+    
 }

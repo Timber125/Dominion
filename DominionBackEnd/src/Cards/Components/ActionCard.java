@@ -26,4 +26,6 @@ public abstract class ActionCard extends Card{
         // Every action card implements the test-action , for now.
     }
     
+    
+    
 }

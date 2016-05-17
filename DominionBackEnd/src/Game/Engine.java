@@ -48,6 +48,8 @@ public class Engine {
     private Environment env;
     
     
+    private boolean interactionmode = false;
+    
     /*
     *
     *   Baseset functions 
@@ -117,7 +119,7 @@ public class Engine {
         
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("market", "market", 10));
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("village", "village", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("woodcutter", "woodcutter", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("bureaucrat", "bureaucrat", 10));
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("laboratory", "laboratory", 10));
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("councilroom", "councilroom", 10));
         
@@ -151,9 +153,7 @@ public class Engine {
     
     */
     
-    public void process(JSONObject action){
-        
-    }
+    
     private String getCurrentPlayerSession(){
         return playerOrder.get(current_turn);
     }
@@ -186,7 +186,7 @@ public class Engine {
             }
         }
         JSONObject obj = JSONUtilities.JSON.make_client_hand_valid(actioncardnames);
-        server.getClient(p.mySession).write(obj);
+        server.getClient(p.getSession()).write(obj);
     }
     private void enterActionPhase(){
         current_phase = 1;
@@ -275,6 +275,10 @@ public class Engine {
     }
     
     public void processCard(JSONObject json) {
+        if(interactionmode) {
+            processInteraction(json);
+            return;
+        }
         if(isRequestFromCurrentTurnPlayer(json)){
             Player p = getPlayerWhoSent(json);
             String cardname = json.getString("cardname");
@@ -294,6 +298,7 @@ public class Engine {
                         return;
                     }
                 }
+                
                 server.sendOne(JSONUtilities.JSON.make_client_lose(cardname, json.getString("id")), json.getString("session"));
 
                 money += c.moneygain();
@@ -301,24 +306,25 @@ public class Engine {
                 purchases += c.purchasegain();
                 int cardsgain = c.cardgain();
                 for(int i = 0; i < cardsgain; i++){
-                    give_card_to_player_hand(p.mySession);
+                    give_card_to_player_hand(p.getSession());
                 }
                 server.sendAll(JSONUtilities.JSON.make_client_turninfo(actions, purchases, money));
                 server.sendAll(JSONUtilities.JSON.make_client_print("*" + server.getNickname(json.getString("session")) + " played " + cardname));
                 
                 // Introduce check if the played actioncard has a special phase. 
                 if(c.hasSpecial()){
+                    System.out.println("- " + c.getName() + " has a special:");
                     for(Player victim : players.values()){
-                        if(victim.mySession.equals(p.mySession)) continue; // Don't treat the initiator as a victim
-                        else {
+                        //if(victim.getSession().equals(p.getSession())) continue; // Do (!!) treat the initiator as a victim
                             SpecialCase spec = c.special(victim, p);
                             if(spec instanceof RewardCase){
+                                System.out.println("--RewardCase initialized");
                                 handleRewards((RewardCase) spec);
                             }else if(spec instanceof InteractionCase){
-                                // Not implemented yet.
+                                // in testing
+                                System.out.println("-- InteractionCase initialized");
                                 handleInteraction((InteractionCase) spec);
                             }
-                        }
                     }
                 }
                 
@@ -365,6 +371,7 @@ public class Engine {
             }
         }
     }
+    
     public void nextPhase(String session) {
         if(!session.equals(playerOrder.get(current_turn))){
             System.err.println("Intercepted malicious nextPhase package from client " + server.getNickname(session) +".");
@@ -446,7 +453,7 @@ public class Engine {
     
     private void make_client_update_deck(Player p){
         JSONObject deckupdate = JSONUtilities.JSON.make_client_update_environment("deck", p.deck.content.size());
-        server.getClient(p.mySession).write(deckupdate);
+        server.getClient(p.getSession()).write(deckupdate);
     }
     private void make_client_update_discardpile(Player p){
         int index = p.deck.used.size()-1;
@@ -455,11 +462,16 @@ public class Engine {
             cardname = p.deck.used.get(index).getName();
         }
         JSONObject discupdate = JSONUtilities.JSON.make_client_update_discardpile(cardname);
-        server.getClient(p.mySession).write(discupdate);
+        server.getClient(p.getSession()).write(discupdate);
         JSONObject disc_count_update = JSONUtilities.JSON.make_client_update_environment("discardpile", index+1);
-        server.getClient(p.mySession).write(disc_count_update);
+        server.getClient(p.getSession()).write(disc_count_update);
     }
-
+    private void make_clients_update_environment(String cardidentifier){
+        server.sendAll(JSONUtilities.JSON.make_client_turninfo(actions, purchases, money));
+        server.sendAll(JSONUtilities.JSON.make_client_update_environment(cardidentifier, env.environment_amountcheck(cardidentifier)));
+        server.sendAll(JSONUtilities.JSON.make_client_print("there are " + env.environment_amountcheck(cardidentifier) + " " + cardidentifier + "'s" + " left on the table."));
+            
+    }
     
     
     /*
@@ -472,14 +484,98 @@ public class Engine {
     private void handleRewards(RewardCase rewardCase) {
         Player victim = rewardCase.getVictim();
         for(int cardgains = 0; cardgains < rewardCase.cardgain(); cardgains++){
-            give_card_to_player_hand(victim.mySession);
+            give_card_to_player_hand(victim.getSession());
         }
         // Other rewards?
+        JSONObject specialbehaviour = rewardCase.reward_behaviour();
+        if(specialbehaviour != null){
+            handleSpecialJSON(specialbehaviour, rewardCase.getVictim());
+        }
     }
 
     private void handleInteraction(InteractionCase interactionCase) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // Send an interaction json to every client, based upon the interactioncase specifications. 
+        // We need to block the engine until we receive enough cards to make every ic valid
+        // When every ic is valid, we need to pass the ic's special cards to the initiator 
+        // The initiator gives us back what he selected, + behaviour, in a rewardcase. 
+        interactionCase.getVictim().setInteraction(interactionCase); // link the interactioncase. 
+        System.out.println("--- handling interactioncase ---");
+        if(!interactionCase.isValid()){
+            System.out.println("----- interactioncase was found invalid. Sending confirmation to victim.");
+            this.interactionmode = true;
+            // All the information is in the interactioncase object. 
+            // Right now we use a dummy information source to try trigger the client confirmation stage. 
+            server.getClient(interactionCase.getVictim().getSession()).write(JSONUtilities.JSON.make_client_confirmation_model_empty("You are being attacked!"));
+        }
+        
     }
     
+    private void handleSpecialJSON(JSONObject special, Player victim){
+        String special_type = special.getString("type");
+        switch(special_type){
+            case("env_gain"):{
+                Card c = env.environment_buy(special.getString("identifier"));
+                String destination = special.getString("dest");
+                switch(destination){
+                    case("top_of_deck"):{
+                        victim.deck.addTopOfDeck(c);
+                        break;
+                    }
+                    case("bottom_of_deck"):{
+                        victim.deck.addBottomOfDeck(c);
+                        break;
+                    }
+                    case("top_of_discardpile"):{
+                        victim.deck.add(c);
+                        break;
+                    }
+                    default:{
+                        victim.deck.add(c);
+                    }
+                }
+                // Update clients
+                make_clients_update_environment(special.getString("identifier"));
+                make_client_update_deck(victim);
+                make_client_update_discardpile(victim);
+                break;
+            }
+        }
+    }
+
+    private void processInteraction(JSONObject json) {
+        String session = json.getString("session");
+        Player victim = players.get(session);
+        String cardname = json.getString("cardname");
+        Card RTIed = env.CardRTI(cardname);
+        victim.getCurrentInteraction().process(RTIed, true, Long.parseLong(json.getString("id")));
+        if(victim.getCurrentInteraction().isValid()){
+            checkInteractionModeRequirements();
+        }
+    }
+
+    private void checkInteractionModeRequirements() {
+        for(Player p : players.values()){
+            if(p.getCurrentInteraction() != null){
+                if(!p.getCurrentInteraction().isValid()) return;
+            }
+        }
+        proposeInteraction();
+    }
+
+    private void proposeInteraction() {
+        interactionmode = false;
+        
+        for(Player p : players.values()){
+            InteractionCase ic = p.getCurrentInteraction();
+            // Extract values
+            // Add an interaction to the initiator
+            // Stay in interactionmode, but deny all requests not coming from initiator
+            // When initiator gives back a resultJSON, we finish the interactions accordingly. 
+        }
+        // End the interactions given the interactionCases 
+        
+        // We get 3 interactioncases to inject into a JSONobject that should trigger the initiator's confirmframe
+        // Interactionmode is not finished 
+    }
     
 }

@@ -62,4 +62,10 @@ public abstract class Card {
     public boolean hasSpecial(){
         return false;
     }
+    public boolean is_attack(){
+        return false;
+    }
+    public boolean is_block(){
+        return false;
+    }
 }

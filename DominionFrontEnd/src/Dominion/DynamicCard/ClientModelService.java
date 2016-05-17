@@ -8,12 +8,15 @@ package Dominion.DynamicCard;
 
 import Client.JSonFactory;
 import Client.ServiceModel;
+import Dominion.Confirmation.ConfirmInfo;
+import Dominion.Confirmation.ConfirmManager;
 import Dominion.DynamicStack.Stack;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import org.json.JSONObject;
 
 /**
@@ -40,11 +43,13 @@ public class ClientModelService extends ServiceModel{
     
     protected ArrayList<Card> currentHand = new ArrayList<>();
     protected HashMap<String, Stack> environment = new HashMap<>();
-    
+    protected ConfirmManager confirmationmanager;
     
     public ClientModelService(ClientControlV2 controller) {
         super(keywordprototype);
         this.controller = controller;
+        confirmationmanager = new ConfirmManager(new Stage(), "ConfirmView.fxml", "Confirm", 640, 740, this);
+        confirmationmanager.hide();
     }
 
     @Override
@@ -119,6 +124,11 @@ public class ClientModelService extends ServiceModel{
             case("turninfo"):{
                 // Turninfo update
                 updateTurnInfo(obj);
+                break;
+            }
+            case("confirm"):{
+                // Confirmation
+                handleConfirmationPackage(obj);
                 break;
             }
             default:{
@@ -364,6 +374,14 @@ public class ClientModelService extends ServiceModel{
         environment.put("estate", estatestack);
         environment.put("duchy", duchystack);
         environment.put("province", provincestack);
+    }
+
+    private void handleConfirmationPackage(JSONObject obj) {
+
+        ConfirmInfo info = new ConfirmInfo(obj);
+        confirmationmanager.insert_information(info);
+        confirmationmanager.show();
+    
     }
 
     

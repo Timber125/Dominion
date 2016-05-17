@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="650.0" prefWidth="750.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <children>
+    <Pane layoutX="0.0" layoutY="0.0" prefHeight="650.0" prefWidth="751.0" style="-fx-background-color:BLACK;">
+      <children>
+        <ScrollPane layoutX="0.0" layoutY="0.0" prefHeight="205.0" prefWidth="605.0" style="-fx-background-color:BLACK;" vbarPolicy="AS_NEEDED">
+          <content>
+            <AnchorPane id="Content" fx:id="cardpane_0" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="600.0" style="-fx-background-color:#000080;" />
+          </content>
+        </ScrollPane>
+        <ScrollPane layoutX="0.0" layoutY="201.0" prefHeight="205.0" prefWidth="605.0" style="-fx-background-color:BLACK;">
+          <content>
+            <AnchorPane id="Content" fx:id="cardpane_1" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="600.0" style="-fx-background-color:#000080;" />
+          </content>
+        </ScrollPane>
+        <ScrollPane layoutX="0.0" layoutY="402.0" prefHeight="205.0" prefWidth="605.0" style="-fx-background-color:BLACK;">
+          <content>
+            <AnchorPane id="Content" fx:id="cardpane_2" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="600.0" style="-fx-background-color:#000080;" />
+          </content>
+        </ScrollPane>
+        <Label fx:id="nickname_0" alignment="CENTER" layoutX="614.0" layoutY="14.0" prefWidth="122.0" text="Player 1" textAlignment="CENTER">
+          <font>
+            <Font name="System Bold Italic" size="14.0" fx:id="x1" />
+          </font>
+          <textFill>
+            <Color blue="0.000" green="0.960" red="1.000" fx:id="x2" />
+          </textFill>
+        </Label>
+        <Label fx:id="nickname_1" alignment="CENTER" font="$x1" layoutX="614.0" layoutY="205.0" prefWidth="122.0" text="Player 2" textAlignment="CENTER" textFill="$x2" />
+        <Label fx:id="nickname_2" alignment="CENTER" font="$x1" layoutX="614.0" layoutY="406.0" prefWidth="122.0" text="Player 3" textAlignment="CENTER" textFill="$x2" />
+        <Label fx:id="decksize_0" alignment="CENTER_LEFT" font="$x1" layoutX="614.0" layoutY="48.0" prefWidth="122.0" text="Deck size: x" textAlignment="LEFT" textFill="$x2" />
+        <Label id="discardsize_1" fx:id="discardsize_0" alignment="CENTER_LEFT" font="$x1" layoutX="614.0" layoutY="78.0" prefWidth="122.0" text="Discardpile size: x" textAlignment="LEFT" textFill="$x2" />
+        <Label fx:id="handsize_0" alignment="CENTER_LEFT" font="$x1" layoutX="614.0" layoutY="106.0" prefWidth="122.0" text="Hand size: x" textAlignment="LEFT" textFill="$x2" />
+        <Label fx:id="victorypoints_0" alignment="CENTER_LEFT" font="$x1" layoutX="614.0" layoutY="134.0" prefWidth="122.0" text="Victory points: x" textAlignment="LEFT" textFill="$x2" />
+        <Label fx:id="blocked_0" alignment="CENTER_LEFT" font="$x1" layoutX="614.0" layoutY="161.0" prefWidth="122.0" text="Attack Blocked" textAlignment="LEFT" textFill="RED" />
+        <Label fx:id="decksize_1" alignment="CENTER_LEFT" font="$x1" layoutX="614.0" layoutY="236.0" prefWidth="122.0" text="Deck size: x" textAlignment="LEFT" textFill="$x2" />
+        <Label fx:id="discardsize_1" alignment="CENTER_LEFT" font="$x1" layoutX="614.0" layoutY="266.0" prefWidth="122.0" text="Discardpile size: x" textAlignment="LEFT" textFill="$x2" />
+        <Label fx:id="handsize_1" alignment="CENTER_LEFT" font="$x1" layoutX="614.0" layoutY="294.0" prefWidth="122.0" text="Hand size: x" textAlignment="LEFT" textFill="$x2" />
+        <Label fx:id="victorypoints_1" alignment="CENTER_LEFT" font="$x1" layoutX="614.0" layoutY="322.0" prefWidth="122.0" text="Victory points: x" textAlignment="LEFT" textFill="$x2" />
+        <Label fx:id="blocked_1" alignment="CENTER_LEFT" font="$x1" layoutX="614.0" layoutY="349.0" prefWidth="122.0" text="Attack Blocked" textAlignment="LEFT" textFill="RED" />
+        <Label fx:id="decksize_2" alignment="CENTER_LEFT" font="$x1" layoutX="614.0" layoutY="437.0" prefWidth="122.0" text="Deck size: x" textAlignment="LEFT" textFill="$x2" />
+        <Label fx:id="discardsize_2" alignment="CENTER_LEFT" font="$x1" layoutX="614.0" layoutY="467.0" prefWidth="122.0" text="Discardpile size: x" textAlignment="LEFT" textFill="$x2" />
+        <Label fx:id="handsize_2" alignment="CENTER_LEFT" font="$x1" layoutX="614.0" layoutY="495.0" prefWidth="122.0" text="Hand size: x" textAlignment="LEFT" textFill="$x2" />
+        <Label fx:id="victorypoints_2" alignment="CENTER_LEFT" font="$x1" layoutX="614.0" layoutY="523.0" prefWidth="122.0" text="Victory points: x" textAlignment="LEFT" textFill="$x2" />
+        <Label fx:id="blocked_2" alignment="CENTER_LEFT" font="$x1" layoutX="614.0" layoutY="550.0" prefWidth="122.0" text="Attack Passed" textAlignment="LEFT" textFill="#00ff29" />
+        <Button fx:id="confirmbutton" layoutX="375.0" layoutY="605.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="374.0" text="Confirm">
+          <font>
+            <Font name="System Bold" size="16.0" />
+          </font>
+        </Button>
+        <Label fx:id="info" layoutX="4.0" layoutY="604.0" prefHeight="42.0" prefWidth="374.0" text="In dit label kunnen we info schrijven over wat de client eigenlijk moet selecteren, en wat er gebeurt met de geselecteerde kaarten" textFill="WHITE" textOverrun="ELLIPSIS" wrapText="true" />
+        <Separator layoutX="601.0" layoutY="402.0" prefWidth="150.0" />
+        <Separator layoutX="602.0" layoutY="201.0" prefWidth="150.0" />
+        <Separator layoutX="602.0" layoutY="602.0" prefWidth="150.0" />
+      </children>
+    </Pane>
+  </children>
+</AnchorPane>

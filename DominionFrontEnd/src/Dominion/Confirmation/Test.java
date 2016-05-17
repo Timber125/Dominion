@@ -4,20 +4,20 @@
  * and open the template in the editor.
  */
 
-package Client.Menu;
+package Dominion.Confirmation;
 
-import Client.Testing.MVCExample.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-
+/**
+ *
+ * @author admin
+ */
 public class Test extends Application{
-    
-    MVCManager manager;    
 
     @Override
     public void start(Stage stage) throws Exception {
-        // Stage, FXML name, Screen title, width, height. 
-        manager = new MVCManager(stage, "MVC.fxml", "Dominion Menu", 500, 500);
+        ConfirmManager conf = new ConfirmManager(stage, "ConfirmView.fxml", "Confirm", 640, 740);
     }
+    
 }
