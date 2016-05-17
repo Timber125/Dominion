@@ -6,6 +6,8 @@
 
 package Client.Menu;
 
+import Client.ConnectionManager;
+
 /**
  *
  * @author admin
@@ -14,6 +16,8 @@ public class MVCModel {
 
     public MVCController myControl;
     public MVCManager myManager;
+    
+    private ConnectionManager myConnection;
     
     public MVCModel(MVCManager manager){
         myManager = manager;
@@ -25,11 +29,12 @@ public class MVCModel {
     public boolean connectPushed(String IPString, String PortString) {
         
         /* myManager.Finish("localhost", 13337); */
+        myConnection = new ConnectionManager(IPString, Integer.parseInt(PortString));
         return true;
     }
     
     public boolean loginPushed(String address, int port, String username, String password){
-        myManager.Finish(address, port, username, password);
+        myManager.Finish(myConnection, username, password);
         return true;
     }
     

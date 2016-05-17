@@ -30,13 +30,13 @@ public class MainV2 extends Application{
 
     @Override
     public void start(Stage stage) throws Exception {
-        MainV2 main = new MainV2(stage, "localhost", 13337, "testjiqlmfjsd");
+        MainV2 main = new MainV2(stage, new ConnectionManager("localhost", 13337), "testjiqlmfjsd");
     }
     
     public ConnectionManager connection;
-    public MainV2(Stage stage, String address, int port, String username){
+    public MainV2(Stage stage, ConnectionManager initialized_connection, String username){
         String initname = username;
-        connection = new ConnectionManager(address, port);
+        connection = initialized_connection; //new ConnectionManager(address, port);
         PrintService printerservice = PrintService.create();
         SessionService sessionservice = SessionService.create(initname);
         connection.registerModel(printerservice);

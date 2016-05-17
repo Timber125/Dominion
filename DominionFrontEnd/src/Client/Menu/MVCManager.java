@@ -6,6 +6,7 @@
 
 package Client.Menu;
 
+import Client.ConnectionManager;
 import Dominion.DynamicCard.MainV2;
 import Dominion.Main;
 import java.io.IOException;
@@ -24,6 +25,8 @@ public class MVCManager {
     
     public MVCModel myModel;
     public MVCController myControl;
+    
+    
     public Stage stage;
     
     public MVCManager(Stage stage, String FXMLname, String title, int height, int width){
@@ -59,7 +62,7 @@ public class MVCManager {
         
     }
     
-    public void Finish(String address, int port, String username, String password){
-        MainV2 main = new MainV2(stage, address, port, username);
+    public void Finish(ConnectionManager connect, String username, String password){
+        MainV2 main = new MainV2(stage, connect, username);
     }
 }
