@@ -228,6 +228,28 @@ public class ClientModelService extends ServiceModel{
                                 
                             });
                             return;
+                        }else if(obj.getString("stack").equals("deck_and_discard")){
+                            
+                            final Card disc_back = new Card("back", controller, "MEDIUM");
+                            Stack discardpile;
+                            discardpile = new Stack(disc_back, 0);
+                            environment.put("discardpile", discardpile);
+                        
+                            final Card deck_back = new Card("back", controller, "MEDIUM");
+                            Stack deck;
+                            deck = new Stack(deck_back, 10);
+                            environment.put("deck", deck);
+                            
+                            Platform.runLater(new Runnable(){
+
+                                @Override
+                                public void run() {
+                                    controller.initialize_myenvironment(environment.get("deck"), environment.get("discardpile"));
+                                }
+                            
+                            });
+                            
+                            return;
                         }
                         // Initialize actioncards in environment
                         // Does not make use of "count" yet -> TODO!
@@ -235,22 +257,13 @@ public class ClientModelService extends ServiceModel{
                         final Stack realStack = new Stack(actionStack, 10);
                         environment.put(obj.getString("stack"), realStack);
                         
-                        final Card disc_back = new Card("back", controller, "MEDIUM");
-                        Stack discardpile;
-                        discardpile = new Stack(disc_back, 0);
-                        environment.put("discardpile", discardpile);
                         
-                        final Card deck_back = new Card("back", controller, "MEDIUM");
-                        Stack deck;
-                        deck = new Stack(deck_back, 10);
-                        environment.put("deck", deck);
                         
                         Platform.runLater(new Runnable(){
 
                             @Override
                             public void run() {
                                 controller.initializeActionStack(realStack);
-                                controller.initialize_myenvironment(environment.get("deck"), environment.get("discardpile"));
                             }
                         
                         });

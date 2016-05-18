@@ -11,12 +11,17 @@ import Server.Service.DominionService;
 import Server.Service.LobbyService;
 import Server.Service.ServiceBroker;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.java_websocket.WebSocket;
+import org.java_websocket.handshake.ClientHandshake;
+import org.java_websocket.server.WebSocketServer;
 import org.json.JSONObject;
 
 
@@ -29,20 +34,23 @@ public class Server implements Runnable{
     private boolean active = false;
     
     private ServerSocket serverSocket;
+    private WebSocketServer wss;
     private final String ip;
     private int port;
+    private int webport;
     
     
     // Thread-race on clients; SYNCHRONIZE before access!
-    public ArrayList<ConnectionHandler> clients;
+    public ArrayList<AbstractConnectionHandler> clients;
     
     public synchronized boolean isActive(){
         return active;
     }
     
-    public Server(String ip, int port){
+    public Server(String ip, int port, int webport){
         this.ip = ip;
         this.port = port;
+        this.webport = webport;
         clients = new ArrayList<>();
     }
     
@@ -54,26 +62,22 @@ public class Server implements Runnable{
     
     protected void notifyClose(){
         synchronized(clients){
-            ArrayList<ConnectionHandler> updated_clients = new ArrayList<>();
+            ArrayList<AbstractConnectionHandler> updated_clients = new ArrayList<>();
             HashMap<String, String> disconnected_sessions = new HashMap<>();
-            for(ConnectionHandler ch : clients){
-                // Null = hard disconnect, Closed = soft disconnect
-                if((ch.client != null) && (!ch.client.isClosed())) updated_clients.add(ch);
+            for(AbstractConnectionHandler ch : clients){
+                // -2 = hard disconnect, -1 = soft disconnect
+                if(ch.connectionState() >= 0) updated_clients.add(ch);
                 else{
                     disconnected_sessions.put(ch.my_session_token, ch.my_nickname);
                 }
             }
             
             for(String s : disconnected_sessions.keySet()){
-                JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
-                obj = JSONUtilities.JSON.addKeyValuePair("sysout", "Client [" + disconnected_sessions.get(s) + "] disconnected.", obj);
-                for(ConnectionHandler ch : updated_clients){
+                JSONObject obj = JSONUtilities.JSON.make_clients_notify_disconnect(disconnected_sessions.get(s));
+                for(AbstractConnectionHandler ch : updated_clients){
                     ch.write(obj.toString());
                 }
-                JSONObject lobbyDisconnect = JSONUtilities.JSON.create("service_type", "lobby");
-                lobbyDisconnect = JSONUtilities.JSON.addKeyValuePair("session", s, lobbyDisconnect);
-                lobbyDisconnect = JSONUtilities.JSON.addKeyValuePair("author", disconnected_sessions.get(s), lobbyDisconnect);
-                lobbyDisconnect = JSONUtilities.JSON.addKeyValuePair("operation", "disconnect", lobbyDisconnect);
+                JSONObject lobbyDisconnect = JSONUtilities.JSON.make_server_disconnect_client_from_lobby(s, disconnected_sessions.get(s));
                 ServiceBroker.instance.offerRequest(lobbyDisconnect.toString());
                 
             }
@@ -85,10 +89,8 @@ public class Server implements Runnable{
     public void shutdown(){
         active = false;
         // Give all connections a warning that server is shutting down. 
-        JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
-        obj = JSONUtilities.JSON.addKeyValuePair("sysout", "Server shutting down. You will be disconnected.", obj);
-        
-        for(ConnectionHandler ch : clients){
+        JSONObject obj = JSONUtilities.JSON.notify_shutdown();
+        for(AbstractConnectionHandler ch : clients){
             ch.write(obj);
         }
         
@@ -101,14 +103,17 @@ public class Server implements Runnable{
             System.err.println("Server shutdown signal sent");
         }
         
-        for(ConnectionHandler ch : clients){
+        for(AbstractConnectionHandler ch : clients){
             ch.cleanUp();
         }
         
         try {
             serverSocket.close();
+            wss.stop();
         } catch (IOException ex) {
-            System.err.println("Cant close serversocket!");
+            System.err.println("Cant close main server: " + ex);
+        } catch (InterruptedException ex) {
+            System.err.println("Cant close webserver: " + ex);
         }
     }
     
@@ -117,14 +122,80 @@ public class Server implements Runnable{
     }
     
     public static void main(String[] args){
-        Server server = new Server("localhost", 13337);
+        Server server = new Server("localhost", 13337, 13338);
         Thread t = new Thread(server);
         t.start();
     }
 
+    
+    private Runnable createRunnableWithCallback(final Server s){
+        Runnable r = new Runnable(){
+
+            @Override
+            public void run() {
+                wss = new WebSocketServer(new InetSocketAddress("127.0.0.1", webport)) {
+
+                    @Override
+                    public void onOpen(WebSocket ws, ClientHandshake ch) {
+                        System.out.println("server - web - onopen");
+                        
+                        try {
+                            WebConnectionHandler wch = new WebConnectionHandler(s, ws);
+                            clients.add(wch);
+                        } catch (UnknownHostException ex) {
+                            System.err.println("unknown host exception: " + ex);
+                        }
+                       
+                    }
+
+                    @Override
+                    public void onClose(WebSocket ws, int i, String string, boolean bln) {
+                         System.out.println("server - web - onclose");
+                    }
+
+                    @Override
+                    public void onMessage(WebSocket ws, String string) {
+                        // If its a custom handshake -> we need to initialize something... 
+                        if(string.startsWith("{client:websock")){
+                             System.out.println("Received custom handshake");
+                             for(AbstractConnectionHandler ach : clients){
+                                 if(ach instanceof WebConnectionHandler){
+                                     if(((WebConnectionHandler) ach).initialized) continue;
+                                     WebSocket achsocket = ((WebConnectionHandler) ach).client;
+                                     if(achsocket.getRemoteSocketAddress().equals(ws.getRemoteSocketAddress())){
+                                         ach.InitiateConnection();
+                                         return;
+                                     }
+                                 }
+                             }
+                        }
+                        // any other case, process the jsonrequest. 
+                        else if(JSONUtilities.JSON.isJSON(string)) ServiceBroker.instance.offerRequest(string);
+                         
+                    }
+
+                    @Override
+                    public void onError(WebSocket ws, Exception excptn) {
+                         System.out.println("server - web - onerror");
+                    }
+                };
+                wss.start();
+            }
+            
+        };
+        return r;
+    }
+    private void runWebSocketServer(){
+        Runnable websocketserver = createRunnableWithCallback(this);
+        Thread websocketserverthread = new Thread(websocketserver);
+        websocketserverthread.start();
+    }
+    
+    
     @Override
     public void run() {
         active = true;
+        runWebSocketServer();
         ServiceBroker.instance.addService(new ChatService(this));
         DominionService ds = new DominionService(this);
         ServiceBroker.instance.addService(ds);
@@ -135,12 +206,12 @@ public class Server implements Runnable{
             while(active){
                 Socket client_connecting = serverSocket.accept();
                 if(active){ // Catch shutdown signals, don't add them to clients.
-                    ConnectionHandler connection = new ConnectionHandler(this, client_connecting);
+                    AbstractConnectionHandler connection = new ConnectionHandlerPrototype(this, client_connecting);
                     connection.InitiateConnection();
                     JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
                     obj = JSONUtilities.JSON.addKeyValuePair("sysout", "guest connected from " + client_connecting.getInetAddress().getHostAddress(), obj);
                     synchronized(clients){
-                        for(ConnectionHandler ch : clients){
+                        for(AbstractConnectionHandler ch : clients){
                             ch.write(obj);
                         }
                         clients.add(connection);
@@ -155,8 +226,8 @@ public class Server implements Runnable{
         ServiceBroker.instance.shutdown();
     }
 
-    public ConnectionHandler getClient(String session){
-        for(ConnectionHandler ch : clients){
+    public AbstractConnectionHandler getClient(String session){
+        for(AbstractConnectionHandler ch : clients){
             if(ch.validSession(JSONUtilities.JSON.create("session", session))) return ch;
         }
         return null;
@@ -167,21 +238,41 @@ public class Server implements Runnable{
     }
     
     public void sendAll(JSONObject packet){
-        for(ConnectionHandler ch : clients){
+        for(AbstractConnectionHandler ch : clients){
             ch.write(packet);
         }
     }
     
     public void sendOne(JSONObject packet, String session){
-        for(ConnectionHandler ch : clients){
+        for(AbstractConnectionHandler ch : clients){
             if(ch.validSession(JSONUtilities.JSON.create("session",session))) ch.write(packet);
         }
     }
     
     public void sendAllExcept(String session, JSONObject packet){
-        for(ConnectionHandler ch : clients){
+        for(AbstractConnectionHandler ch : clients){
             if(!ch.validSession(JSONUtilities.JSON.create("session",session))){
                 ch.write(packet);
+            }
+        }
+    }
+    
+    
+    
+    public void setConnectionType(ConnectionHandlerPrototype ch_proto, String type){
+        switch(type){
+            case("DesktopClient"):{
+                clients.remove(ch_proto);
+                ch_proto.cleanUp();
+                ConnectionHandler ch = new ConnectionHandler(this, ch_proto.client, ch_proto.client_in);
+                ch.InitiateConnection();
+                clients.add(ch);
+                break;
+            }
+            case("WebClient"):{
+                // WebClient has its own port. 
+                // This cascade can be used for other clients that can make a full duplex connection with a java socketserver 
+                break;
             }
         }
     }

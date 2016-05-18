@@ -33,6 +33,10 @@ public class ConnectionListener implements Observable, Runnable{
         this.handler = il;
     }
 
+    public void close() throws IOException{
+        inputstream.close();
+    }
+    
     @Override
     public void removeListener(InvalidationListener il) {
         this.handler = null;

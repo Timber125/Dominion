@@ -25,6 +25,9 @@ public class ServerController {
     TextField PortField;
     
     @FXML
+    TextField WebPortField;
+    
+    @FXML
     ComboBox<String> InternalAddress;
     
     @FXML 
@@ -48,6 +51,7 @@ public class ServerController {
     public Button getStart(){return Start;}
     public Button getStop(){return Stop;}
     public TextField getPort(){return PortField;}
+    public TextField getWebPort(){return WebPortField;}
     public ComboBox getInternal(){return InternalAddress;}
     public TextField getExternal(){return ExternalAddress;}
     public Label getStatus(){return Status;}
@@ -82,6 +86,15 @@ public class ServerController {
             
         });
         
+        WebPortField.setOnKeyReleased(new EventHandler<KeyEvent>(){
+
+            @Override
+            public void handle(KeyEvent t) {
+                model.onWebPortChange(WebPortField.getText());
+            }
+            
+        });
+        
     }
     
     public void lock_settings(){
@@ -90,6 +103,7 @@ public class ServerController {
         InternalAddress.setDisable(true);
         ExternalAddress.setDisable(true);
         PortField.setEditable(false);
+        WebPortField.setEditable(false);
         Start.setDisable(true);
         Stop.setDisable(false);
     }
@@ -100,6 +114,7 @@ public class ServerController {
         InternalAddress.setDisable(false);
         ExternalAddress.setDisable(true);
         PortField.setEditable(true);
+        WebPortField.setEditable(true);
         Start.setDisable(false);
         Stop.setDisable(true);
     }

@@ -30,6 +30,11 @@ public class JSonListener extends ConnectionListener{
                     handler.invalidated(this);
                     System.err.println("Received a valid json from client.");
                 }else{
+                    // Very special case: we intercept a browser request for websocket and notify that.
+                    if(s.startsWith("GET /webconnect")){
+                        buffer.offer("{client:web}");
+                        handler.invalidated(this);
+                    }
                     System.err.println("Flushed a non-json message from client:");
                     System.err.println(s);
                 }

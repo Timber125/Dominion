@@ -114,6 +114,7 @@ public class Engine {
         // First send initialize-victory and treasures to clients. (no count is checked)
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("Treasure", "Treasure", 40));
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("Victory", "Victory", 8));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("deck_and_discard", "deck_and_discard", 0));
         // send the chosen actioncards to all players
         
         

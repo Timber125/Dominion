@@ -62,10 +62,12 @@ public class ServerModel {
     
     public void onStartPressed(){
         int port = Integer.parseInt(controller.getPort().getText());
+        int webport = Integer.parseInt(controller.getWebPort().getText());
         String address = controller.getInternal().getValue().toString();
         controller.lock_settings();
-        System.out.println("Starting [" + address + "] [" + port + "]");
-        server = new Server(address, port);
+        System.out.println("Starting Main Server [" + address + "] [" + port + "]");
+        System.out.println("Starting Web Server [" + address + "] [" + webport + "]");
+        server = new Server(address, port, webport);
         Thread t = new Thread(server);
         t.start();
         try {
@@ -157,5 +159,18 @@ public class ServerModel {
         }
         
         return host_aliases;
+    }
+
+    public boolean onWebPortChange(String s) {
+        if(s == null) return portInvalid();
+        if(s.trim().equals("")) return portInvalid();
+        try{
+            int i = Integer.parseInt(s);
+            if((i >= 1) && (i <= 65535)) return portValid();
+            return portInvalid();
+        }catch(Exception e){
+            // Cast exception? Invalid!
+            return portInvalid();
+        }
     }
 }

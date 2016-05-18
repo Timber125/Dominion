@@ -30,6 +30,8 @@ public class JSONUtilities {
             // Cast exception: msg is not a valid jsonobject.
             System.err.println("cast2json error: " + e);
             return null;
+        }catch(NullPointerException npe){
+            System.err.println("cast2json error: nullpointer message");
         }
         return o;
     }
@@ -58,7 +60,23 @@ public class JSONUtilities {
         json.put(key, value);
         return json;
     }
-    
+    public JSONObject notify_shutdown(){
+        JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
+        obj = JSONUtilities.JSON.addKeyValuePair("sysout", "Server shutting down. You will be disconnected.", obj);
+        return obj;
+    }
+    public JSONObject make_clients_notify_disconnect(String nickname){
+        JSONObject obj = JSONUtilities.JSON.create("action", "sysout");
+        obj = JSONUtilities.JSON.addKeyValuePair("sysout", "Client [" + nickname + "] disconnected.", obj);
+        return obj;
+    }
+    public JSONObject make_server_disconnect_client_from_lobby(String session, String nickname){
+        JSONObject lobbyDisconnect = JSONUtilities.JSON.create("service_type", "lobby");
+        lobbyDisconnect = JSONUtilities.JSON.addKeyValuePair("session", session, lobbyDisconnect);
+        lobbyDisconnect = JSONUtilities.JSON.addKeyValuePair("author", nickname, lobbyDisconnect);
+        lobbyDisconnect = JSONUtilities.JSON.addKeyValuePair("operation", "disconnect", lobbyDisconnect);
+        return lobbyDisconnect;
+    }
     public JSONObject make_client_print(String message){
         JSONObject json = create("action", "sysout");
         json = addKeyValuePair("sysout", message, json);

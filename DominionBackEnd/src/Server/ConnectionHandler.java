@@ -27,60 +27,32 @@ import org.json.JSONObject;
  *
  * @author admin
  */
-public class ConnectionHandler implements Runnable, InvalidationListener{
+public class ConnectionHandler extends AbstractConnectionHandler implements Runnable, InvalidationListener{
 
-    /* These variables are not related to ConnectionHandler objects!
-     There is only 1 of each per "program", and it is only accessible for each ConnectionHandler object. 
-     You create variables like this (1 per program, accessible only for these objects) by using the "private static" keyword.
-     If you want it to be available throughout the whole program, make it "public static". This can be avoided in most cases by good design. 
-     If you ever need a public static variable, consider every other possible way, because public static is ugly. 
-     As you probably know, adding keyword "final" makes it a constant. 
-    */
-    
-    private static Map<String, ConnectionHandler> sessions = new HashMap<>();
-    final private static String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#@";
-    final private static int tokensize = 13;
-    /************************************************************/
-    
-    
-    private String hostName;
-    private String hostAddress;
     public Socket client;
-    
-    protected String my_session_token;
-    protected String my_nickname = "guest";
     
     private PrintWriter client_out;
     private ConnectionListener client_in;
     
-    private Server server;
     
-    
-    
-    public ConnectionHandler(Server server, Socket client){
-        this.server = server;
-        my_session_token = createSessionToken();
+    public ConnectionHandler(Server server, Socket client, ConnectionListener client_in){
+        super(server);
+        this.client_in = client_in;
         initialize(client);
     }
     
-    // Be careful, should only be accessed from within communication protocols
-    public void changeNickname(String nickname){
-        my_nickname = nickname;
-    }
-    
-    public String getNickname(){
-        return my_nickname;
-    }
-    
+    @Override
     public void InitiateConnection(){
         Thread t = new Thread(this);
         t.start();
     }
     
+    @Override
     public void write(String s){
         client_out.println(s);
     }
     
+    @Override
     public void write(JSONObject json){
         client_out.println(json.toString());
     }
@@ -99,7 +71,7 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
     public void run() {
         
         try {
-            startListener(new BufferedReader(new InputStreamReader(client.getInputStream())));
+            //startListener(new BufferedReader(new InputStreamReader(client.getInputStream())));
             startWriter(new PrintWriter(client.getOutputStream()));
             
             
@@ -120,11 +92,11 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
             client = null;
         }
         server.notifyClose();
-        sessions.remove(my_session_token);
     }
     
     private void initialize(Socket client) {
         this.client = client;
+        client_in.addListener(this);
         InetAddress clientAdress = client.getInetAddress();
         hostName = clientAdress.getHostName();
         hostAddress = clientAdress.getHostAddress();
@@ -181,57 +153,12 @@ public class ConnectionHandler implements Runnable, InvalidationListener{
         
     }
 
-    private String createSessionToken() {
-        String s = "";
-        while((s.equals("")) || (sessions.containsKey(s))){
-            s = "";
-            Random r = new Random(System.currentTimeMillis()); // Create a random seed 
-            for(int i = 0; i < tokensize; i++){
-                int b = r.nextInt(alphabet.length());
-                char c = alphabet.charAt(b);
-                s += c;
-            }
-        }
-        return s;
-    }
-    public boolean validSession(JSONObject json){
-        return (json.getString("session").equals(my_session_token));
-    }
-    // Extract crafted json-communication before it is sent to the services!
-    public boolean validSession(String json){
-        JSONObject obj = JSONUtilities.JSON.toJSON(json);
-        String given_session = obj.getString("session");
-        return (given_session.equals(my_session_token));
-        // Short form for:
-        // ==> IF equals THEN return true
-        // ==> IF not equals THEN return false
+    @Override
+    public int connectionState() {
+        if(client == null) return -2;
+        if(client.isClosed()) return -1;
+        if(client.isConnected()) return 1;
+        else return 0;
     }
 
-    
-        // remove potentially crafted authors
-        // Add the valid author name registered on server
-        // Send through
-    
-    private String inject_client_information(String json_stringified) {
-        JSONObject obj = JSONUtilities.JSON.toJSON(json_stringified);
-        obj.put("author", my_nickname);
-        return obj.toString();
-    }
-    
-    private String inject_client_information(JSONObject obj){
-        obj.put("author", my_nickname);
-        return obj.toString();
-    }
-    
-    private JSONObject inject_client_information_json(String json_stringified){
-        JSONObject obj = JSONUtilities.JSON.toJSON(json_stringified);
-        obj.put("author", my_nickname);
-        return obj;
-    }
-    private JSONObject inject_client_information_json(JSONObject obj){
-        obj.put("author", my_nickname);
-        return obj;
-    }
-
-    
 }

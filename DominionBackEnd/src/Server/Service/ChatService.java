@@ -6,6 +6,7 @@
 
 package Server.Service;
 
+import Server.AbstractConnectionHandler;
 import Server.ConnectionHandler;
 import Server.JSONUtilities;
 import Server.Server;
@@ -40,7 +41,7 @@ public class ChatService extends Service{
         String writeback = author + ": " + message;
         JSONObject reply = JSONUtilities.JSON.create("action", "sysout");
         reply = JSONUtilities.JSON.addKeyValuePair("sysout", writeback, reply);
-        for(ConnectionHandler ch : server.clients){
+        for(AbstractConnectionHandler ch : server.clients){
             ch.write(reply);
         }
         
@@ -48,7 +49,7 @@ public class ChatService extends Service{
     
     public void handle_command(String command, JSONObject json){
         if(command.startsWith("rename ")){
-            ConnectionHandler ch = server.getClient(json.getString("session"));
+            AbstractConnectionHandler ch = server.getClient(json.getString("session"));
             String rename = command.substring(7).trim();
             String oldname = ch.getNickname();
             ch.changeNickname(rename);
@@ -95,7 +96,7 @@ public class ChatService extends Service{
             }
             case("help"):{
                 JSONObject help = HelpCommand();
-                for(ConnectionHandler ch : server.clients){
+                for(AbstractConnectionHandler ch : server.clients){
                     if(ch.validSession(json.toString()))ch.write(help);
                 }
                 return;
@@ -104,7 +105,7 @@ public class ChatService extends Service{
                 String writeback = "command [" + command + "] not found.";
                 JSONObject reply = JSONUtilities.JSON.create("action", "sysout");
                 reply = JSONUtilities.JSON.addKeyValuePair("sysout", writeback, reply);
-                for(ConnectionHandler ch : server.clients){
+                for(AbstractConnectionHandler ch : server.clients){
                     // Only address the command issuer.
                     if(ch.validSession(json.toString())) ch.write(reply);
                 }

@@ -107,6 +107,7 @@ public class ConnectionManager {
         server.addListener(this);
         Thread connectionthread = new Thread(server);
         connectionthread.start();
+        server.write("{client:desktop}");
         return true;
     }
     
