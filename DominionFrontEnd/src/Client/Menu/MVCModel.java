@@ -30,11 +30,12 @@ public class MVCModel {
         
         /* myManager.Finish("localhost", 13337); */
         myConnection = new ConnectionManager(IPString, Integer.parseInt(PortString));
-        return true;
+        myManager.prepare(myConnection);
+        return myConnection.init_server();
     }
     
     public boolean loginPushed(String address, int port, String username, String password){
-        myManager.Finish(myConnection, username, password);
+        myManager.Finish(username);
         return true;
     }
     

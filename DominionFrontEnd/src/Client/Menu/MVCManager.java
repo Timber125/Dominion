@@ -23,6 +23,8 @@ import javafx.stage.WindowEvent;
  */
 public class MVCManager {
     
+    private MainV2 main;
+    
     public MVCModel myModel;
     public MVCController myControl;
     
@@ -62,7 +64,11 @@ public class MVCManager {
         
     }
     
-    public void Finish(ConnectionManager connect, String username, String password){
-        MainV2 main = new MainV2(stage, connect, username);
+    public void Finish(String username){
+        main.buildInterface(username);
+    }
+    
+    public void prepare(ConnectionManager connect){
+        this.main = new MainV2(stage, connect);
     }
 }

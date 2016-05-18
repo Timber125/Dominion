@@ -27,20 +27,27 @@ import javax.swing.JOptionPane;
  * @author admin
  */
 public class MainV2 extends Application{
+    private Stage stage;
+    private PrintService printerservice;
+    private SessionService sessionservice;
 
     @Override
     public void start(Stage stage) throws Exception {
-        MainV2 main = new MainV2(stage, new ConnectionManager("localhost", 13337), "testjiqlmfjsd");
+        MainV2 main = new MainV2(stage, new ConnectionManager("localhost", 13337));
     }
     
     public ConnectionManager connection;
-    public MainV2(Stage stage, ConnectionManager initialized_connection, String username){
-        String initname = username;
+    public MainV2(Stage stage, ConnectionManager initialized_connection){
+        this.stage = stage;
         connection = initialized_connection; //new ConnectionManager(address, port);
-        PrintService printerservice = PrintService.create();
-        SessionService sessionservice = SessionService.create(initname);
+        this.printerservice = PrintService.create();
+        this.sessionservice = SessionService.create("guest");
         connection.registerModel(printerservice);
         connection.registerModel(sessionservice);
+        sessionservice.setConnectionManager(connection);
+    }
+    
+    public void buildInterface(String initname){
         ClientControlV2 control = new ClientControlV2(initname, this);
         ClientModelService modelservice = new ClientModelService(control);
         connection.registerModel(modelservice);
@@ -67,10 +74,10 @@ public class MainV2 extends Application{
         }
     control.init();
     printerservice.setOutput(control.getDisplay());
-    sessionservice.setConnectionManager(connection);
     control.setConnection(connection);
     try{control.setModel(modelservice);} catch (IOException e){System.err.println("IOException");}
-    System.out.println("Server started: " + connection.init_server());
+    System.out.println("Server started: ");
+    connection.write(JSonFactory.JSON.protocol_chat("guest", "!rename " + initname));
     }
     
     
