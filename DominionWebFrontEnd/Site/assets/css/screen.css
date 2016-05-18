@@ -6,7 +6,61 @@
 body {
     font-family: 'Droid Sans', sans-serif;
     font-size: 1rem;
-    background-color: #FFFFFF;
+    background-color: #14076f;
     color: #000000;
     padding-top: 10px;
+    color: #FFFFFF;
 }
+
+.cf:before,
+.cf:after{
+    content:"";
+    display:table;
+}
+.cf:after {
+    clear: both;
+}
+
+#actions {
+    padding: 50px;
+    padding-left: 150px;
+}
+
+#victory {
+    padding-left: 10px;
+    padding-right: 10px;
+    float: left;
+    border-style: solid;
+    border-color: #00ff21;
+}
+
+#victory li{
+    padding-bottom: 100px;
+}
+
+#middlefloat {
+    float:left;
+}
+
+#actions li{
+    display: inline;
+}
+
+#amounts {
+    padding-left: 10px;
+}
+
+#amounts li {
+    padding-top: 10px;
+}
+
+
+#coins li{
+    padding-bottom: 100px;
+}
+
+#coins {
+    float: right;
+    padding-right: 10px;
+}
+
