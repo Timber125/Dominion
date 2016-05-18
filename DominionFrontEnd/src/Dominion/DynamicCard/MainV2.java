@@ -89,4 +89,25 @@ public class MainV2 extends Application{
         System.out.println("You clicked the stack of " + cardname + "'s.");
         connection.write(JSonFactory.JSON.protocol_cardBuy(cardname));
     }
+
+    public void ready_changed(boolean selected, String chat_alias) {
+        if(selected){
+            System.out.println("You are ready");
+            connection.write(JSonFactory.JSON.protocol_chat(chat_alias, "!lobbyvote"));
+        }
+        else{
+            System.out.println("You are unready");
+            connection.write(JSonFactory.JSON.protocol_chat(chat_alias, "!lobbyunvote"));
+        }
+    }
+
+    public void join_changed(boolean selected, String chat_alias) {
+        if(selected){
+            System.out.println("you joined");
+            connection.write(JSonFactory.JSON.protocol_chat(chat_alias, "!lobbyconnect"));
+        }else{
+            System.out.println("you unjoined");
+            connection.write(JSonFactory.JSON.protocol_chat(chat_alias, "!lobbydisconnect"));
+        }
+    }
 }

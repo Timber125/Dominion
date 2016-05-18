@@ -50,11 +50,8 @@
         </Pane>
         <Pane fx:id="Pane1" layoutX="0.0" layoutY="598.0" prefHeight="80.00022207030997" prefWidth="527.0" style="-fx-background-color:BLACK;">
           <children>
-            <Label alignment="CENTER" layoutX="43.0" layoutY="7.0" prefHeight="64.0" prefWidth="441.0" text="Reserved for Lobby Information" textAlignment="CENTER" textFill="GREY">
-              <font>
-                <Font name="System Bold Italic" size="20.0" />
-              </font>
-            </Label>
+            <CheckBox id="" fx:id="Ready" layoutX="166.0" layoutY="14.0" mnemonicParsing="false" text="Ready" />
+            <CheckBox id="" fx:id="Join" layoutX="312.0" layoutY="14.0" mnemonicParsing="false" text="Join" />
           </children>
         </Pane>
         <Pane fx:id="VictoryPane" layoutX="0.0" layoutY="0.0" prefHeight="600.0" prefWidth="150.0" style="-fx-background-color:BLACK;" />

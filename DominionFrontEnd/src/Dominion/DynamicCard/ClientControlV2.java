@@ -24,6 +24,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -108,7 +109,12 @@ public class ClientControlV2{
     
     @FXML
     Pane VictoryPane;
+   
+    @FXML
+    CheckBox Join;
     
+    @FXML
+    CheckBox Ready;
     
     private ConnectionManager connection;
     private ClientModelService model;
@@ -138,6 +144,25 @@ public class ClientControlV2{
             }
             
         });
+        Join.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent t){
+                main.join_changed(Join.selectedProperty().get(), chat_alias);
+                if(Join.selectedProperty().get()){
+                    Ready.setDisable(false);
+                    Ready.setOnAction(new EventHandler<ActionEvent>(){
+                        @Override
+                        public void handle(ActionEvent t){
+                            main.ready_changed(Ready.selectedProperty().get(), chat_alias);
+                        }
+                    });
+                }
+                else{
+                    Ready.setDisable(true);
+                }
+            }
+        });
+        Ready.setDisable(true);
     }
     
     public TextArea getDisplay(){
