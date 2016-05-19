@@ -18,6 +18,11 @@ public abstract class ServiceModel {
         this.keywords = keywords;
     }
     
+    public ServiceModel(String keyword){
+        keywords = new ArrayList<>();
+        keywords.add(keyword);
+    }
+    
     public abstract void handle(String json_stringified);
     
 }

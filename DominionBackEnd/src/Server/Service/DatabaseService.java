@@ -27,18 +27,59 @@ public class DatabaseService extends Service {
             Class.forName("com.mysql.jdbc.Driver");
         }
             catch(ClassNotFoundException e){
-                    e.printStackTrace();
                     }
     
     try{
         connection = DriverManager.getConnection("jdbc:mysql://localhost/dominion", "root", "root");
     }   catch(SQLException e){
-        e.printStackTrace();
     }
     }
     
     @Override
-    public void handleType(String type, JSONObject json) {
+    public void handleType(String type, JSONObject json){
+        String function = json.getString("function");
+        String username = json.getString("username");
+        String password = json.getString("password");
+        
+        JSONObject obj = JSONUtilities.JSON.create("action", "menu");
+        obj = JSONUtilities.JSON.addKeyValuePair("username", username, obj);
+
+        
+        switch(function){
+            case("register"):{
+               try{
+                   obj = JSONUtilities.JSON.addKeyValuePair("function", "register", obj);
+               if(! register(username, password)){
+                   
+                   obj = JSONUtilities.JSON.addKeyValuePair("succes", "true", obj);
+                   //action: menu
+                    }
+               else{
+                   
+                   obj = JSONUtilities.JSON.addKeyValuePair("succes", "false", obj);
+               }
+                   }catch(SQLException e){
+                   }
+               
+                   
+            }
+            break;
+            case("login"):{
+                try{
+                    obj = JSONUtilities.JSON.addKeyValuePair("function", "login", obj);
+                    if(login(username, password)){
+                        obj = JSONUtilities.JSON.addKeyValuePair("succes", "true", obj);
+                    }
+                    else{
+                        obj = JSONUtilities.JSON.addKeyValuePair("succes", "false", obj);
+                    }
+                }
+                catch(SQLException e){
+                }
+            }
+            
+        }
+        server.getClient(json.getString("session")).write(obj);
     }
     
     public ArrayList<String> getNames() throws SQLException{
@@ -132,7 +173,6 @@ public class DatabaseService extends Service {
         preparedStatement.setString(2, password);
         preparedStatement.executeUpdate();
         }catch(SQLException e){
-            e.printStackTrace();
         }
         return true;
         }

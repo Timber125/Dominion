@@ -21,6 +21,7 @@ public class Player {
     public Deck deck;
     public ArrayList<Card> hand = new ArrayList<>();
     private InteractionCase current_interaction = null;
+    public InteractionCase currentInteraction;
     public Player(String session){
         mySession = session;
         //deck = new Deck(1); // deck-protocol-1: see deck-constructor(s) for explenation. 

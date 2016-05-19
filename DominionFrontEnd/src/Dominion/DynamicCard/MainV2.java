@@ -9,6 +9,7 @@ package Dominion.DynamicCard;
 import Client.ConnectionManager;
 import Client.JSonFactory;
 import Client.PrintService;
+import Client.ServiceModel;
 import Client.SessionService;
 import Client.Testing.ChatView;
 import Dominion.Confirmation.ConfirmManager;
@@ -27,9 +28,9 @@ import javax.swing.JOptionPane;
  * @author admin
  */
 public class MainV2 extends Application{
-    private Stage stage;
-    private PrintService printerservice;
-    private SessionService sessionservice;
+    private final Stage stage;
+    private final PrintService printerservice;
+    private final SessionService sessionservice;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -37,6 +38,8 @@ public class MainV2 extends Application{
     }
     
     public ConnectionManager connection;
+    
+    @Deprecated
     public MainV2(Stage stage, ConnectionManager initialized_connection){
         this.stage = stage;
         connection = initialized_connection; //new ConnectionManager(address, port);
@@ -46,6 +49,18 @@ public class MainV2 extends Application{
         connection.registerModel(sessionservice);
         sessionservice.setConnectionManager(connection);
     }
+    
+    public MainV2(Stage stage, ConnectionManager initialized_connection, ServiceModel menu){
+        this.stage = stage;
+        connection = initialized_connection; //new ConnectionManager(address, port);
+        this.printerservice = PrintService.create();
+        this.sessionservice = SessionService.create("guest");
+        connection.registerModel(printerservice);
+        connection.registerModel(sessionservice);
+        sessionservice.setConnectionManager(connection);
+        connection.registerModel(menu);
+    }
+    
     
     public void buildInterface(String initname){
         ClientControlV2 control = new ClientControlV2(initname, this);

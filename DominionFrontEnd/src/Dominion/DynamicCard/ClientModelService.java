@@ -48,8 +48,17 @@ public class ClientModelService extends ServiceModel{
     public ClientModelService(ClientControlV2 controller) {
         super(keywordprototype);
         this.controller = controller;
-        confirmationmanager = new ConfirmManager(new Stage(), "ConfirmView.fxml", "Confirm", 640, 740, this);
-        confirmationmanager.hide();
+        final ClientModelService that = this;
+        Platform.runLater(new Runnable(){
+            @Override
+            public void run(){
+                confirmationmanager = new ConfirmManager(new Stage(), "ConfirmView.fxml", "Confirm", 640, 740, that);
+                confirmationmanager.hide();
+            };
+            
+        });
+        
+        
     }
 
     @Override

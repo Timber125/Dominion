@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import org.json.JSONObject;
 
 /**
@@ -23,7 +25,7 @@ import org.json.JSONObject;
  * @author admin
  * 
  */
-public class Engine {
+public class Engine implements InvalidationListener{
     
     /* Callback */
     private Server server;
@@ -506,7 +508,7 @@ public class Engine {
             this.interactionmode = true;
             // All the information is in the interactioncase object. 
             // Right now we use a dummy information source to try trigger the client confirmation stage. 
-            server.getClient(interactionCase.getVictim().getSession()).write(JSONUtilities.JSON.make_client_confirmation_model_empty("You are being attacked!"));
+            server.getClient(interactionCase.getVictim().getSession()).write(JSONUtilities.JSON.make_client_conformation_model_test("You are being attacked!"));
         }
         
     }
@@ -578,5 +580,22 @@ public class Engine {
         // We get 3 interactioncases to inject into a JSONobject that should trigger the initiator's confirmframe
         // Interactionmode is not finished 
     }
+
+    @Override
+    public void invalidated(Observable observable) {
+        if(observable instanceof InteractionCase){
+        InteractionCase invalidated = (InteractionCase)observable;
+    }
+    }
+    
+    public void addInteractionCaseFor(InteractionCase interaction){
+        interaction.addListener(this);
+        interaction.getVictim().currentInteraction = interaction;
+    }
+    
+    public void removeInteractionCaseFor(InteractionCase interaction){
+        interaction.getVictim().currentInteraction = null;
+    }
+    
     
 }

@@ -206,28 +206,62 @@ public class JSONUtilities {
         return json;
     }
     
-    public JSONObject make_client_confirmation_model_empty(String info){
+    public JSONObject make_client_conformation_model_empty(String info){
         JSONObject json = create("action", "dominion");
         json = addKeyValuePair("act", "confirm", json);
         json = addKeyValuePair("info", info, json);
         json = addKeyValuePair("stat0", make_player_public_stats_null().toString(), json);
         json = addKeyValuePair("stat1", make_player_public_stats_null().toString(), json);
         json = addKeyValuePair("stat2", make_player_public_stats_null().toString(), json);
-        return json;
+        return json; 
+    }
+    
+    public JSONObject make_client_conformation_model_test(String info){
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "confirm", json);
+        json = addKeyValuePair("info", info, json);
+        json = addKeyValuePair("stat0", make_player_public_stats_test().toString(), json);
+        json = addKeyValuePair("stat1", make_player_public_stats_test().toString(), json);
+        json = addKeyValuePair("stat2", make_player_public_stats_test().toString(), json);
+        return json; 
+    }
+    
+    public JSONObject make_player_public_stats_test(){
+        ArrayList<String> identifiers = new ArrayList<String>();
+        ArrayList<String> cardnames = new ArrayList<String>();
+        identifiers.add("envrionment");
+        cardnames.add("estate");
+        identifiers.add("envrionment");
+        cardnames.add("gold");
+        identifiers.add("envrionment");
+        cardnames.add("market");
+        identifiers.add("hand");
+        cardnames.add("copper");
+        identifiers.add("deck");
+        cardnames.add("estate");
+        identifiers.add("discardpile");
+        cardnames.add("back");
+        identifiers.add("other");
+        cardnames.add("estate");
+        
+        return make_player_public_stats("unused", 0, 0, 0, 0, true, identifiers, cardnames);
         
     }
     
-    public JSONObject make_player_public_stats(String nickname, int decksize, int discardsize, int handsize, int victorypoints, boolean attackblocked){
+    public JSONObject make_player_public_stats(String nickname, int decksize, int discardsize, int handsize, int victorypoints, boolean attackblocked, ArrayList<String> identifiers, ArrayList<String> cardnames){
         JSONObject json = create("nickname", nickname);
         json = addKeyValuePair("decksize", decksize + "", json);
         json = addKeyValuePair("discardsize", discardsize + "", json);
         json = addKeyValuePair("handsize", handsize + "", json);
         json = addKeyValuePair("victorypoints", victorypoints + "", json);
         json = addKeyValuePair("blocked", (attackblocked)?("1"):("0"), json);
+        for(int i = 0; i < cardnames.size(); i++){
+            json = addKeyValuePair(identifiers.get(i), cardnames.get(i), json);
+        }
         return json;
     }
     public JSONObject make_player_public_stats_null(){
-        return make_player_public_stats("unused", 0, 0, 0, 0, true);
+        return make_player_public_stats("unused", 0, 0, 0, 0, true, null, null);
     }
     /**
      * SECTION REGARDING ACTION CARD BEHAVIOUR
@@ -241,6 +275,8 @@ public class JSONUtilities {
         json = addKeyValuePair("identifier", "silver", json);
         return json;
     }
+    
+    
     
     
 }

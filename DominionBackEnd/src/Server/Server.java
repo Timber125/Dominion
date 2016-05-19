@@ -7,6 +7,7 @@
 package Server;
 
 import Server.Service.ChatService;
+import Server.Service.DatabaseService;
 import Server.Service.DominionService;
 import Server.Service.LobbyService;
 import Server.Service.ServiceBroker;
@@ -196,6 +197,7 @@ public class Server implements Runnable{
     public void run() {
         active = true;
         runWebSocketServer();
+        ServiceBroker.instance.addService(new DatabaseService(this));
         ServiceBroker.instance.addService(new ChatService(this));
         DominionService ds = new DominionService(this);
         ServiceBroker.instance.addService(ds);

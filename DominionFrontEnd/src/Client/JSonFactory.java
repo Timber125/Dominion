@@ -97,4 +97,13 @@ public class JSonFactory {
         obj.put("cardname", name);
         return obj;
     }
+    
+    public JSONObject protocol_database(String function, String username, String password){
+        JSONObject obj = new JSONObject();
+        obj.put("service_type", "database");
+        obj.put("function", function);
+        obj.put("username", username);
+        obj.put("password",password);
+        return obj;
+    }
 }

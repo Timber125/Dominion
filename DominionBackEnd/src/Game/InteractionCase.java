@@ -11,12 +11,16 @@ import Cards.Components.Card;
 import Cards.Components.TreasureCard;
 import Cards.Components.VictoryCard;
 import java.util.ArrayList;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 
 /**
  *
  * @author admin
  */
-public class InteractionCase extends SpecialCase{
+public class InteractionCase extends SpecialCase implements Observable{
+    
+    private InvalidationListener engine;
     
     private ArrayList<Card> selectedSpecials = new ArrayList<>();
     private ArrayList<Long> selectedIds = new ArrayList<>();
@@ -218,6 +222,16 @@ public class InteractionCase extends SpecialCase{
     public void manually_add_selectedspecial(Card c, boolean fromhand){
         selectedSpecials.add(c);
         selectedIds.add(0L + selectedSpecials.size()); // Manual iterative id's
+    }
+
+    @Override
+    public void addListener(InvalidationListener listener) {
+        this.engine = listener;
+    }
+
+    @Override
+    public void removeListener(InvalidationListener listener) {
+        this.engine = null;
     }
     
     

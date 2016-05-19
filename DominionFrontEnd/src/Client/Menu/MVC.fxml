@@ -12,17 +12,17 @@
   <children>
     <Pane fx:id="field" layoutX="-1.0" prefHeight="476.0" prefWidth="642.0">
       <children>
-        <TextField id="IP" fx:id="IP" layoutX="73.0" layoutY="67.0" prefWidth="200.0" />
+        <TextField id="IP" fx:id="IP" layoutX="73.0" layoutY="67.0" prefWidth="200.0" text="127.0.0.1" />
         <Label id="IP" layoutX="26.0" layoutY="72.0" prefWidth="111.0" text="IP:" />
         <Button fx:id="Connect" layoutX="73.0" layoutY="175.0" mnemonicParsing="false" text="Connect" />
         <Label id="Port" fx:id="Output" layoutX="26.0" layoutY="124.0" prefWidth="208.0" text="Port:" textFill="#393537" />
-            <TextField fx:id="Port" layoutX="73.0" layoutY="119.0" prefWidth="200.0" />
+            <TextField fx:id="Port" layoutX="73.0" layoutY="119.0" prefWidth="200.0" text="13337" />
             <Button fx:id="Register" layoutX="111.0" layoutY="363.0" mnemonicParsing="false" text="Register" />
             <Label id="IP" layoutX="130.0" layoutY="228.0" prefHeight="21.0" prefWidth="146.0" text="Register or Log in" />
             <Label id="IP" layoutX="25.0" layoutY="279.0" prefHeight="21.0" prefWidth="146.0" text="Username" />
             <Label id="IP" layoutX="25.0" layoutY="317.0" prefHeight="21.0" prefWidth="146.0" text="Password" />
-            <TextField id="IP" fx:id="Username" layoutX="110.0" layoutY="274.0" prefWidth="200.0" />
-            <TextField id="IP" fx:id="Password" layoutX="110.0" layoutY="312.0" prefWidth="200.0" />
+            <TextField id="IP" fx:id="Username" layoutX="110.0" layoutY="274.0" prefWidth="200.0" text="Something" />
+            <TextField id="IP" fx:id="Password" layoutX="110.0" layoutY="312.0" prefWidth="200.0" text="Random" />
             <Button fx:id="Login" layoutX="215.0" layoutY="363.0" mnemonicParsing="false" text="Log in" />
             <Label id="IP" layoutX="25.0" layoutY="14.0" prefHeight="49.0" prefWidth="290.0" text="Dominion Menu">
                <font>

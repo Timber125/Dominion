@@ -10,6 +10,7 @@ import Client.ConnectionManager;
 import Dominion.DynamicCard.MainV2;
 import Dominion.Main;
 import java.io.IOException;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -64,11 +65,16 @@ public class MVCManager {
         
     }
     
-    public void Finish(String username){
-        main.buildInterface(username);
+    public void Finish(final String username){
+        Platform.runLater(new Runnable(){
+            @Override
+            public void run(){
+                 main.buildInterface(username);
+            }
+        });
     }
     
     public void prepare(ConnectionManager connect){
-        this.main = new MainV2(stage, connect);
+        this.main = new MainV2(stage, connect, myModel);
     }
 }
