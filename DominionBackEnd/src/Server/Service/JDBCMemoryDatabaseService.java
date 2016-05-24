@@ -60,13 +60,12 @@ public class JDBCMemoryDatabaseService extends Service {
         preparedStatement.executeUpdate();
         preparedStatement = connection.prepareStatement(createGame_user_session, PreparedStatement.RETURN_GENERATED_KEYS);
         preparedStatement.executeUpdate();
-        System.out.println("iets");
+        System.out.println("zelfs geen goeie error");
     }   catch(SQLException e){
-        System.err.println("Goeie error");
-        //e.printStackTrace();
-        //de syntax if exists is vreemd in deze sql taal, maar we krijgen in exceptie als de tabel al bestaat
-        return;
-    }
+        System.err.println("goeie error");
+        }catch(Exception other){
+            System.err.println("andere error...");
+        }
     }
    
     @Override

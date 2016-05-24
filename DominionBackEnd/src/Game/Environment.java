@@ -81,6 +81,31 @@ public class Environment {
             int num_cards_per_stack = 10;
             int num_actioncards = 10;
             String[] actions = new String[num_actioncards];
+        // adventurer
+        // bureaucrat
+        // cellar
+        // chancellor
+        // chapel
+        
+        // feast
+        // festival
+        // laboratory
+        // gardens
+        // library
+            
+            /*
+            actions[0] = "adventurer";
+            actions[1] = "bureaucrat";
+            actions[2] = "cellar";
+            actions[3] = "chancellor";
+            actions[4] = "chapel";
+            actions[5] = "feast";
+            actions[6] = "festival";
+            actions[7] = "laboratory";
+            actions[8] = "gardens";
+            actions[9] = "library";
+            
+            */
             actions[0] = "throneroom";
             actions[1] = "witch";
             actions[2] = "moat";

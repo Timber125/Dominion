@@ -108,7 +108,33 @@ public class Engine implements InvalidationListener{
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("deck_and_discard", "deck_and_discard", 0));
         // send the chosen actioncards to all players
         
+        // adventurer
+        // bureaucrat
+        // cellar
+        // chancellor
+        // chapel
         
+        // feast
+        // festival
+        // laboratory
+        // gardens
+        // library
+        
+        /*
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("adventurer", "adventurer", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("bureaucrat", "bureaucrat", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("cellar", "cellar", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("chancellor", "chancellor", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("chapel", "chapel", 10));
+        
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("feast", "feast", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("festival", "festival", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("laboratory", "laboratory", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("gardens", "gardens", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("library", "library", 10));
+        
+        
+        */
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("throneroom", "throneroom", 10));
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("witch", "witch", 10));
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("moat", "moat", 10));
