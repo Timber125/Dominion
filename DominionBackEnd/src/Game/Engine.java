@@ -357,7 +357,7 @@ public class Engine implements InvalidationListener{
                 
                 
     }
-    public void processCard(JSONObject json) {
+    public synchronized void processCard(JSONObject json) {
         if(interactionmode) {
             processInteraction(json);
             return;

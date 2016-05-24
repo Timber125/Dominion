@@ -152,7 +152,7 @@ public class ClientModelService extends ServiceModel{
         }
     }
 
-    private void handleControlPackage(JSONObject obj) {
+    private synchronized void handleControlPackage(JSONObject obj) {
         String subject = obj.getString("subject");
         switch(subject){
             case("hand"):{
