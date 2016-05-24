@@ -6,6 +6,7 @@
 package Cards.Basic;
 
 import Cards.Components.ActionCard;
+import Game.Environment;
 import Game.Player;
 import Game.RewardCase;
 import Game.SpecialCase;
@@ -36,7 +37,7 @@ public class Councilroom extends ActionCard {
         return true;
     }
     @Override
-    public SpecialCase special(Player victim, Player initiator){
+    public SpecialCase special(Player victim, Player initiator, Environment env){
         if(victim.getSession().equals(initiator.getSession())) return null; // Dont treat initiator as a victim.
         RewardCase council_rewardcase = new RewardCase(victim);
         council_rewardcase.setCardGain(1);

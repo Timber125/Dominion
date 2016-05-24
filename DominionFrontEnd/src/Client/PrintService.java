@@ -7,6 +7,7 @@
 package Client;
 
 import java.util.ArrayList;
+import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 
 /**
@@ -46,10 +47,16 @@ public class PrintService extends ServiceModel{
     }
     
     @Override
-    public void handle(String json_stringified) {
-        String msg = extract_message(json_stringified);
-        if(output == null) System.out.println("[redirected to stdout] " + msg);
-        else output.appendText(msg + "\n");
+    public void handle(final String json_stringified) {
+        Platform.runLater(new Runnable(){
+            @Override
+            public void run() {
+                 String msg = extract_message(json_stringified);
+                if(output == null) System.out.println("[redirected to stdout] " + msg);
+                else output.appendText(msg + "\n");
+            }
+        });
+        
     }
     
     private String extract_message(String json_stringified){

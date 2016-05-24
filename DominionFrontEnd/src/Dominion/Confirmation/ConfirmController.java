@@ -6,6 +6,7 @@
 
 package Dominion.Confirmation;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -13,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 
@@ -73,7 +75,7 @@ public class ConfirmController {
     AnchorPane cardpane_2;
     
     @FXML
-    Label info;
+    protected Label info;
     @FXML
     Button confirmbutton;
     
@@ -226,9 +228,68 @@ public class ConfirmController {
         }
     }
     
-    public void changeinfo(String info){
-        this.info.setText(info);
+    public void changeinfo(final String infoS){
+        
+        Platform.runLater(new Runnable() {
+
+            @Override
+            public void run() {
+                info.setText("");
+                info.setText(infoS);
+                info.setTextFill(Color.WHITE);
+                info.setStyle("-fx-text-fill:WHITE;");
+                info.setText(infoS);
+            }
+        });
+        
     }
     
+    public void clearCardPane(int index){
+        switch(index){
+            case(0):{
+                cardpane_0.getChildren().clear();
+                cardpane_0.setPrefHeight(200);
+                break;
+            }
+            case(1):{
+                cardpane_1.getChildren().clear();
+                cardpane_1.setPrefHeight(200);
+                break;
+            }
+            case(2):{
+                cardpane_2.getChildren().clear();
+                cardpane_2.setPrefHeight(200);
+                break;
+            }
+            default:{
+                System.err.println("confimcontroller - cardpane index [" + index + "] not recognized");
+            }
+        }
+    }
+    public void addToCardPane(int index, StackPane theview, int locationX, int locationY){
+        switch(index){
+            case(0):{
+                cardpane_0.getChildren().add(theview);
+                theview.relocate(locationX, locationY);
+                cardpane_0.setPrefHeight(locationY + 200);
+                break;
+            }
+            case(1):{
+                cardpane_1.getChildren().add(theview);
+                theview.relocate(locationX, locationY);
+                cardpane_1.setPrefHeight(locationY + 200);
+                break;
+            }
+            case(2):{
+                cardpane_2.getChildren().add(theview);
+                theview.relocate(locationX, locationY);
+                cardpane_2.setPrefHeight(locationY + 200);
+                break;
+            }
+            default:{
+                System.err.println("confimcontroller - addtocardpane index [" + index + "] not recognized");
+            }
+        }
+    }
     
 }

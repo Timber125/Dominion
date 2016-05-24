@@ -6,6 +6,7 @@
 
 package Dominion.DynamicCard;
 
+import Client.ConnectionManager;
 import Client.JSonFactory;
 import Client.ServiceModel;
 import Dominion.Confirmation.ConfirmInfo;
@@ -45,14 +46,14 @@ public class ClientModelService extends ServiceModel{
     protected HashMap<String, Stack> environment = new HashMap<>();
     protected ConfirmManager confirmationmanager;
     
-    public ClientModelService(ClientControlV2 controller) {
+    public ClientModelService(ClientControlV2 controller, final ConnectionManager connection) {
         super(keywordprototype);
         this.controller = controller;
         final ClientModelService that = this;
         Platform.runLater(new Runnable(){
             @Override
             public void run(){
-                confirmationmanager = new ConfirmManager(new Stage(), "ConfirmView.fxml", "Confirm", 640, 740, that);
+                confirmationmanager = new ConfirmManager(new Stage(), "ConfirmView.fxml", "Confirm", 640, 740, that, connection);
                 confirmationmanager.hide();
             };
             
@@ -62,7 +63,7 @@ public class ClientModelService extends ServiceModel{
     }
 
     @Override
-    public void handle(String json_stringified) {
+    public synchronized void handle(String json_stringified) {
         JSONObject obj = JSonFactory.JSON.toJSON(json_stringified);
         String action = obj.getString("act");
         switch(action){
@@ -138,6 +139,11 @@ public class ClientModelService extends ServiceModel{
             case("confirm"):{
                 // Confirmation
                 handleConfirmationPackage(obj);
+                break;
+            }
+            case("confirm_end"):{
+                // Confirmation confirmed
+                confirmationmanager.hide();
                 break;
             }
             default:{
@@ -249,11 +255,23 @@ public class ClientModelService extends ServiceModel{
                             deck = new Stack(deck_back, 10);
                             environment.put("deck", deck);
                             
+                            final Card trash_back = new Card("trash", controller, "MEDIUM");
+                            Stack trash;
+                            trash = new Stack(trash_back, 0);
+                            environment.put("trashpile", trash);
+                            
+                            final Card curse_back = new Card("curse", controller, "MEDIUM");
+                            Stack curses;
+                            curses = new Stack(curse_back, 10);
+                            environment.put("cursepile", curses);
+                            
+                            
+                            
                             Platform.runLater(new Runnable(){
 
                                 @Override
                                 public void run() {
-                                    controller.initialize_myenvironment(environment.get("deck"), environment.get("discardpile"));
+                                    controller.initialize_myenvironment(environment.get("deck"), environment.get("discardpile"), environment.get("trashpile"), environment.get("cursepile"));
                                 }
                             
                             });
@@ -282,6 +300,10 @@ public class ClientModelService extends ServiceModel{
                         // Update count of environment cardstacks
                         final Stack st = environment.get(obj.getString("stack"));
                         final int count = Integer.parseInt(obj.getString("update"));
+                        if(st == null){
+                            System.out.println("NULL UPDATE CAUGHT AND THROWN");
+                            break;
+                        }
                         Platform.runLater(new Runnable(){
 
                             @Override
@@ -319,7 +341,10 @@ public class ClientModelService extends ServiceModel{
                     case("updateview"):{
                         String stackname = obj.getString("stack");
                         // Should be only used with discardpile atm 
-                        
+                        if(stackname == null) {
+                            System.out.println("UPDATE NULL VIEW DISCARDED");
+                            break;
+                        }
                         if(stackname.equals("discardpile")){
                             Stack s = environment.get(stackname);
                             String cardname = obj.getString("update");
@@ -334,10 +359,70 @@ public class ClientModelService extends ServiceModel{
                                 }
                             
                             });
-                        }else{
+                        }else if(stackname.equals("trashpile")){
+                            Stack s = environment.get(stackname);
+                            String cardname = obj.getString("update");
+                            Card medium_print = new Card(cardname, controller, "MEDIUM");
+                            Stack replace = new Stack(medium_print, s.count);
+                            environment.put(stackname, replace);
+                            Platform.runLater(new Runnable(){
+ 
+                                @Override
+                                public void run() {
+                                    controller.reinitialize_disc(environment.get("trahspile"));
+                                }
+                           
+                            });
+                        }
+                        else if(stackname.equals("cursepile")){
+                            Stack s = environment.get(stackname);
+                            String cardname = obj.getString("update");
+                            Card medium_print = new Card(cardname, controller, "MEDIUM");
+                            Stack replace = new Stack(medium_print, s.count);
+                            environment.put(stackname, replace);
+                            Platform.runLater(new Runnable(){
+ 
+                                @Override
+                                public void run() {
+                                    controller.reinitialize_disc(environment.get("cursepile"));
+                                }
+                           
+                            });
+                        }
+                        else{
                             System.err.println("updateview on environment is only implemented (and only used) for discardpile.");
                         }
                         
+                    }
+                }
+                break;
+            }
+            case("table"):{
+                String control = obj.getString("control");
+                switch(control){
+                    case("add"):{
+                        String cardname = obj.getString("cardname");
+                        final Card c = new Card(cardname);
+                        Platform.runLater(new Runnable(){
+
+                            @Override
+                            public void run() {
+                                controller.addCardToTable(c.getView());
+                            }
+                            
+                        });
+                        break;
+                    }
+                    case("clear"):{
+                        Platform.runLater(new Runnable(){
+
+                            @Override
+                            public void run() {
+                                controller.refreshTableCardView();
+                            }
+                            
+                        });
+                        break;
                     }
                 }
                 break;
@@ -401,9 +486,13 @@ public class ClientModelService extends ServiceModel{
     private void handleConfirmationPackage(JSONObject obj) {
 
         ConfirmInfo info = new ConfirmInfo(obj);
-        confirmationmanager.insert_information(info);
+        confirmationmanager.insert_information(info, currentHand);
         confirmationmanager.show();
     
+    }
+    
+    public void askPlayerInfo(){
+        
     }
 
     
@@ -412,3 +501,4 @@ public class ClientModelService extends ServiceModel{
    
     
 }
+// MANUAL MERGE

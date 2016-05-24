@@ -22,5 +22,10 @@ public class Moat extends ActionCard{
         return 2;
     }
     
+    @Override
+    public boolean is_block(){
+        return true;
+    }
+    
     //todo: when another player plays an attackcard, reveal from hand and block the attack
 }

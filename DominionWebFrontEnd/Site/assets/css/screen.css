@@ -6,10 +6,12 @@
 body {
     font-family: 'Droid Sans', sans-serif;
     font-size: 1rem;
+    width: 1800px;
     background-color: #14076f;
-    color: #000000;
-    padding-top: 10px;
     color: #FFFFFF;
+    padding: 55px;
+    padding-top: 100px;
+    text-align: center;
 }
 
 .cf:before,
@@ -21,9 +23,45 @@ body {
     clear: both;
 }
 
+h1{
+    font-size: 2.5rem;
+    padding-bottom: 20px;
+}
+h2{
+    font-size: 1.5rem;
+    padding: 30px;
+}
+form input{
+    margin: 10px;
+}
+.invisible {
+    display: none;
+    
+}
+.horizontal ul {
+    display:inline;
+}
+.horizontal ul li{
+    display:inline;
+}
+.vertical {
+}
+
+img{
+    width: 150px;
+    height: auto;
+}
+
+img:hover {
+    transform: scale(1.75);
+}
+
+
 #actions {
     padding: 50px;
-    padding-left: 150px;
+    padding-left: 285px;
+    width: 910px;
+
 }
 
 #victory {
@@ -35,7 +73,7 @@ body {
 }
 
 #victory li{
-    padding-bottom: 100px;
+    padding-bottom: 25px;
 }
 
 #middlefloat {
@@ -48,6 +86,7 @@ body {
 
 #amounts {
     padding-left: 10px;
+    float:left;
 }
 
 #amounts li {
@@ -55,12 +94,40 @@ body {
 }
 
 
-#coins li{
-    padding-bottom: 100px;
+#treasure li{
+    padding-bottom: 25px;
 }
 
-#coins {
+#treasure {
     float: right;
     padding-right: 10px;
 }
 
+#turn span {
+    padding-right: 1000px;
+}
+
+#hand {
+    padding-left: 290px;
+}
+
+.away img{
+    width: 100px;
+    padding: 45px;
+    padding-right: 20px;
+}
+
+#trash {
+    padding-left: 200px;
+}
+
+#chatbox {
+    background-color: #ffd800;
+    width: 400px;
+}
+
+#connect {
+    float:left;
+    padding-left: 30px;
+    padding-top: 10px;
+}

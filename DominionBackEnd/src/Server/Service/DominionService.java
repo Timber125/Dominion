@@ -72,6 +72,14 @@ public class DominionService extends Service{
                     game.processBuyRequest(json);
                     break;
                 }
+                case("interaction_confirm"):{
+                    game.interactionConfirmRequest(json);
+                    break;
+                }
+                case("askInfo"):{
+                    game.showPlayerInfoTo(json.getString("session"));
+                    break;
+                }
                 default:{
                     System.out.println("Unknown operation: [" + json.getString("operation") + "]");
                 }
@@ -146,3 +154,4 @@ public class DominionService extends Service{
         game = new Engine(listed, this.server);
     }
 }
+// EMIELS VERSION (CLONING OF JSONS)

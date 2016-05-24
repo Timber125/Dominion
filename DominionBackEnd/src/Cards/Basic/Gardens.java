@@ -6,6 +6,11 @@
 package Cards.Basic;
 
 import Cards.Components.VictoryCard;
+import Game.Environment;
+import Game.Player;
+import Game.RewardCase;
+import Game.SpecialCase;
+import Server.JSONUtilities;
 
 /**
  *
@@ -18,5 +23,18 @@ public class Gardens extends VictoryCard {
     }
     
     //todo: Worth 1 victory for each 10 cards in your deck (rounded down)     
+    @Override
+    public boolean hasSpecial(){
+        return true;
+    }
     
+    @Override
+    public SpecialCase special(Player victim, Player initiator, Environment env){
+        if(victim.getSession().equals(initiator.getSession())){
+            RewardCase rc = new RewardCase(victim);
+            rc.setRewardBehaviour(JSONUtilities.JSON.garden_standard_reward());
+            return rc;
+        }
+        return null;
+    }
 }

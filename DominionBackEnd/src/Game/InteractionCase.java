@@ -13,6 +13,7 @@ import Cards.Components.VictoryCard;
 import java.util.ArrayList;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import org.json.JSONObject;
 
 /**
  *
@@ -20,12 +21,38 @@ import javafx.beans.Observable;
  */
 public class InteractionCase extends SpecialCase implements Observable{
     
+    
+    
     private InvalidationListener engine;
     
-    private ArrayList<Card> selectedSpecials = new ArrayList<>();
-    private ArrayList<Long> selectedIds = new ArrayList<>();
+    private JSONObject finishBehaviour;
+    private JSONObject startBehaviour;
+    
+    public JSONObject getStartBehaviour(){
+        return startBehaviour;
+    }
+    
+    public void setStartBehaviour(JSONObject startb){
+        startBehaviour = startb;
+    }
+    
+    public ArrayList<Card> selectedSpecials = new ArrayList<>();
+    public ArrayList<String> selectedIds = new ArrayList<>();
+    
+    public ArrayList<Card> preloadedCards = new ArrayList<>();
+    public ArrayList<String> allowedIds = new ArrayList<>();
+    private boolean numericalIdsAllowed(){
+        return this.action_hand_enabled ||this.victory_hand_enabled || this.treasure_hand_enabled || this.reaction_only;
+    }
+    public void addAllowedId(String id){
+        this.allowedIds.add(id);
+    }
     private Player initiator;
     private Player victim;
+    private boolean isconfirmed = false;
+    public boolean isConfirmed(){
+        return isconfirmed;
+    }
     
     private int minimum_amount = 0;
     private int maximum_amount = 0;
@@ -46,6 +73,12 @@ public class InteractionCase extends SpecialCase implements Observable{
     
     private boolean blockable = false;
     
+    public void setFinishBehaviour(JSONObject obj){
+        this.finishBehaviour = obj;
+    }
+    public JSONObject getFinishBehaviour(){
+        return finishBehaviour;
+    }
     public InteractionCase(Player victim, Player initiator){
         super(victim);
         this.initiator = initiator;
@@ -179,7 +212,10 @@ public class InteractionCase extends SpecialCase implements Observable{
     public ArrayList<Card> getSelected(){
         return selectedSpecials;
     }
-    public boolean process(Card c, boolean fromHand, long id){
+    public ArrayList<String> getIds(){
+        return selectedIds;
+    }
+    public boolean process(Card c, String id){
         if(reaction_only){
             if(c.is_block()){
                 selectedSpecials.add(c);
@@ -193,9 +229,8 @@ public class InteractionCase extends SpecialCase implements Observable{
         if((cost > maximum_cost) || (cost < minimum_cost)) return false;
         if(selectedSpecials.size() >= maximum_amount) return false;
         
-        if(fromHand){
-            if(selectedIds.contains(id)) return false; // Card has been processed already. 
-            
+        if(Character.isDigit(id.charAt(0))){
+            if(selectedIds.contains(new Long(id).toString())) return false; // Card has been processed already. 
             if(c instanceof ActionCard){
                 if(!action_hand_enabled) return false;
             }else if(c instanceof TreasureCard){
@@ -204,6 +239,17 @@ public class InteractionCase extends SpecialCase implements Observable{
                 if(!victory_hand_enabled) return false;
             }
         }else{
+            ArrayList<String> nextallowedids = new ArrayList<>();
+            nextallowedids.addAll(allowedIds);
+            boolean allowed = false;
+            for(String s : allowedIds) {
+                if(id.startsWith(s)){
+                    allowed = true;
+                    break;
+                }
+            }
+            if(!allowed) return false;
+            else allowedIds = nextallowedids;
             if(c instanceof ActionCard){
                 if(!action_env_enabled) return false;
             }else if(c instanceof TreasureCard){
@@ -215,13 +261,23 @@ public class InteractionCase extends SpecialCase implements Observable{
         
         // If this code is reached, all validations have passed, and nothing returned false.
         selectedSpecials.add(c);
-        selectedIds.add(id);
+        if(Character.isDigit(id.charAt(0))) selectedIds.add(new Long(id).toString());
+        else selectedIds.add(id);
         return true;
     }
-    
+    @Deprecated
     public void manually_add_selectedspecial(Card c, boolean fromhand){
         selectedSpecials.add(c);
-        selectedIds.add(0L + selectedSpecials.size()); // Manual iterative id's
+        if(fromhand){
+            selectedIds.add(new Long(0L).toString());
+        }else{
+            selectedIds.add("other");
+        }
+    }
+    
+    public void manually_add_selectedspecial(Card c, String id){
+        selectedSpecials.add(c);
+        selectedIds.add(id);
     }
 
     @Override
@@ -233,6 +289,12 @@ public class InteractionCase extends SpecialCase implements Observable{
     public void removeListener(InvalidationListener listener) {
         this.engine = null;
     }
+
+    void confirm() {
+        this.isconfirmed = true;
+        this.engine.invalidated(this);
+    }
     
     
 }
+// MY VERSION

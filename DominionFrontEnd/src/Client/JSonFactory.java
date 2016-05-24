@@ -106,4 +106,24 @@ public class JSonFactory {
         obj.put("password",password);
         return obj;
     }
+    
+    public JSONObject protocol_interaction_changenotification(String cardname, String identifier, Integer count, Integer parent){
+        JSONObject obj = new JSONObject();
+        obj.put("service_type", "dominion");
+        obj.put("operation", "cardoffer");
+        obj.put("cardname", cardname);
+        obj.put("id", identifier);
+        obj.put("count", count.toString());
+        obj.put("parentindex", parent.toString());
+        return obj;
+    }
+    public JSONObject protocol_interaction_confirmrequest(){
+        JSONObject obj = new JSONObject();
+        obj.put("service_type", "dominion");
+        obj.put("operation", "interaction_confirm");
+        return obj;
+    }
+    
+    
+    // protocol_database van emiel
 }

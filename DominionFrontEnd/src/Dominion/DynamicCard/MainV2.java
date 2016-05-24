@@ -64,7 +64,7 @@ public class MainV2 extends Application{
     
     public void buildInterface(String initname){
         ClientControlV2 control = new ClientControlV2(initname, this);
-        ClientModelService modelservice = new ClientModelService(control);
+        ClientModelService modelservice = new ClientModelService(control, connection);
         connection.registerModel(modelservice);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ClientInterfaceV2.fxml"));
         fxmlLoader.setController(control);

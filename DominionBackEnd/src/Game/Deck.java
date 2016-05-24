@@ -56,6 +56,17 @@ public class Deck {
                 used.add(new Market());
                 used.add(new Market());
                 break;
+            }case(2):{
+                used.add(new Gold());
+                used.add(new Gold());
+                used.add(new Gold());
+                used.add(new Gold());
+                used.add(new Gold());
+                used.add(new Gold());
+                used.add(new Gold());
+                used.add(new Gold());
+                used.add(new Gold());
+                break;
             }
             
             default:{
@@ -119,3 +130,4 @@ public class Deck {
     }
     
 }
+// MY VERSION

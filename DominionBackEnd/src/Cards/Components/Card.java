@@ -8,6 +8,8 @@ package Cards.Components;
 
 import Actions.Action;
 import Actions.ActionTest;
+import Game.Environment;
+import Game.InteractionCase;
 import Game.Player;
 import Game.SpecialCase;
 import java.util.ArrayList;
@@ -56,7 +58,10 @@ public abstract class Card {
     public int cardgain(){
         return 0;
     }
-    public SpecialCase special(Player victim, Player initiator){
+    public SpecialCase special(Player victim, Player initiator, Environment env){
+        return null;
+    }
+    public SpecialCase futurespecial(Player victim, Player initiator, Environment env){
         return null;
     }
     public boolean hasSpecial(){
@@ -68,4 +73,8 @@ public abstract class Card {
     public boolean is_block(){
         return false;
     }
+    public InteractionCase future_futureSpecial(Player victim, Player initiator, Environment env, InteractionCase prev){
+        return null;
+    }
 }
+// MY VERSION

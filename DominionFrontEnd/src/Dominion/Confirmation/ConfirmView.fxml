@@ -13,17 +13,17 @@
   <children>
     <Pane layoutX="0.0" layoutY="0.0" prefHeight="650.0" prefWidth="751.0" style="-fx-background-color:BLACK;">
       <children>
-        <ScrollPane layoutX="0.0" layoutY="0.0" prefHeight="205.0" prefWidth="605.0" style="-fx-background-color:BLACK;" vbarPolicy="AS_NEEDED">
+        <ScrollPane layoutX="0.0" layoutY="0.0" prefHeight="205.0" prefWidth="605.0" style="-fx-background-color:BLACK;" vbarPolicy="ALWAYS">
           <content>
             <AnchorPane id="Content" fx:id="cardpane_0" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="600.0" style="-fx-background-color:#000080;" />
           </content>
         </ScrollPane>
-        <ScrollPane layoutX="0.0" layoutY="201.0" prefHeight="205.0" prefWidth="605.0" style="-fx-background-color:BLACK;">
+        <ScrollPane layoutX="0.0" layoutY="201.0" prefHeight="205.0" prefWidth="605.0" style="-fx-background-color:BLACK;" vbarPolicy="ALWAYS">
           <content>
             <AnchorPane id="Content" fx:id="cardpane_1" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="600.0" style="-fx-background-color:#000080;" />
           </content>
         </ScrollPane>
-        <ScrollPane layoutX="0.0" layoutY="402.0" prefHeight="205.0" prefWidth="605.0" style="-fx-background-color:BLACK;">
+        <ScrollPane layoutX="0.0" layoutY="402.0" prefHeight="205.0" prefWidth="605.0" style="-fx-background-color:BLACK;" vbarPolicy="ALWAYS">
           <content>
             <AnchorPane id="Content" fx:id="cardpane_2" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="600.0" style="-fx-background-color:#000080;" />
           </content>

@@ -10,6 +10,7 @@ import Client.ConnectionManager;
 import Client.JSonFactory;
 import Client.ServiceModel;
 import java.util.ArrayList;
+import javafx.application.Platform;
 import org.json.JSONObject;
 
 /**
@@ -64,6 +65,18 @@ public class MVCModel extends ServiceModel {
                 }
                 else{
                     System.out.println("fail");
+                    Platform.runLater(new Runnable(){
+
+                        @Override
+                        public void run() {
+                            myControl.Password.setEditable(true);
+                            myControl.Username.setEditable(true);
+                            myControl.Password.setDisable(false);
+                            myControl.Username.setDisable(false);
+                            myControl.Register.setDisable(false);
+                        }
+                        
+                    });
                 }
                 break;
             }

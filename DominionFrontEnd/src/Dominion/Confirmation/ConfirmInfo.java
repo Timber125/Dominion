@@ -45,9 +45,11 @@ public class ConfirmInfo {
     public int[] victorypoints;
     public int[] handsize;
     
+    public ArrayList<String>[] cardnames;
+    public ArrayList<String>[] identifiers;
+    public int entrycount[];
     
     public boolean[] blocked;
-    public ArrayList<Card>[] cards;
     
     public String info;
     
@@ -62,7 +64,9 @@ public class ConfirmInfo {
         victorypoints = new int[size];
         handsize = new int[size];
         blocked = new boolean[size];
-        cards = new ArrayList[size];
+        entrycount = new int[size];
+        cardnames = new ArrayList[size];
+        identifiers = new ArrayList[size];
         info = "";
         
         for(int i = 0; i < size; i++){
@@ -72,6 +76,9 @@ public class ConfirmInfo {
             JSONObject statobject = JSonFactory.JSON.toJSON(jsonString);
             extractInfoFrom(statobject, i);
         }
+        
+        this.info = stats.getString("info");
+        
     }
 
     private void extractInfoFrom(JSONObject statobject, int index) {
@@ -81,12 +88,22 @@ public class ConfirmInfo {
         this.handsize[index] = Integer.parseInt(statobject.getString("handsize"));
         this.victorypoints[index] = Integer.parseInt(statobject.getString("victorypoints"));
         this.blocked[index] = (statobject.getString("blocked").equals("1")?(true):(false));
+        this.entrycount[index] = Integer.parseInt(statobject.getString("entrycount"));
+        this.cardnames[index] = new ArrayList<>();
+        this.identifiers[index] = new ArrayList<>();
+        for(int i = 0; i < entrycount[index]; i++){
+            cardnames[index].add(statobject.getString("cardname_" + i));
+            identifiers[index].add(statobject.getString("identifier_" + i));
+        }
         
         if((nickname[index].equals("unused")) && (handsize[index] == 0) && (decksize[index] == 0) && (discardsize[index] == 0)){
             this.used[index] = false;
         }else{
             this.used[index] = true;
         }
+        
+      
+        
         
     }
 }

@@ -6,8 +6,11 @@
 
 package Dominion.Confirmation;
 
+import Client.ConnectionManager;
+import Dominion.DynamicCard.Card;
 import Dominion.DynamicCard.ClientModelService;
 import java.io.IOException;
+import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -24,11 +27,9 @@ public class ConfirmManager {
     
     public ConfirmModel myModel;
     public ConfirmController myControl;
-    private Stage s;
     
-    public ConfirmManager(Stage stage, String FXMLname, String title, int height, int width, ClientModelService callback){
-        this.s = stage;
-        myModel = new ConfirmModel(callback);
+    public ConfirmManager(Stage stage, String FXMLname, String title, int height, int width, ClientModelService callback, ConnectionManager connection){
+        myModel = new ConfirmModel(callback, connection);
         myControl = new ConfirmController(myModel);
         
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(FXMLname));
@@ -36,24 +37,17 @@ public class ConfirmManager {
         
         try { 
             Parent root = (Parent) fxmlLoader.load();
-            s.setTitle(title);
-            s.setScene(new Scene(root, width, height));
+            stage.setTitle(title);
+            stage.setScene(new Scene(root, width, height));
             
-            s.setResizable(false);
-            s.show();
-            s.setOnCloseRequest(new EventHandler<WindowEvent>(){
-
-                @Override
-                public void handle(WindowEvent t) {
-                    System.exit(0);
-                }
-                
-            });
+            stage.setResizable(false);
+            stage.show();
         } catch (IOException ex) {
             System.err.println("IOException : " + FXMLname + " niet gevonden");
         }
         
         myModel.intialize(myControl);
+        myModel.setStage(stage);
         myControl.startup();
         
     }
@@ -70,21 +64,20 @@ public class ConfirmManager {
      */
     @Deprecated
     public ConfirmManager(Stage stage, String FXMLname, String title, int height, int width){
-        this.s = stage;
-        myModel = new ConfirmModel(null);
+        myModel = new ConfirmModel(null, null);
         myControl = new ConfirmController(myModel);
-        
+        myModel.setStage(stage);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(FXMLname));
         fxmlLoader.setController(myControl);
         
         try { 
             Parent root = (Parent) fxmlLoader.load();
-            s.setTitle(title);
-            s.setScene(new Scene(root, width, height));
+            stage.setTitle(title);
+            stage.setScene(new Scene(root, width, height));
             
-            s.setResizable(false);
-            s.show();
-            s.setOnCloseRequest(new EventHandler<WindowEvent>(){
+            stage.setResizable(false);
+            stage.show();
+            stage.setOnCloseRequest(new EventHandler<WindowEvent>(){
 
                 @Override
                 public void handle(WindowEvent t) {
@@ -104,30 +97,17 @@ public class ConfirmManager {
     
     
     public void hide(){
-       Platform.runLater(new Runnable(){
-
-           @Override
-           public void run() {
-               s.hide();
-           }
-           
-       });
+       myModel.hide();
     }
     public void show(){
-      Platform.runLater(new Runnable(){
-
-           @Override
-           public void run() {
-               s.show();
-           }
-           
-       });
+       myModel.show();
     }
-    public void insert_information(ConfirmInfo information){
-        myModel.insert_info(information);
+    public void insert_information(ConfirmInfo information, ArrayList<Card> handcards){
+        myModel.insert_info(information, handcards);
     }
     public void clear_information(){
         myModel.clear_info();
     }
     
 }
+// DID I REMOVE ANYTHING? CHECK EMIELS CODE, HE HAS MORE

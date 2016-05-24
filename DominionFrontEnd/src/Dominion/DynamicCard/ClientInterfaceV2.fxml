@@ -9,7 +9,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" minHeight="680.0" prefHeight="600.0" prefWidth="1280.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+<AnchorPane id="AnchorPane" fx:id="Anchor" minHeight="680.0" prefHeight="600.0" prefWidth="1280.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
   <children>
     <Pane fx:id="DominionPane" layoutX="0.0" layoutY="0.0" prefHeight="680.0" prefWidth="1280.0" style="">
       <children>
@@ -25,11 +25,6 @@
                 <AnchorPane id="Content" fx:id="HandCardPane" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="750.0" style="-fx-background-color:BLUE;" />
               </content>
             </ScrollPane>
-            <Button fx:id="EndPhase" layoutX="631.0" layoutY="6.0" minHeight="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="121.0" text="End Phase" textAlignment="CENTER">
-              <font>
-                <Font name="System Bold" size="16.0" fx:id="x1" />
-              </font>
-            </Button>
           </children>
         </Pane>
         <Pane fx:id="ChatPane" layoutX="840.0" layoutY="598.0" prefHeight="80.00014414062753" prefWidth="440.999977929685" style="-fx-background-color:BLACK;">
@@ -52,6 +47,12 @@
           <children>
             <CheckBox id="" fx:id="Ready" layoutX="166.0" layoutY="14.0" mnemonicParsing="false" text="Ready" />
             <CheckBox id="" fx:id="Join" layoutX="312.0" layoutY="14.0" mnemonicParsing="false" text="Join" />
+            <Button fx:id="PlayerInfo" layoutX="166.0" layoutY="40.0" mnemonicParsing="false" text="showAllPlayerInfo" />
+            <Button fx:id="EndPhase" layoutX="331.0" layoutY="38.0" minHeight="25.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="121.0" text="End Phase" textAlignment="CENTER">
+              <font>
+                <Font name="System Bold" size="16.0" fx:id="x1" />
+              </font>
+            </Button>
           </children>
         </Pane>
         <Pane fx:id="VictoryPane" layoutX="0.0" layoutY="0.0" prefHeight="600.0" prefWidth="150.0" style="-fx-background-color:BLACK;" />
@@ -64,17 +65,25 @@
                 <Image url="@../../resources/background_online.jpg" preserveRatio="true" smooth="true" />
               </image>
             </ImageView>
-            <Label font="$x1" layoutX="14.0" layoutY="267.0" text="Actions:">
-              <textFill>
-                <Color blue="0.000" green="0.960" red="1.000" fx:id="x2" />
-              </textFill>
-            </Label>
-            <Label font="$x1" layoutX="14.0" layoutY="297.0" text="Buys:" textFill="$x2" />
-            <Label font="$x1" layoutX="14.0" layoutY="328.0" text="Coins:" textFill="$x2" />
-            <Label fx:id="ActionCount" font="$x1" layoutX="107.0" layoutY="267.0" prefWidth="28.0" text="0" textFill="$x2" />
-            <Label fx:id="BuyCount" font="$x1" layoutX="107.0" layoutY="297.0" prefWidth="28.0" text="0" textFill="$x2" />
-            <Label fx:id="CoinCount" font="$x1" layoutX="107.0" layoutY="328.0" prefWidth="28.0" text="0" textFill="$x2" />
-            <Pane fx:id="EnvironmentPane" layoutX="14.0" layoutY="107.0" prefHeight="150.0" prefWidth="950.0" />
+            <Pane fx:id="EnvironmentPane" layoutX="-2.0" layoutY="-2.0" prefHeight="363.0" prefWidth="980.0">
+              <children>
+                <Label font="$x1" layoutX="804.0" layoutY="170.0" text="Actions:">
+                  <textFill>
+                    <Color blue="0.000" green="0.960" red="1.000" fx:id="x2" />
+                  </textFill>
+                </Label>
+                <Label font="$x1" layoutX="804.0" layoutY="200.0" text="Buys:" textFill="$x2" />
+                <Label font="$x1" layoutX="804.0" layoutY="231.0" text="Coins:" textFill="$x2" />
+                <Label fx:id="ActionCount" font="$x1" layoutX="897.0" layoutY="170.0" prefWidth="28.0" text="0" textFill="$x2" />
+                <Label fx:id="BuyCount" font="$x1" layoutX="897.0" layoutY="200.0" prefWidth="28.0" text="0" textFill="$x2" />
+                <Label fx:id="CoinCount" font="$x1" layoutX="897.0" layoutY="231.0" prefWidth="28.0" text="0" textFill="$x2" />
+              </children>
+            </Pane>
+            <ScrollPane hbarPolicy="NEVER" layoutX="-1.0" layoutY="161.0" prefHeight="202.0" prefWidth="752.0" style="-fx-background-color:TRANSPARENT">
+              <content>
+                <AnchorPane fx:id="TableCardContent" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="750.0" style="-fx-background-color:TRANSPARENT;" />
+              </content>
+            </ScrollPane>
           </children>
         </Pane>
       </children>

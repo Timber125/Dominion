@@ -9,8 +9,10 @@ package Game;
 import Cards.Basic.*;
 import Cards.Components.Card;
 import Server.RTIUtilities;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Queue;
 
 /**
  *
@@ -26,7 +28,8 @@ public class Environment {
     
     /* Should have their own classes, extending Arraylist<T> */
     public HashMap<String, ArrayList<Card>> environment_library = new HashMap<>();
-    
+    public Queue<Card> throneRoomQueue = new ArrayDeque<>();
+
     public Environment(int player_count){
         this.trashpile = new ArrayList<Card>();
         this.tablecards = new ArrayList<Card>();
@@ -36,6 +39,7 @@ public class Environment {
         ArrayList<Card> coppers = new ArrayList<>();
         ArrayList<Card> silvers = new ArrayList<>();
         ArrayList<Card> golds = new ArrayList<>();
+        ArrayList<Card> curses = new ArrayList<>();
         if(player_count == 2){
             for(int i = 0; i < 8; i++){
                 estates.add(new Estate());
@@ -54,7 +58,9 @@ public class Environment {
             for(int i = 0; i < 10; i++){
                 coppers.add(new Copper());
             }
-            
+            for(int i = 0; i < 10; i++){
+                curses.add(new Curse());
+            }
             environment_library = new HashMap<>();
             environment_library.put("copper", coppers);
             environment_library.put("silver", silvers);
@@ -62,6 +68,7 @@ public class Environment {
             environment_library.put("estate", estates);
             environment_library.put("duchy", duchys);
             environment_library.put("province", provinces);
+            environment_library.put("curse", curses);
             
             /*
                 We have no other actioncards but these, so we kinda force environment 
@@ -72,13 +79,18 @@ public class Environment {
             
             */
             int num_cards_per_stack = 10;
-            int num_actioncards = 5;
+            int num_actioncards = 10;
             String[] actions = new String[num_actioncards];
-            actions[0] = "market";
-            actions[1] = "village";
-            actions[2] = "councilroom";
-            actions[3] = "laboratory";
-            actions[4] = "bureaucrat";
+            actions[0] = "throneroom";
+            actions[1] = "witch";
+            actions[2] = "moat";
+            actions[3] = "spy";
+            actions[4] = "thief";
+            actions[5] = "woodcutter";
+            actions[6] = "village";
+            actions[7] = "market";
+            actions[8] = "militia";
+            actions[9] = "moneylender";
             
             // Auto-setup
             
@@ -126,9 +138,13 @@ public class Environment {
         tablecards.add(c);
     }
     
-    public Environment(int player_count, ArrayList<Card> game) {
-        // Not implemented yet: 
-            // Purpose = create a game with specified action-cards to buy. 
+    public ArrayList<Card> getAllBuyablesAsCards(int maxmoney){
+        ArrayList<Card> allbuyables = new ArrayList<>();
+        for(String key : environment_library.keySet()){
+            int c = environment_library.get(key).get(0).getCost();
+            if(maxmoney >= c) allbuyables.add(environment_library.get(key).get(0));
+        }
+        return allbuyables;
     }
     public String getAllBuyables(int maxmoney){
         String s = "";
@@ -144,3 +160,4 @@ public class Environment {
         return RTI.getCardByName(cardname);
     }
 }
+// MY VERSION

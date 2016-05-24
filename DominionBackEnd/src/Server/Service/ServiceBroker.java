@@ -76,6 +76,7 @@ public class ServiceBroker implements Runnable{
     // Synchronized is not really necessary here, but just to be sure... 
     private synchronized void handle(String json_stringified){
         System.err.println("Eventbroker handling json");
+        System.err.println(json_stringified);
         JSONObject json = JSONUtilities.JSON.toJSON(json_stringified);
         String service_type = json.getString("service_type");
         if(type_table.containsKey(service_type)){
@@ -96,3 +97,4 @@ public class ServiceBroker implements Runnable{
         }
     }
 }
+// EMIELS VERSION
