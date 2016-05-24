@@ -263,8 +263,7 @@ public class InteractionCase extends SpecialCase implements Observable{
         
         // If this code is reached, all validations have passed, and nothing returned false.
         selectedSpecials.add(c);
-        if(Character.isDigit(id.charAt(0))) selectedIds.add(new Long(id).toString());
-        else selectedIds.add(id);
+        selectedIds.add(id);
         return true;
     }
     @Deprecated

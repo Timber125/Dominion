@@ -62,7 +62,8 @@ public class JDBCMemoryDatabaseService extends Service {
         preparedStatement.executeUpdate();
         System.out.println("iets");
     }   catch(SQLException e){
-        e.printStackTrace();
+        System.err.println("Goeie error");
+        //e.printStackTrace();
         //de syntax if exists is vreemd in deze sql taal, maar we krijgen in exceptie als de tabel al bestaat
         return;
     }
