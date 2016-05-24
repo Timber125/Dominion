@@ -40,7 +40,7 @@ public class Environment {
         ArrayList<Card> silvers = new ArrayList<>();
         ArrayList<Card> golds = new ArrayList<>();
         ArrayList<Card> curses = new ArrayList<>();
-        if(player_count == 2){
+        //if(player_count == 2){
             for(int i = 0; i < 8; i++){
                 estates.add(new Estate());
                 duchys.add(new Duchy());
@@ -110,9 +110,9 @@ public class Environment {
             }
             
             
-        }else{
-            System.err.println("3 PLAYERS OR MORE NOT IMPLEMENTED IN ENVIRONMENT!");
-        }
+       // }else{
+        //    System.err.println("3 PLAYERS OR MORE NOT IMPLEMENTED IN ENVIRONMENT!");
+       // }
     }
     public int environment_amountcheck(String name){
         return environment_library.get(name).size();

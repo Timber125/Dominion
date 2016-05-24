@@ -677,10 +677,10 @@ public class Engine implements InvalidationListener{
                 // Switch victim and initiator positions in indexFor function, since we are swicthing roles in the interaction.
                 System.out.println("---> showing interactinoresult to initiator, containing " + selectedCardNamesFromThisInteractionCase.size() + " entries with ids:");
                 ArrayList<String> copy_for_injection = new ArrayList<>();
-                for(String s : selectedIdentifiersFromThisInteractionCase) copy_for_injection.add(s + "_" + myIndexFor(invalidated.getInitiator(), invalidated.getVictim()));
+                for(String s : selectedIdentifiersFromThisInteractionCase) copy_for_injection.add(s + "_" + myIndexFor(invalidated.getVictim(), invalidated.getInitiator()));
                 selectedIdentifiersFromThisInteractionCase = copy_for_injection;
                 for(String s : selectedIdentifiersFromThisInteractionCase) System.out.println(s);
-                invalidated.getInitiator().getFutureInteraction().setStartBehaviour(JSONUtilities.JSON.update_client_confirmation_model(myIndexFor(invalidated.getInitiator(), invalidated.getVictim()), JSONUtilities.JSON.make_player_public_stats( invalidated.getVictim(),server.getClient(invalidated.getVictim().getSession()).getNickname(), selectedIdentifiersFromThisInteractionCase, selectedCardNamesFromThisInteractionCase, false), invalidated.getInitiator().getFutureInteraction().getStartBehaviour()));
+                invalidated.getInitiator().getFutureInteraction().setStartBehaviour(JSONUtilities.JSON.update_client_confirmation_model(myIndexFor(invalidated.getVictim(), invalidated.getInitiator()), JSONUtilities.JSON.make_player_public_stats( invalidated.getVictim(),server.getClient(invalidated.getVictim().getSession()).getNickname(), selectedIdentifiersFromThisInteractionCase, selectedCardNamesFromThisInteractionCase, false), invalidated.getInitiator().getFutureInteraction().getStartBehaviour()));
                 for(Card c : invalidated.selectedSpecials){
                     invalidated.getInitiator().getFutureInteraction().preloadedCards.add(c);
                 }
@@ -1175,23 +1175,28 @@ public class Engine implements InvalidationListener{
     }
     
     private int myIndexFor(Player me, Player other){
+        int myIndex = -1;
+        int yourIndex = -1;
         int index = 0;
-        for(int i = 0; i < 4; i++){
-            if(playerOrder.get(i).equals(me.getSession())) return index;
-            if(!playerOrder.get(i).equals(other.getSession())) index++;
+        for(String s : playerOrder.values()){
+            if(s.equals(me.getSession())) myIndex = index;
+            if(s.equals(other.getSession())) yourIndex = index;
+            index ++;
         }
-        return index;
+        
+        if(myIndex < yourIndex) return myIndex;
+        else return myIndex -1;
     }
     private Player indexForMe(Player p, int a){
         int index = 0;
-        for(int i = 0; i < 4; i++){
-            if(playerOrder.get(i).equals(p.getSession())){
-                continue;
-            }
-            if(index == a){return players.get(playerOrder.get(i));}
-            index++;
+        int myIndex = -1;
+        for(String s : playerOrder.values()){
+            if(s.equals(p.getSession())) myIndex = index;
+            index ++;
         }
-        return null;
+        
+        if(myIndex < a) return players.get(playerOrder.get(a-1));
+        else return players.get(playerOrder.get(a));
     }
     public void showGameEndedTo(String session) {
         Player me = players.get(session);

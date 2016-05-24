@@ -230,7 +230,16 @@ public class InteractionCase extends SpecialCase implements Observable{
         if(selectedSpecials.size() >= maximum_amount) return false;
         
         if(Character.isDigit(id.charAt(0))){
-            if(selectedIds.contains(new Long(id).toString())) return false; // Card has been processed already. 
+            ArrayList<String> nextallowedids = new ArrayList<>();
+            nextallowedids.addAll(allowedIds);
+            boolean allowed = false;
+            for(String s : allowedIds) {
+                if(id.startsWith(s)){
+                    allowed = true;
+                    break;
+                }
+            }
+            if(!allowed) return false;
             if(c instanceof ActionCard){
                 if(!action_hand_enabled) return false;
             }else if(c instanceof TreasureCard){
