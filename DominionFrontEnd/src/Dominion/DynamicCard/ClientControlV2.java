@@ -454,9 +454,9 @@ public class ClientControlV2{
     }
     public void reinitialize_trash(Stack trash){
         HandPane.getChildren().remove(last_initialized_trash);
-        last_initialized_discardstack = trash;
+        last_initialized_trash = trash;
         HandPane.getChildren().add(last_initialized_trash);
-        last_initialized_discardstack.relocate(860, 0);
+        last_initialized_trash.relocate(760, 0);
     }
    
     private int tableCardCount = 0;
