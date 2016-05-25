@@ -1,8 +1,8 @@
 ----------------------------------------------------------------
-Wed May 25 19:01:56 CEST 2016:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.2 - (1629631): instance a816c00e-0154-e8dd-9454-0000069dc608 
-on database directory C:\Users\admin\Documents\GitHub\Dominion\DominionBackEnd\testtest\test with class loader java.net.URLClassLoader@2b3a0934 
-Loaded from file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/dist/run336448462/lib/derby.jar
+Wed May 25 19:46:12 CEST 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.2 - (1629631): instance a816c00e-0154-e906-19fd-0000069c2680 
+on database directory C:\Users\admin\Documents\GitHub\Dominion\DominionBackEnd\testtest\test with class loader java.net.URLClassLoader@46ad89ec 
+Loaded from file:/C:/Users/admin/Documents/GitHub/Dominion/DominionBackEnd/dist/run1281013480/lib/derby.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.7.0_51-b13
 user.dir=C:\Users\admin\Documents\GitHub\Dominion\DominionBackEnd

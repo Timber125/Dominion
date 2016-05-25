@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Programmeerproject</title>
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Lobster">
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="Assets/CSS/reset.css" />
+    <link rel="stylesheet" href="Assets/CSS/screen.css" type="text/css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <div id="menu" >
+        <h1>Dominion Menu</h1>
+        <h2>Connection</h2>
+        <form class="menu">
+            IP: <br />
+            <input type="text" name="ip" id="ipfield" /><br />
+            Port: <br />
+            <input type="text" name="port" id="portfield" />
+            </form>
+        
+        <button type="button" onclick="menuConnectButton()">Connect</button>
+        <h2>Register or log in</h2>
+        <form>
+            Username: <br /><input type="text" name="username" id="usernamefield" /><br />
+            Password: <br /><input type="text" name="password" id="passwordfield"/>
+        </form>
+        <button type="button" onclick="registerButton()">Register</button>
+        <button type="button" onclick="loginButton()" >Log in</button>
+        
+    </div>
+    <div id="game" class="invisible">
+        <div class="cf">
+            <ul id="victory" class="vertical">
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+            <ul id="victorystack" class="stackvertical stack">
+                <li id="provincestack">0</li>
+                <li id="duchystack">0</li>
+                <li id="estatestack">0</li>
+            </ul>
+            <div id="middlefloat">
+                <ul id="actionsglobalstack1" class="stackhorizontalactions stack">
+                    <li id="actionstackcount0">0</li>
+                    <li id="actionstackcount1">0</li>
+                    <li id="actionstackcount2">0</li>
+                    <li id="actionstackcount3">0</li>
+                    <li id="actionstackcount4">0</li>
+                </ul>
+                <ul id="actions" class="horizontal">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+
+                </ul>
+
+                <ul id="actionsglobalstack2" class="stackhorizontalactions stack">
+                    <li id="actionstackcount5">0</li>
+                    <li id="actionstackcount6">0</li>
+                    <li id="actionstackcount7">0</li>
+                    <li id="actionstackcount8">0</li>
+                    <li id="actionstackcount9">0</li>
+                </ul>
+
+                <ul id="amounts" class="vertical">
+                    <li>Actions: <strong id="amounts_actions">0</strong></li>
+                    <li>Buys: <strong id="amounts_buys">0</strong></li>
+                    <li>Coins: <strong id="amounts_coins">0</strong></li>
+                </ul>
+                <ul id="playedcards" class="horizontal">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+
+            </div>
+            <ul id="treasure" class="vertical">
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+            <ul id="treasurestack" class="stackvertical stack">
+                <li id="goldstackcount">0</li>
+                <li id="silverstackcount">0</li>
+                <li id="copperstackcount">0</li>
+            </ul>
+        </div>
+        <div id="turn">
+            <span>Current hand</span>
+            <button type="button" id="endphasebutton">End phase</button>
+        </div>
+        <div id="hand" class="horizontal">
+            <ul id="handcards">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+            <ul id="deck_and_discard" class="vertical away">
+                <li></li>
+                <li></li>
+            </ul>
+            <ul id="deck_and_discardstack" class="stackhorizontaldnd stack">
+                <li id="deckstackcount">0</li>
+                <li id="discardstackcount">0</li>
+            </ul>
+
+            <ul class="away" id="trash">
+			<li id="trashstack"><a href="#/"><img src="resources/DominionCards/trash.jpg"/></a></li>
+            <li id="trashstackcount" class="stack">0</li>
+			</ul>
+        </div>
+
+        <div id="chatbox">
+
+            <textarea id="chatmessage" readonly rows="20" cols="50"></textarea>
+            <textarea id="chatinput" rows="1" cols="50"></textarea>
+            <button type="button" onclick="sendToChatbox()">Send</button>
+        </div>
+        <div id="connect">
+            <button type="button" id="joinbutton" onclick="readyButtonHandler()">Join</button>
+            <button type="button" id="connectbutton" onclick="connectButtonHandler()">Connect</button>
+        </div>
+    </div>
+    <script src="assets/JS/jQuery.js"></script>
+    <script src="assets/JS/JSONLibrary.js"></script>
+    <script src="assets/JS/JavaScript.js"></script>
+    
+</body>
+</html> 

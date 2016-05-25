@@ -29,7 +29,7 @@ public class Player {
     public Player(String session){
         mySession = session;
         //deck = new Deck(1); // deck-protocol-1: see deck-constructor(s) for explenation. 
-        deck = new Deck(2); // Standard deck (protocol-0)
+        deck = new Deck(0); // Standard deck (protocol-0)
     }
     // unsafe?
     public String getSession(){

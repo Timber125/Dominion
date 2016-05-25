@@ -402,7 +402,7 @@ public class ClientModelService extends ServiceModel{
                 switch(control){
                     case("add"):{
                         String cardname = obj.getString("cardname");
-                        final Card c = new Card(cardname);
+                        final Card c = new Card(cardname); 
                         Platform.runLater(new Runnable(){
 
                             @Override
