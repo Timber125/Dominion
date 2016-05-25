@@ -6,8 +6,6 @@
 
 package Cards.Components;
 
-import Actions.Action;
-import Actions.ActionTest;
 
 /**
  *
@@ -17,14 +15,9 @@ public abstract class ActionCard extends Card{
     
     public ActionCard(String name, int cost) {
         super(name, cost);
-        this.init_standard_actions();
     }
     
-    private void init_standard_actions(){
-        Action test = new ActionTest(this);
-        actions.add(test);
-        // Every action card implements the test-action , for now.
-    }
+   
     
     
     

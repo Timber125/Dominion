@@ -46,6 +46,7 @@ public class LobbyService extends Service{
         switch(operation){
             case("disconnect"):{
                 // Only if client was connected
+                if(is_started) return;
                 if(lobbyClients.containsKey(sessionID)){
                     String nickname = json.getString("author");
                     if(nickname == null) nickname = "unknown";
@@ -56,6 +57,7 @@ public class LobbyService extends Service{
                 return;
             }
             case("connect"):{
+                if(is_started) return;
                 // Only if client was not connected
                 if(!lobbyClients.containsKey(sessionID)){
                     lobbyClients.put(sessionID, false);
@@ -65,6 +67,7 @@ public class LobbyService extends Service{
                 return;
             }
             case("vote"):{
+                if(is_started) return;
                 if(lobbyClients.containsKey(sessionID)){
                     // Only if the client wasnt already "voted in"
                     if(!lobbyClients.get(sessionID)) {
@@ -80,6 +83,7 @@ public class LobbyService extends Service{
                 return;
             }
             case("unvote"):{
+                if(is_started) return;
                 if(lobbyClients.containsKey(sessionID)){
                     // Only if the client was already "voted in"
                     if(lobbyClients.get(sessionID)){

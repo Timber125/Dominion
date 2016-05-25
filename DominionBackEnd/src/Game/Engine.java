@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Set;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -38,7 +39,9 @@ public class Engine implements InvalidationListener{
     /* Accessible */
     protected ArrayList<String> operations_allowed;
     
-   
+    /* Implemented actions */
+    private String action_names_implemented = "adventurer,bureaucrat,cellar,chancellor,chapel,councilroom,feast,festival,gardens,laboratory,library,market,militia,mine,moat,moneylender,remodel,smithy,spy,thief,throneroom,village,witch,woodcutter,workshop";
+    private String[] actioncards_implemented = action_names_implemented.split(",");
     
     /* Frontend simulative variables */
     private int current_turn = 0;
@@ -88,7 +91,7 @@ public class Engine implements InvalidationListener{
         operations_allowed = new ArrayList<>();
         playerOrder = new HashMap<>();
         server = serv;
-        env = new Environment(playersessions.size());
+        
         int counter = 0;
         players = new HashMap<>();
         for(int i = 0; i < playersessions.size(); i++){
@@ -119,19 +122,31 @@ public class Engine implements InvalidationListener{
         // laboratory
         // gardens
         // library
+        String[] actions = new String[10];
+        for(int i = 0; i < 10; i++) actions[i] = "";
+        ArrayList<Integer> taken_keys = new ArrayList<>();
+        for(int i = 0; i < 10; i++){
+            Random r = new Random();
+            int taken = -1;
+            while((taken == -1) || taken_keys.contains(taken)) taken = r.nextInt(actioncards_implemented.length);
+            taken_keys.add(taken);
+        }
+        
+        for(int i = 0; i < 10; i++){
+            actions[i] = actioncards_implemented[taken_keys.get(i)];
+        }
         
         
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("moat", "moat", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("militia", "militia", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("remodel", "remodel", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("smithy", "smithy", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("workshop", "workshop", 10));
+        env = new Environment(playerOrder.keySet().size(), actions);
         
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("feast", "feast", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("festival", "festival", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("laboratory", "laboratory", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("gardens", "gardens", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("library", "library", 10));
+        for(int i = 0; i < 10; i++){
+            server.sendAll(JSONUtilities.JSON.make_client_initialize_environment(actions[i], actions[i], 10));
+        }
+        
+        make_clients_update_environment("cursepile");
+        make_clients_update_environment("estate");
+        make_clients_update_environment("duchy");
+        make_clients_update_environment("province");
         
 //        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("throneroom", "throneroom", 10));
 //        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("witch", "witch", 10));

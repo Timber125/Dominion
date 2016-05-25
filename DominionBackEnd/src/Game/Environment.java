@@ -30,7 +30,8 @@ public class Environment {
     public HashMap<String, ArrayList<Card>> environment_library = new HashMap<>();
     public Queue<Card> throneRoomQueue = new ArrayDeque<>();
 
-    public Environment(int player_count){
+    public Environment(int player_count, String[] actions){
+        System.out.println("MAKING ENVIRONMENT WITH " + player_count + " PLAYERS");
         this.trashpile = new ArrayList<Card>();
         this.tablecards = new ArrayList<Card>();
         ArrayList<Card> estates = new ArrayList<>();
@@ -41,7 +42,7 @@ public class Environment {
         ArrayList<Card> golds = new ArrayList<>();
         ArrayList<Card> curses = new ArrayList<>();
         //if(player_count == 2){
-            for(int i = 0; i < 8; i++){
+            for(int i = 0; i < 8 + ((player_count-2)*4); i++){
                 estates.add(new Estate());
                 duchys.add(new Duchy());
                 provinces.add(new Province());
@@ -58,7 +59,7 @@ public class Environment {
             for(int i = 0; i < 10; i++){
                 coppers.add(new Copper());
             }
-            for(int i = 0; i < 10; i++){
+            for(int i = 0; i < 10 + ((player_count-2) * 10); i++){
                 curses.add(new Curse());
             }
             environment_library = new HashMap<>();
@@ -79,8 +80,7 @@ public class Environment {
             
             */
             int num_cards_per_stack = 10;
-            int num_actioncards = 10;
-            String[] actions = new String[num_actioncards];
+            int num_actioncards = actions.length;
         // adventurer
         // bureaucrat
         // cellar
@@ -94,17 +94,7 @@ public class Environment {
         // library
             
             
-            actions[0] = "moat";
-            actions[1] = "militia";
-            actions[2] = "remodel";
-            actions[3] = "smithy";
-            actions[4] = "workshop";
-            actions[5] = "feast";
-            actions[6] = "festival";
-            actions[7] = "laboratory";
-            actions[8] = "gardens";
-            actions[9] = "library";
-            
+     
 //            actions[0] = "throneroom";
 //            actions[1] = "witch";
 //            actions[2] = "moat";
@@ -141,6 +131,8 @@ public class Environment {
     public int environment_amountcheck(String name){
         if(name.equals("trashpile")){
             return trashpile.size();
+        }else if(name.equals("cursepile")){
+            return environment_library.get("curse").size();
         }
         return environment_library.get(name).size();
     }

@@ -3,17 +3,42 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/Confirmation/ConfirmController.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/Confirmation/ConfirmManager.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/DynamicCard/Card.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/PrintService.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Testing/RTI/NonStaticRTIer.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Client.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/Main.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/DynamicCard/ClientInterfaceV2.fxml</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Testing/RTI/RTITest.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/SessionService.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/ServiceModel.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Connection.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/Confirmation/ConfirmInfo.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/Confirmation/ConfirmModel.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/DynamicCard/MainV2.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/Confirmation/SelectableCard.java</file>
-            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/DynamicCard/ClientControlV2.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/DynamicCard/ClientModelService.java</file>
             <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/JSonFactory.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/Confirmation/ConfirmController.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/Confirmation/ConfirmManager.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Testing/ChatView.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Menu/MVCManager.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/PrintService.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/ClientControl.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Menu/Test.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/DynamicCard/ClientControlV2.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Menu/MVCController.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/dominionfrontend/DominionFrontEnd.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Testing/RTI/JavaSecurityIssue.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Menu/MVCModel.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/DynamicStack/Stack.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Testing/Main.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/Confirmation/Test.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Testing/MVCExample/MVCController.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/Confirmation/ConfirmModel.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/DynamicStack/StackTest.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/Confirmation/SelectableCard.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/DynamicStack/CountLabel.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/DynamicCard/Card.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/DynamicStack/CountIcon.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/ConnectionManager.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Dominion/DynamicCard/MainV2.java</file>
+            <file>file:/C:/Users/admin/Documents/GitHub/Dominion/DominionFrontEnd/src/Client/Testing/RTI/DummyObject.java</file>
         </group>
     </open-files>
 </project-private>

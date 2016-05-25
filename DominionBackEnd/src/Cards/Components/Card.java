@@ -6,8 +6,7 @@
 
 package Cards.Components;
 
-import Actions.Action;
-import Actions.ActionTest;
+
 import Game.Environment;
 import Game.InteractionCase;
 import Game.Player;
@@ -21,11 +20,9 @@ import java.util.ArrayList;
 public abstract class Card {
     public String name;
     public int cost;
-    public ArrayList<Action> actions;
     public Card(String name, int cost){
         this.name = name;
         this.cost = cost;
-        this.actions = new ArrayList<>();
         this.init_standard_actions();
     }
     
