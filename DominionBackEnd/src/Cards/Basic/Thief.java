@@ -19,6 +19,8 @@ import Server.JSONUtilities;
  */
 public class Thief extends ActionCard {
     
+    
+    
     public Thief() {
         super("thief", 4);
     }
@@ -26,6 +28,7 @@ public class Thief extends ActionCard {
     public boolean hasSpecial(){
         return true;
     }
+    
     @Override
     public SpecialCase special(Player victim, Player initiator, Environment env){
         if(victim.getSession().equals(initiator.getSession())){
@@ -43,20 +46,20 @@ public class Thief extends ActionCard {
                 ic.enable_hand();
                 // Allow numerical ids
                 Card c = victim.deck.getNext();
-                ic.allowedIds.add("other");
                 ic.preloadedCards.add(c);
                 ic.selectedSpecials.add(c);
                 ic.selectedIds.add("other");
+                ic.allowedIds.add("other");
                 
                 c = victim.deck.getNext();
-                ic.allowedIds.add("other");
                 ic.preloadedCards.add(c);
                 ic.selectedSpecials.add(c);
                 ic.selectedIds.add("other");
-                
+                ic.allowedIds.add("other");
+             
                  // Two top of deck cards added
                 ic.setFinishBehaviour(JSONUtilities.JSON.spy_standard_finishbehaviour());
-                ic.setStartBehaviour(JSONUtilities.JSON.make_client_confirmation_model_spy_notblocked(victim, initiator, ic));
+                ic.setStartBehaviour(JSONUtilities.JSON.make_client_confirmation_model_thief_notblocked(victim, initiator, ic));
 
                 return ic;            
         }else{
@@ -85,8 +88,11 @@ public class Thief extends ActionCard {
             ic.setMaxAmount(3);
             ic.setMinCost(0);
             ic.setMaxCost(100);
-            ic.enableAllTreasures();
-          
+            ic.enableEnvTreasure();
+            ic.allowedIds.add("other_0");
+            ic.allowedIds.add("other_1");
+            ic.allowedIds.add("other_2");
+            ic.allowedIds.add("other_3");
             // NOTHING ENABLED!
             //ic.enable_hand();
             //ic.enable_environment();

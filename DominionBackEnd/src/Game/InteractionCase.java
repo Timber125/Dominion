@@ -11,6 +11,7 @@ import Cards.Components.Card;
 import Cards.Components.TreasureCard;
 import Cards.Components.VictoryCard;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import org.json.JSONObject;
@@ -41,6 +42,8 @@ public class InteractionCase extends SpecialCase implements Observable{
     
     public ArrayList<Card> preloadedCards = new ArrayList<>();
     public ArrayList<String> allowedIds = new ArrayList<>();
+    
+    public HashMap<String, Card> fromPreviousInteraction = new HashMap<>();
     private boolean numericalIdsAllowed(){
         return this.action_hand_enabled ||this.victory_hand_enabled || this.treasure_hand_enabled || this.reaction_only;
     }
@@ -224,10 +227,16 @@ public class InteractionCase extends SpecialCase implements Observable{
             }
             else return false;
         }
+        
         String name = c.getName();
         int cost = c.getCost();
         if((cost > maximum_cost) || (cost < minimum_cost)) return false;
         if(selectedSpecials.size() >= maximum_amount) return false;
+        System.out.println("INCOMING INTERACTIONCASE REQUEST");
+        System.out.println("Cardname : " + c.getName() + " - " + "ID: " + id);
+        System.out.println("======= ALLOWEDIDS ======");
+        for(String s : allowedIds) System.out.print(s + " , ");
+        System.out.println("=========================");
         
         if(Character.isDigit(id.charAt(0))){
             for(String s : selectedIds){
@@ -247,11 +256,11 @@ public class InteractionCase extends SpecialCase implements Observable{
             for(String s : allowedIds) {
                 if(id.startsWith(s)){
                     allowed = true;
+                    nextallowedids.remove(s);
                     break;
                 }
             }
-            if(!allowed) return false;
-            else allowedIds = nextallowedids;
+            
             if(c instanceof ActionCard){
                 if(!action_env_enabled) return false;
             }else if(c instanceof TreasureCard){
@@ -259,8 +268,13 @@ public class InteractionCase extends SpecialCase implements Observable{
             }else if(c instanceof VictoryCard){
                 if(!victory_env_enabled) return false;
             }
+            if(!allowed) return false;
+            else allowedIds = nextallowedids;
         }
-        
+        System.out.println("INTERACTIONCASE PROCESSING FINISHED.");
+        System.out.println("=====  LEAVING CASE WITH ALLOWED IDS: ========");
+        for(String s : allowedIds) System.out.println(s + " , ");
+        System.out.println("===============================================");
         // If this code is reached, all validations have passed, and nothing returned false.
         selectedSpecials.add(c);
         selectedIds.add(id);

@@ -322,7 +322,7 @@ public class JSONUtilities {
         return create_interaction_finishbehaviour(true, false, "none", "none", "none");
     }
     public JSONObject create_interaction_blocked_finishbehaviour(){
-        return create_interaction_finishbehaviour(true, false, "none", "none", "none");
+        return create_interaction_finishbehaviour(false, false, "none", "none", "none");
     }
     public JSONObject create_interaction_finishbehaviour_empty(){
         return create_interaction_finishbehaviour(false, false, "none", "none", "none");
@@ -682,6 +682,18 @@ public class JSONUtilities {
             if(p[i] != null) json = addKeyValuePair("stat" + i, make_player_public_stats(p[i], nickname[i], identifiers, cards, false).toString(),json);
             else json = addKeyValuePair("stat" + i, make_player_public_stats_null().toString(), json);
         }
+        return json;
+    }
+
+    public JSONObject make_client_confirmation_model_thief_notblocked(Player victim, Player initiator, InteractionCase ic) {
+        JSONObject json = create("action", "dominion");
+        json = addKeyValuePair("act", "confirm", json);
+        json = addKeyValuePair("info", "You are being attacked by thief! these are the top card of your deck. Your attacker might trash a treasure.", json);
+        ArrayList<String> preloadedcardnames = new ArrayList<>();
+        for(Card c : ic.preloadedCards) preloadedcardnames.add(c.getName());
+        json = addKeyValuePair("stat0", make_player_public_stats(victim, "You", ic.allowedIds, preloadedcardnames, false).toString(),json);
+        json = addKeyValuePair("stat1", make_player_public_stats_null().toString(), json);
+        json = addKeyValuePair("stat2", make_player_public_stats_null().toString(), json);
         return json;
     }
 }

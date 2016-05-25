@@ -53,6 +53,7 @@ public class Witch extends ActionCard{
                 ic.enable_hand();
                 // Allow numerical ids
                 Card c = env.environment_buy("curse");
+                if(c == null) return null;
                 ic.allowedIds.add("other");
                 ic.preloadedCards.add(c);
                 ic.selectedSpecials.add(c);

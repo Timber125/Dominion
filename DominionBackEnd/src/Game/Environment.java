@@ -93,29 +93,28 @@ public class Environment {
         // gardens
         // library
             
-            /*
-            actions[0] = "adventurer";
-            actions[1] = "bureaucrat";
-            actions[2] = "cellar";
-            actions[3] = "chancellor";
-            actions[4] = "chapel";
+            
+            actions[0] = "moat";
+            actions[1] = "militia";
+            actions[2] = "remodel";
+            actions[3] = "smithy";
+            actions[4] = "workshop";
             actions[5] = "feast";
             actions[6] = "festival";
             actions[7] = "laboratory";
             actions[8] = "gardens";
             actions[9] = "library";
             
-            */
-            actions[0] = "throneroom";
-            actions[1] = "witch";
-            actions[2] = "moat";
-            actions[3] = "spy";
-            actions[4] = "thief";
-            actions[5] = "woodcutter";
-            actions[6] = "village";
-            actions[7] = "market";
-            actions[8] = "militia";
-            actions[9] = "moneylender";
+//            actions[0] = "throneroom";
+//            actions[1] = "witch";
+//            actions[2] = "moat";
+//            actions[3] = "spy";
+//            actions[4] = "thief";
+//            actions[5] = "woodcutter";
+//            actions[6] = "village";
+//            actions[7] = "market";
+//            actions[8] = "militia";
+//            actions[9] = "moneylender";
             
             // Auto-setup
             
@@ -140,6 +139,9 @@ public class Environment {
        // }
     }
     public int environment_amountcheck(String name){
+        if(name.equals("trashpile")){
+            return trashpile.size();
+        }
         return environment_library.get(name).size();
     }
     public int environment_pricecheck(String name){
@@ -166,6 +168,7 @@ public class Environment {
     public ArrayList<Card> getAllBuyablesAsCards(int maxmoney){
         ArrayList<Card> allbuyables = new ArrayList<>();
         for(String key : environment_library.keySet()){
+            if(environment_library.get(key).isEmpty()) continue;
             int c = environment_library.get(key).get(0).getCost();
             if(maxmoney >= c) allbuyables.add(environment_library.get(key).get(0));
         }
@@ -174,6 +177,7 @@ public class Environment {
     public String getAllBuyables(int maxmoney){
         String s = "";
         for(String key : environment_library.keySet()){
+            if(environment_library.get(key).isEmpty()) continue;
             int c = environment_library.get(key).get(0).getCost();
             if(maxmoney >= c) s += "," + environment_library.get(key).get(0).getName();
         }

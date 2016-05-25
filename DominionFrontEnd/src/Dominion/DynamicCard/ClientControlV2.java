@@ -418,7 +418,7 @@ public class ClientControlV2{
     }
    
     private Stack last_initialized_discardstack;
-   
+    private Stack last_initialized_curse;
     private Stack last_initialized_trash;
    
     public void initialize_myenvironment(Stack deck, Stack disc, Stack trash, Stack curse){
@@ -442,6 +442,7 @@ public class ClientControlV2{
         trash.getView().relocate(760, 0);
     }
     public void initialize_curse(Stack curse){
+        last_initialized_curse = curse;
         HandPane.getChildren().add(curse.getView());
         curse.getView().relocate(860, 0);
     }
@@ -492,5 +493,12 @@ public class ClientControlV2{
         iv.relocate(location.getKey(), location.getValue());
         iv.setVisible(true);
         tableCardCount ++;
+    }
+
+    void reinitialize_curse(Stack curse) {
+        HandPane.getChildren().remove(last_initialized_curse);
+        last_initialized_curse = curse;
+        HandPane.getChildren().add(last_initialized_curse);
+        last_initialized_curse.relocate(860, 0);
     }
 }

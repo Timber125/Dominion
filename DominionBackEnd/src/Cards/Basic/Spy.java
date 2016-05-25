@@ -93,6 +93,10 @@ public class Spy extends ActionCard{
             ic.setMinCost(0);
             ic.setMaxCost(100);
             ic.enable_environment();
+            ic.allowedIds.add("other_0");
+            ic.allowedIds.add("other_1");
+            ic.allowedIds.add("other_2");
+            ic.allowedIds.add("other_3");
             // NOTHING ENABLED!
             //ic.enable_hand();
             //ic.enable_environment();

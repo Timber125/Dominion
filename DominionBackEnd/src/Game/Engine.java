@@ -120,12 +120,12 @@ public class Engine implements InvalidationListener{
         // gardens
         // library
         
-        /*
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("adventurer", "adventurer", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("bureaucrat", "bureaucrat", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("cellar", "cellar", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("chancellor", "chancellor", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("chapel", "chapel", 10));
+        
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("moat", "moat", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("militia", "militia", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("remodel", "remodel", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("smithy", "smithy", 10));
+        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("workshop", "workshop", 10));
         
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("feast", "feast", 10));
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("festival", "festival", 10));
@@ -133,19 +133,17 @@ public class Engine implements InvalidationListener{
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("gardens", "gardens", 10));
         server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("library", "library", 10));
         
-        
-        */
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("throneroom", "throneroom", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("witch", "witch", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("moat", "moat", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("spy", "spy", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("thief", "thief", 10));
-        
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("woodcutter", "woodcutter", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("village", "village", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("market", "market", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("militia", "militia", 10));
-        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("moneylender", "moneylender", 10));
+//        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("throneroom", "throneroom", 10));
+//        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("witch", "witch", 10));
+//        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("moat", "moat", 10));
+//        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("spy", "spy", 10));
+//        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("thief", "thief", 10));
+//        
+//        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("woodcutter", "woodcutter", 10));
+//        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("village", "village", 10));
+//        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("market", "market", 10));
+//        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("militia", "militia", 10));
+//        server.sendAll(JSONUtilities.JSON.make_client_initialize_environment("moneylender", "moneylender", 10));
             /*
             actions[5] = "woodcutter";
             actions[6] = "village";
@@ -425,6 +423,8 @@ public class Engine implements InvalidationListener{
             server.getClient(sess).write(JSONUtilities.JSON.make_client_print("You can only buy in the buy-phase!"));
         }else if(!isRequestFromCurrentTurnPlayer(json)){
             server.getClient(sess).write(JSONUtilities.JSON.make_client_print("You can only buy during your own turn!"));
+        }else if(env.environment_library.get(card).isEmpty()){
+            server.getClient(sess).write(JSONUtilities.JSON.make_client_print("The stack of " + card + "'s is empty, buying is not allowed."));
         }else{
             int price = env.environment_pricecheck(card);
             if((money >= price) && (purchases >= 1)){
@@ -448,6 +448,11 @@ public class Engine implements InvalidationListener{
     }
     
     public void nextPhase(String session) {
+        for(Player p : players.values()){
+            make_client_update_deck(p);
+            make_client_update_discardpile(p);
+        }
+        make_clients_update_cursepile();
         if(!session.equals(playerOrder.get(current_turn))){
             System.err.println("Intercepted malicious nextPhase package from client " + server.getNickname(session) +".");
             return;
@@ -706,13 +711,14 @@ public class Engine implements InvalidationListener{
                 for(String s : selectedIdentifiersFromThisInteractionCase) copy_for_injection.add(s + "_" + myIndexFor(invalidated.getVictim(), invalidated.getInitiator()));
                 selectedIdentifiersFromThisInteractionCase = copy_for_injection;
                 for(String s : selectedIdentifiersFromThisInteractionCase) System.out.println(s);
-                invalidated.getInitiator().getFutureInteraction().setStartBehaviour(JSONUtilities.JSON.update_client_confirmation_model(myIndexFor(invalidated.getVictim(), invalidated.getInitiator()), JSONUtilities.JSON.make_player_public_stats( invalidated.getVictim(),server.getClient(invalidated.getVictim().getSession()).getNickname(), selectedIdentifiersFromThisInteractionCase, selectedCardNamesFromThisInteractionCase, false), invalidated.getInitiator().getFutureInteraction().getStartBehaviour()));
-                for(Card c : invalidated.selectedSpecials){
+                invalidated.getInitiator().getFutureInteraction().setStartBehaviour(JSONUtilities.JSON.update_client_confirmation_model(myIndexFor(invalidated.getVictim(), invalidated.getInitiator()), JSONUtilities.JSON.make_player_public_stats( invalidated.getVictim(),server.getClient(invalidated.getVictim().getSession()).getNickname(), copy_for_injection, selectedCardNamesFromThisInteractionCase, (selectedCardNamesFromThisInteractionCase.isEmpty())), invalidated.getInitiator().getFutureInteraction().getStartBehaviour()));
+                for(int ix = 0; ix < invalidated.selectedSpecials.size(); ix++){
+                    Card c = invalidated.selectedSpecials.get(ix);
+                    String id = copy_for_injection.get(ix) + "_" + ix;
                     invalidated.getInitiator().getFutureInteraction().preloadedCards.add(c);
+                    invalidated.getInitiator().getFutureInteraction().fromPreviousInteraction.put(id, c);
                 }
-                for(String modified_id : selectedIdentifiersFromThisInteractionCase){
-                    invalidated.getInitiator().getFutureInteraction().allowedIds.add(modified_id);
-                }
+                
             }
         }
         
@@ -762,6 +768,7 @@ public class Engine implements InvalidationListener{
                         if(foreach.equals("draw_card")){
                             // This is the cellar branch of this function
                             give_card_to_player_hand(invalidated.getVictim().getSession());
+                            
                         }else if(foreach.equals("none")){
                             // This is the militia branch of this function
                             System.out.println("militiabranch taken");
@@ -896,6 +903,7 @@ public class Engine implements InvalidationListener{
                         
                         make_client_update_discardpile(invalidated.getVictim());
                         make_clients_update_environment(bought.getName());
+                        make_clients_update_environment("trashpile");
                         
                         server.sendAll(JSONUtilities.JSON.make_client_print(server.getNickname(invalidated.getVictim().getSession()) + " gained a " + bought.getName() + " with feast."));
                         
@@ -946,42 +954,62 @@ public class Engine implements InvalidationListener{
                             env.throneRoomQueue.offer(thecard);
                             env.throneRoomQueue.offer(thecard);
                             invalidated.getVictim().loseCard(thecard.getName(), Long.parseLong(selectedIdentifiersFromThisInteractionCase.get(0).split("_")[1]));
-                            invalidated.getVictim().deck.used.add(thecard);
+                            env.tablecards.add(thecard);
                             server.sendOne(JSONUtilities.JSON.make_client_lose(thecard.getName(), ((selectedIdentifiersFromThisInteractionCase.get(0).split("_")[1]))), invalidated.getVictim().getSession());
                             server.sendAll(JSONUtilities.JSON.make_client_print(server.getNickname(invalidated.getVictim().getSession()) + " lost a " + thecard.getName()));
-                            make_client_update_discardpile(invalidated.getVictim());
+                            server.sendAll(JSONUtilities.JSON.make_client_refresh_tableview());
+                            
             }else if(from.equals("interaction") && (to.equals("top_deck_victim"))){
                 if(foreach.equals("if_selected_then_discardpile_victim")){
                    HashMap<String, Card> mapping = new HashMap<>();
                    System.out.println("spying on " + invalidated.preloadedCards.size() + " cards");
                    System.out.println("however, there are " + invalidated.selectedSpecials.size() + " selected specials.");
                    System.out.println("also " + invalidated.selectedIds.size() + " selected ids, and " + invalidated.allowedIds.size() + " allowed ids");
-                   for(int ix = 0; ix < invalidated.preloadedCards.size(); ix++){
-                        String indexforvictim = invalidated.allowedIds.get(ix).split("_")[1];
-                        Card c = invalidated.preloadedCards.get(ix);
-                        Player victim = indexForMe(invalidated.getInitiator(), Integer.parseInt(indexforvictim));
-                        mapping.put(victim.getSession(), c);
-                        System.out.println("spy: [" + victim.getSession() + "]implicitlyreferencedby[" + indexforvictim + "] - " + c.getName());
-                   }
                    
-                   for(int ix = 0; ix < invalidated.selectedIds.size(); ix++){
-                        String indexforvictim = invalidated.selectedIds.get(ix).split("_")[1];
-                        Player victim = indexForMe(invalidated.getInitiator(), Integer.parseInt(indexforvictim));
-                        players.get(victim.getSession()).deck.used.add(mapping.get(victim.getSession()));
-                        make_client_update_discardpile(players.get(victim.getSession()));
-                        make_client_update_deck(players.get(victim.getSession()));
-                        System.out.println(victim.getSession() + " > discardpile: " + mapping.get(victim.getSession()).getName());
-                        mapping.remove(victim.getSession());
-                   }
-                   for(String s : mapping.keySet()){
-                        String selected_session = s;
-                        players.get(selected_session).deck.addTopOfDeck(mapping.get(selected_session));
-                        make_client_update_deck(players.get(selected_session));
-                        System.out.println(selected_session + " > topofdeck: " + mapping.get(s));
-                        mapping.remove(selected_session);
-                   }
+                   // Allowed : other_2, other_3
+                   // selectedIds : other_0_0, other_1_1 -> door naar volgende interactie
+                   // preloadedCards : other_0, other_1 -> deze moeten eigenlijk de specials zijn
+                   // selectedSpecials : other_0, other_1 -> preloadedcards moeten discarded worden op basis van
+                   
+                   
+                   
+                   for(int ix = 0; ix < invalidated.preloadedCards.size(); ix++){
+                        if(ix >= invalidated.allowedIds.size()) continue;
+                        if(ix >= players.keySet().size()) continue;
+                        int indexforvictim = ix;
+                        Player p = indexForMe(invalidated.getInitiator(), ix);
+                        System.out.println("got player " + server.getNickname(p.getSession()) + " from indexFor(" + server.getNickname(invalidated.getInitiator().getSession()) + " , " + ix + ");");
+                        String searchID = "other_" + indexforvictim;
+                        boolean isSelected = false;
+                        Card card = invalidated.preloadedCards.get(ix);
+                        String theid = searchID;
+                        for(int ixix = 0; ixix < invalidated.selectedIds.size(); ixix++){
+                             Card c = invalidated.selectedSpecials.get(ixix);
+                             String id = invalidated.selectedIds.get(ixix);
+                             
+                             if(id.startsWith(searchID)){
+                                 // Card is selected
+                                 isSelected = true;
+                                 card = c;
+                                 invalidated.selectedSpecials.remove(ixix);
+                                 invalidated.selectedIds.remove(ixix);
+                                 break;
+                             }
+                        }
+                        
+                        if(isSelected){
+                            p.deck.used.add(card);
+                            System.out.println("ADDED " + card.getName() + " TO DISCARDPILE OF " + server.getNickname(p.getSession()));
+                        }
+                        else{
+                            p.deck.addTopOfDeck(card);
+                            System.out.println("ADDED " + card.getName() + " TO TOP OF DECK OF " + server.getNickname(p.getSession()));
+                        }
+                        
+                        make_client_update_deck(p);
+                        make_client_update_discardpile(p);
                     
-                    
+                    }
                 }
             }else if(from.equals("interaction") && to.equals("discardpile_victim")){
                 if(foreach.equals("none")){
@@ -1005,64 +1033,73 @@ public class Engine implements InvalidationListener{
                    System.out.println("however, there are " + invalidated.selectedSpecials.size() + " selected specials.");
                    System.out.println("also " + invalidated.selectedIds.size() + " selected ids, and " + invalidated.allowedIds.size() + " allowed ids");
                    ArrayList<String> newSelectedIds = new ArrayList<>();
-                   for(int ix = 0; ix < invalidated.selectedIds.size(); ix++){
-                       String[] idsplit = invalidated.selectedIds.get(ix).split("_");
-                       String wanted_id = idsplit[0] + "_"+ idsplit[1];
-                       newSelectedIds.add(wanted_id);
-                   }
-                   invalidated.selectedIds = newSelectedIds;
-                   for(int ix = 0; ix < invalidated.selectedSpecials.size(); ix++){
-                       Card c = invalidated.selectedSpecials.get(ix);
-                       String selectedID = invalidated.selectedIds.get(ix);
-                       
-                       
-                       ArrayList<Card> new_preloadedcards = new ArrayList<>();
-                       ArrayList<String> new_preloadedIds = new ArrayList<>();
-                       ArrayList<String> extractedIds = new ArrayList<>();
-                       for(int ixi = 0; ixi < invalidated.preloadedCards.size(); ixi++){
-                           Card ca = invalidated.preloadedCards.get(ixi);
-                           String idca = invalidated.allowedIds.get(ixi);
-                           if(!extractedIds.contains(idca)){
-                           if(idca.equals(selectedID) && ca.getName().equals(c.getName())){
-                               // Do nothing
-                               extractedIds.add(idca);
-                               System.out.println(idca + " == " + selectedID + " && " + ca.getName() + " - " + c.getName());
-                               System.out.println("^^ extracted from preloaded");
-                           }else{
-                               new_preloadedcards.add(ca);
-                               new_preloadedIds.add(idca);
-                               System.out.println(idca + " != " + selectedID + " || " + ca.getName() + " != " + c.getName());
-                               System.out.println("^^ not extracted from preloaded");
-                           }
-                           }else{
-                               new_preloadedcards.add(ca);
-                               new_preloadedIds.add(idca);
-                               System.out.println(idca + " already excluded a card");
-                               System.out.println("^^ not extracted from preloaded");
-                           }
-                       }
-                       invalidated.preloadedCards = new_preloadedcards;
-                       invalidated.allowedIds = new_preloadedIds;
-                   }
-                   // All preloadedcards to victim discardpile
-                   for(int ix = 0; ix < invalidated.preloadedCards.size(); ix++){
-                       String identifier = invalidated.allowedIds.get(ix);
-                       Card ca = invalidated.preloadedCards.get(ix);
-                       String indexforvictim = identifier.split("_")[1];
-                       Player victim = indexForMe(invalidated.getInitiator(), Integer.parseInt(indexforvictim));
-                       victim.deck.used.add(ca);
-                       make_client_update_discardpile(victim);
-                       System.out.println("discarded a " + ca.getName() + " to session " + victim.getSession());
-                   }
-                   // All selectedcards to future interactioncase
-                   // -> happens with finishbehaviour
                    
+                   for(String s : invalidated.selectedIds) System.out.println("selected id : " + s);
+                   for(Card c : invalidated.selectedSpecials) System.out.println("selected card : " + c.getName());
+                   for(Card c : invalidated.preloadedCards) System.out.println("preloadedcard name : " + c.getName());
+                   for(String s : invalidated.allowedIds) System.out.println("allowed id : " + s);
+                   for(String s : invalidated.fromPreviousInteraction.keySet()) System.out.println("fromprevious : " + s + " - " + invalidated.fromPreviousInteraction.get(s).getName());
+                   HashMap<String, Card> to_next_interaction = new HashMap<>();
+                   for(String previd : invalidated.fromPreviousInteraction.keySet()){
+                       Card linked = invalidated.fromPreviousInteraction.get(previd);
+                       int indexlinked = Integer.parseInt(previd.split("_")[1]);
+                       Player victimlinked = indexForMe(invalidated.getInitiator(), indexlinked);
+                       boolean isSelected = false;
+                       for(int ix = 0; ix < invalidated.selectedSpecials.size(); ix++){
+                           Card selected = invalidated.selectedSpecials.get(ix);
+                           String selectid = invalidated.selectedIds.get(ix);
+                           int selectedindexlinked = Integer.parseInt(selectid.split("_")[1]);
+                           Player victimselectedlinked = indexForMe(invalidated.getInitiator(), selectedindexlinked);
+                           if(indexlinked == selectedindexlinked){
+                               if(linked.getName().equals(selected.getName())){
+                                   // linked is selected from id victimlinked
+                                   isSelected = true;
+                                   invalidated.selectedSpecials.remove(ix);
+                                   invalidated.selectedIds.remove(ix);
+                                   break;
+                               }
+                           }
+                           
+                       }
+                       if(isSelected){
+                           
+                           to_next_interaction.put(previd, linked);
+                       }else{
+                           victimlinked.deck.used.add(linked);
+                           make_client_update_discardpile(victimlinked);
+                       }
+                   }
+                   invalidated.selectedIds.clear();
+                   invalidated.selectedSpecials.clear();
+                   for(String s : to_next_interaction.keySet()){
+                       invalidated.selectedIds.add(s);
+                       invalidated.selectedSpecials.add(to_next_interaction.get(s));
+                   }
                 }
             }else if(from.equals("interaction") && (to.equals("trashpile"))){
                 if(foreach.equals("if_selected_then_gain")){
                    System.out.println("thieving on " + invalidated.preloadedCards.size() + " cards");
                    System.out.println("however, there are " + invalidated.selectedSpecials.size() + " selected specials.");
                    System.out.println("also " + invalidated.selectedIds.size() + " selected ids, and " + invalidated.allowedIds.size() + " allowed ids");
+                   
+                   for(String previd : invalidated.fromPreviousInteraction.keySet()){
+                       Card linked = invalidated.fromPreviousInteraction.get(previd);
+                       int indexlinked = Integer.parseInt(previd.split("_")[1]);
+                       Player victimlinked = indexForMe(invalidated.getInitiator(), indexlinked);
+                       
+                       for(int ix = 0; ix < invalidated.selectedSpecials.size(); ix++){
+                           Card selected = invalidated.selectedSpecials.get(ix);
+                           String selectid = invalidated.selectedIds.get(ix);
+                           int selectedindexlinked = Integer.parseInt(selectid.split("_")[0]);
+                           Player victimselectedlinked = indexForMe(invalidated.getInitiator(), selectedindexlinked);
+                           if(indexlinked == selectedindexlinked){
+                               if(linked.getName().equals(selected.getName())){
+                                   // linked is selected from id victimlinked
+                               }
+                           }
+                       }
+                   }
+                   
                    ArrayList<String> selectedIdReal = new ArrayList<>();
                    for(String s : invalidated.selectedIds){
                        System.out.println("selectedid : " + s);
@@ -1073,8 +1110,9 @@ public class Engine implements InvalidationListener{
                    ArrayList<String> notselectedcardids = new ArrayList<>();
                    ArrayList<Card> notselectedcards = new ArrayList<>();
                    
-                   for(int ix = 0; ix< invalidated.preloadedCards.size(); ix++){
+                   for(int ix = 0; ix < invalidated.preloadedCards.size(); ix++){
                        Card ca = invalidated.preloadedCards.get(ix);
+                       if(ix >= invalidated.allowedIds.size()) continue;
                        String idca = invalidated.allowedIds.get(ix);
                        boolean isselected = false;
                        for(int ixi = 0; ixi < invalidated.selectedIds.size(); ixi++){
@@ -1162,10 +1200,14 @@ public class Engine implements InvalidationListener{
                 }
             }else{
                 interactionmode = false;
+                
                 if(!env.throneRoomQueue.isEmpty()){
                     handleAction(env.throneRoomQueue.poll(), players.get(playerOrder.get(current_turn)));
                 }
                 else if(!invalidated.getInitiator().hasActionCard() || this.actions == 0) enterBuyPhase();
+                else{
+                    highlight_actions(players.get(playerOrder.get(current_turn)));
+                }
             }
             
         }
@@ -1217,11 +1259,13 @@ public class Engine implements InvalidationListener{
         int index = 0;
         int myIndex = -1;
         for(String s : playerOrder.values()){
+            System.out.println("session with index " + index + " = " + s);
             if(s.equals(p.getSession())) myIndex = index;
             index ++;
         }
+        System.out.println("MY INDEX IS: " + myIndex);
         
-        if(myIndex < a) return players.get(playerOrder.get(a-1));
+        if(myIndex <= a) return players.get(playerOrder.get(a+1));
         else return players.get(playerOrder.get(a));
     }
     public void showGameEndedTo(String session) {
@@ -1286,6 +1330,8 @@ public class Engine implements InvalidationListener{
         server.sendAll(JSONUtilities.JSON.make_client_update_environment("cursepile", env.environment_amountcheck("curse")));
         server.sendAll(JSONUtilities.JSON.make_client_print("there are " + env.environment_amountcheck("curse") + " " + "curse" + "'s" + " left on the table."));
     }
+    
+    
     
 }
 // MANUAL MERGE

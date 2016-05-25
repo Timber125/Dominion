@@ -55,7 +55,7 @@ public class ServerModel {
         controller.getInternal().setValue(controller.getInternal().getItems().get(0));
         controller.getExternal().setText(getExternal());
         controller.unlock_settings();
-        controller.getStart().setDisable(true);
+        controller.getStart().setDisable(false);
     }
     
     

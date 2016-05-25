@@ -369,7 +369,7 @@ public class ClientModelService extends ServiceModel{
  
                                 @Override
                                 public void run() {
-                                    controller.reinitialize_disc(environment.get("trahspile"));
+                                    controller.reinitialize_trash(environment.get("trashpile"));
                                 }
                            
                             });
@@ -384,7 +384,7 @@ public class ClientModelService extends ServiceModel{
  
                                 @Override
                                 public void run() {
-                                    controller.reinitialize_disc(environment.get("cursepile"));
+                                    controller.reinitialize_curse(environment.get("cursepile"));
                                 }
                            
                             });

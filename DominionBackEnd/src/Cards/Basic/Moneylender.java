@@ -39,13 +39,15 @@ public class Moneylender extends ActionCard{
                     ic.setMaxCost(100);
                     ic.setMinCost(0);
                     ic.enableHandTreasure();
+                    boolean copperfound = false;
                     for(Card c : victim.getTreasures()){
                         if(c.getName().equals("copper")){
                             ic.allowedIds.add("hand");
                             ic.preloadedCards.add(c);
+                            copperfound = true;
                         }
                     }
-                    
+                    if(!copperfound) return null;
                     ic.setFinishBehaviour(JSONUtilities.JSON.moneylender_finishbehaviour());
                     ic.setStartBehaviour(JSONUtilities.JSON.make_client_confirmation_model_moneylender(victim, initiator, ic));
                     return ic;
