@@ -1,11 +1,11 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
+* To change this license header, choose License Headers in Project Properties.
+* To change this template file, choose Tools | Templates
+* and open the template in the editor.
+*/
+ 
 package Server.Service;
-
+ 
 import Server.JSONUtilities;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -15,11 +15,11 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.TreeMap;
 import org.json.JSONObject;
-
+ 
 /**
- *
- * @author admin
- */
+*
+* @author admin
+*/
 public class ServiceBroker implements Runnable{
     public static ServiceBroker instance = new ServiceBroker();
     private Map<Integer, Service> services = new TreeMap<>();
@@ -27,14 +27,24 @@ public class ServiceBroker implements Runnable{
     private int service_count = 0;
     private boolean active = false;
     private volatile Queue<String> jsonrequests = new ArrayDeque<>();
-    private ServiceBroker(){
-        
+    private int gameID;
+ 
+    public int getGameID() {
+        return gameID;
     }
-    
+   
+    void setGameID(int gameID) {
+        this.gameID = gameID;
+    }
+   
+    private ServiceBroker(){
+       
+    }
+   
     public void shutdown(){
         active = false;
     }
-    
+   
     public void start(){
         if(!active){
             active = true;
@@ -46,7 +56,7 @@ public class ServiceBroker implements Runnable{
         jsonrequests.add(json_stringified);
         System.err.println("jsonrequests:" + jsonrequests.size());
     }
-    
+   
     public void addService(Service serv){
         // Check if we can fill up a spot. if not, we will reach service_count+1 which is the logical id.
         int id = -1;
@@ -73,7 +83,7 @@ public class ServiceBroker implements Runnable{
             }
         }
     }
-    // Synchronized is not really necessary here, but just to be sure... 
+    // Synchronized is not really necessary here, but just to be sure...
     private synchronized void handle(String json_stringified){
         System.err.println("Eventbroker handling json");
         System.err.println(json_stringified);
@@ -85,7 +95,7 @@ public class ServiceBroker implements Runnable{
             }
         }
     }
-
+ 
     @Override
     public void run() {
         while(active){
@@ -96,5 +106,6 @@ public class ServiceBroker implements Runnable{
             }
         }
     }
+ 
 }
 // EMIELS VERSION

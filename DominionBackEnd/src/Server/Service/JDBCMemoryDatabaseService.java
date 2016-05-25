@@ -4,7 +4,6 @@
 * and open the template in the editor.
 */
 package Server.Service;
- 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +12,6 @@ import Server.JSONUtilities;
 import Server.Server;
 import org.json.JSONException;
 import org.json.JSONObject;
- 
 /**
 *
 * @author Emiel
@@ -21,30 +19,35 @@ import org.json.JSONObject;
 public class JDBCMemoryDatabaseService extends Service {
     private int gameID;
     private Connection connection;
-   
+  
     public JDBCMemoryDatabaseService(Server server){
         super(server);
         known_service_types.add("database");
         try{
-           
+          
         this.gameID = getNewGameID();
             Class.forName("org.apache.derby.jdbc.ClientDriver");
         }
             catch(ClassNotFoundException e){
-                e.printStackTrace();
-                System.out.println("qsdggsgf");
                     }
-           
+          
             catch(Exception e){
-                e.printStackTrace();
-                System.out.println("azer");
-               
+              
             }
-   
     try{
         //connection = DriverManager.getConnection("jdbc:derby://localhost:1527/TesterDB", "app", "root");
         //connection = DriverManager.getConnection("jdbc:derby://localhost:1527/dominion", "root", "root");
         connection = DriverManager.getConnection("jdbc:derby:testtest/test;create=true");
+        String dropCurrentUsers = "drop table CURRENTUSERS";
+        PreparedStatement preparedStatement = connection.prepareStatement(dropCurrentUsers, PreparedStatement.RETURN_GENERATED_KEYS);
+        preparedStatement.executeUpdate();
+    }catch(SQLException s){
+        }
+   
+    try{
+       
+        
+        
         String createUsers = "CREATE TABLE USERS(username VARCHAR(20) not NULL, password VARCHAR(20) not NULL, PRIMARY KEY(username))";
         String createGames = "CREATE TABLE GAMES(gameID INTEGER not NULL GENERATED ALWAYS AS IDENTITY(START WITH 1, INCREMENT BY 1), "
                 + "player1 VARCHAR(20), player2 VARCHAR(20), player3 VARCHAR(20), player4 VARCHAR(20), PRIMARY KEY (gameID), "
@@ -52,22 +55,33 @@ public class JDBCMemoryDatabaseService extends Service {
         String createCurrentUser = "CREATE TABLE CURRENTUSERS(username varchar(20) not null, session varchar(20) not null, primary key (username), foreign key(username) references users)";
         String createGame_user_session = "create table game_user_session(gameID int not null, username varchar(20) not null, session varchar(20) not null, primary key(username, gameid), foreign key(username) references users, foreign key(gameID) references games)";
        
+        
         PreparedStatement preparedStatement = connection.prepareStatement(createUsers, PreparedStatement.RETURN_GENERATED_KEYS);
         preparedStatement.executeUpdate();
         preparedStatement = connection.prepareStatement(createGames, PreparedStatement.RETURN_GENERATED_KEYS);
         preparedStatement.executeUpdate();
         preparedStatement = connection.prepareStatement(createCurrentUser, PreparedStatement.RETURN_GENERATED_KEYS);
         preparedStatement.executeUpdate();
+        System.out.println("create current users");
         preparedStatement = connection.prepareStatement(createGame_user_session, PreparedStatement.RETURN_GENERATED_KEYS);
         preparedStatement.executeUpdate();
+       
         System.out.println("zelfs geen goeie error");
-    }   catch(SQLException e){
+   }   catch(SQLException e){
         System.err.println("goeie error");
+        try{String createCurrentUser = "CREATE TABLE CURRENTUSERS(username varchar(20) not null, session varchar(20) not null, primary key (username), foreign key(username) references users)";
+        PreparedStatement preparedStatement = connection.prepareStatement(createCurrentUser, PreparedStatement.RETURN_GENERATED_KEYS);
+        preparedStatement.executeUpdate();
+        System.out.println("created!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        }catch(SQLException curr){
+            curr.printStackTrace();
+        }
+        e.printStackTrace();
         }catch(Exception other){
             System.err.println("andere error...");
         }
     }
-   
+  
     @Override
     public void handleType(String type, JSONObject json){
         String function = json.getString("function");
@@ -90,6 +104,7 @@ public class JDBCMemoryDatabaseService extends Service {
         }
         String username = json.getString("username");
         String password = json.getString("password");
+       
         JSONObject obj = JSONUtilities.JSON.create("action", "menu");
         obj = JSONUtilities.JSON.addKeyValuePair("username", username, obj);
        switch(function){
@@ -97,17 +112,17 @@ public class JDBCMemoryDatabaseService extends Service {
                try{
                     obj = JSONUtilities.JSON.addKeyValuePair("function", "register", obj);
                     if(register(username, password)){
-                  
+                 
                         obj = JSONUtilities.JSON.addKeyValuePair("succes", "true", obj);
                         //action: menu
                     }
                     else{
-                  
+                 
                         obj = JSONUtilities.JSON.addKeyValuePair("succes", "false", obj);
                     }
                 }catch(SQLException e){
                 }
-              
+             
                    
             }
             break;
@@ -116,7 +131,7 @@ public class JDBCMemoryDatabaseService extends Service {
                     obj = JSONUtilities.JSON.addKeyValuePair("function", "login", obj);
                     if(login(username, password)){
                         obj = JSONUtilities.JSON.addKeyValuePair("succes", "true", obj);
-                        //addCurrentUser(username, password);
+                        addCurrentUser(username, session);
                     }
                     else{
                         obj = JSONUtilities.JSON.addKeyValuePair("succes", "false", obj);
@@ -125,11 +140,11 @@ public class JDBCMemoryDatabaseService extends Service {
                 catch(SQLException e){
                 }
             }
-           
+          
         }
         server.getClient(json.getString("session")).write(obj);
     }
-   
+  
     protected void handleServiceRequest(JSONObject json) {
         String function = json.getString("function");
         switch(function){
@@ -166,6 +181,7 @@ public class JDBCMemoryDatabaseService extends Service {
             }
             break;
             case("log"):{
+                System.out.println("LOGGING GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
                 try{
                 updateJSON(Integer.parseInt(json.getString("gameID")), json.getString("jsonString"));
                 }catch(SQLException e){
@@ -173,13 +189,11 @@ public class JDBCMemoryDatabaseService extends Service {
                 }
             }
         }
-       
+      
     }
-   
-    protected int getID(){
-        return gameID;
-    }
-   
+  
+    
+    //users
     protected ArrayList<String> getNames() throws SQLException{
         try{
          PreparedStatement preparedStatement = connection.prepareStatement("SELECT username FROM users");
@@ -197,6 +211,42 @@ public class JDBCMemoryDatabaseService extends Service {
         }
     }
    
+    
+    //currentusers
+    protected ArrayList<String> getCurrentUsers() throws SQLException{
+        try{
+         PreparedStatement preparedStatement = connection.prepareStatement("SELECT username FROM CURRENTUSERS");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            System.out.println(resultSet.toString());
+            List<String> names = new ArrayList<>();
+            while (resultSet.next()) {
+                String actualName = resultSet.getString("username");
+                names.add(actualName);
+                System.out.println(actualName);
+            }
+            return (ArrayList<String>)names;
+        } catch (SQLException e){
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+   
+    protected void addCurrentUser(String username, String session){
+        try{
+        String insertSQL = "INSERT INTO currentusers"
+                + "(username, session) VALUES(?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(insertSQL, PreparedStatement.RETURN_GENERATED_KEYS);
+        preparedStatement.setString(1, username);
+        preparedStatement.setString(2, session);
+        preparedStatement.executeUpdate();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+  
+    
+    
+    //game toevoegen
     protected int addGame(String user1, String user2, String user3, String user4, String session1, String session2, String session3, String session4) throws SQLException{
         addGameRow(user1, user2, user3, user4);
         int newID = getNewGameID();
@@ -207,10 +257,10 @@ public class JDBCMemoryDatabaseService extends Service {
         addGameLogTable(newID);
         return newID;
     }
-   
+  
     public boolean addGameRow(String user1, String user2, String user3, String user4) throws SQLException{
         try{
-       
+      
         String insertSQL = "INSERT INTO games"
                 + "(player1, player2, player3, player4) VALUES(?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(insertSQL, PreparedStatement.RETURN_GENERATED_KEYS);
@@ -226,6 +276,22 @@ public class JDBCMemoryDatabaseService extends Service {
         return true;
     }
    
+    protected int getNewGameID() throws SQLException{
+        try{
+          
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT MAX(gameid) FROM games");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                 gameID = resultSet.getInt(1);
+            }
+            return gameID;
+        } catch (SQLException e){
+            return -1;
+        } catch (NullPointerException e){
+            return 0;
+        }
+    }
+  
     protected boolean addGameLogTable(int gameid) throws SQLException{
         try{
         String insertSQL = "CREATE TABLE gameLog" + gameid
@@ -238,7 +304,7 @@ public class JDBCMemoryDatabaseService extends Service {
         }
         return true;
     }
-   
+  
     protected boolean addGameUserSessionRow(int gameid, String username, String session){
         if(username != null){
         try{
@@ -257,63 +323,13 @@ public class JDBCMemoryDatabaseService extends Service {
         }
         return false;
     }
-   
-    protected void addCurrentUser(String username, String session){
-        try{
-        String insertSQL = "INSERT INTO currentusers"
-                + "(username, session) VALUES(?, ?)";
-        PreparedStatement preparedStatement = connection.prepareStatement(insertSQL, PreparedStatement.RETURN_GENERATED_KEYS);
-        preparedStatement.setString(1, username);
-        preparedStatement.setString(2, session);
-        preparedStatement.executeUpdate();
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
-    }
-   
-    protected int getNewGameID() throws SQLException{
-        try{
-           
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT MAX(gameid) FROM games");
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
-                 gameID = resultSet.getInt(1);
-            }
-            return gameID;
-        } catch (SQLException e){
-            return -1;
-        } catch (NullPointerException e){
-            return 0;
-        }
-    }
-   
-    protected ArrayList<Integer> getPlayersOfGame(int gameID)throws SQLException{
-        try{
-         PreparedStatement preparedStatement = connection.prepareStatement("SELECT user1, user2, user3, user4 FROM games WHERE gameID = ?");
-         preparedStatement.setInt(1, gameID);
-            ResultSet resultSet = preparedStatement.executeQuery();
-           ArrayList<Integer> IDs = new ArrayList<Integer>();
-            while (resultSet.next()) {
-                addIfNotZero(resultSet.getInt("user1"), IDs);
-                addIfNotZero(resultSet.getInt("user2"), IDs);
-                addIfNotZero(resultSet.getInt("user3"), IDs);
-                addIfNotZero(resultSet.getInt("user4"), IDs);
-                }
-           
-            return (ArrayList<Integer>)IDs;
-        }catch (SQLException e){
-            return null;
-        }
-    }
-   
-    protected void addIfNotZero(int number, ArrayList<Integer> list){
-        if(number!=0){
-            list.add(number);
-        }
-    }
-   
+  
+    
+    
+    
+    //inloggen en registreren
     protected boolean login(String username, String password) throws SQLException{
-        if(!getNames().contains(username)){
+        if(getCurrentUsers().contains(username) || !getNames().contains(username)){
             return false;
         }
         else{
@@ -328,12 +344,12 @@ public class JDBCMemoryDatabaseService extends Service {
                 }
             }
             }catch(SQLException e){
-               
+              
             }
             return false;
         }
     }
-   
+  
     protected boolean register(String name, String password) throws SQLException{
         if(getNames().contains(name)){
             return false;
@@ -355,7 +371,10 @@ public class JDBCMemoryDatabaseService extends Service {
         return true;
         }
     }
-   
+  
+    
+    
+    //loggen
     protected boolean updateJSON(int gameID, String jsonString) throws SQLException{
         try{
         String insertSQL = "INSERT INTO gamelog" + gameID
@@ -370,41 +389,7 @@ public class JDBCMemoryDatabaseService extends Service {
         }
         return true;
     }
-   
-    protected ArrayList<String> getJsonArray(int gameID) throws SQLException{
-        try{
-         PreparedStatement preparedStatement = connection.prepareStatement("SELECT jsonString FROM gamelog WHERE gameID = ?");
-         preparedStatement.setInt(1, gameID);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            List<String> jsonStrings = new ArrayList<String>();
-            while (resultSet.next()) {
-                String jsonString = resultSet.getString("jsonString");
-                jsonStrings.add(jsonString);
-            }
-            return (ArrayList<String>)jsonStrings;
-        } catch (SQLException e){
-            return null;
-        }
-    }
-   
-    protected boolean canLoadGame(String username, int gameID) throws SQLException{
-        if(getPlayersOfGame(gameID).contains(username)){
-            return true;
-        }
-        return false;
-    }
-   
-    protected boolean createJsonTable(int gameID) throws SQLException{
-        try{
-         PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE gamelog"+gameID+" (jsonID INT NOT NULL AUTO_INCREMENT, jsonString VARCHAR(255), PRIMARY KEY(jsonID))");
-         preparedStatement.executeUpdate();
-         return true;
-        } catch (SQLException e){
-            e.printStackTrace();
-            return false;
-        }
-    }
-   
+  
     protected ArrayList<String> getJsonArrayFromTable(int gameID) throws SQLException{
         try{
          PreparedStatement preparedStatement = connection.prepareStatement("SELECT jsonString FROM gamelog" + gameID);
@@ -420,7 +405,7 @@ public class JDBCMemoryDatabaseService extends Service {
             return null;
         }
     }
-   
+  
     protected boolean updateJsonInTable(int gameID, String jsonString) throws SQLException{
         try{
         String insertSQL = "INSERT INTO gamelog" + gameID
@@ -435,7 +420,43 @@ public class JDBCMemoryDatabaseService extends Service {
         }
         return true;
     }
- 
    
     
+    
+    
+    
+    
+    //spel laden mogelijk testen
+    protected boolean canLoadGame(String username, int gameID) throws SQLException{
+        if(getPlayersOfGame(gameID).contains(username)){
+            return true;
+        }
+        return false;
+    }
+   
+    protected ArrayList<Integer> getPlayersOfGame(int gameID)throws SQLException{
+        try{
+         PreparedStatement preparedStatement = connection.prepareStatement("SELECT user1, user2, user3, user4 FROM games WHERE gameID = ?");
+         preparedStatement.setInt(1, gameID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+          ArrayList<Integer> IDs = new ArrayList<Integer>();
+            while (resultSet.next()) {
+                addIfNotZero(resultSet.getInt("user1"), IDs);
+                addIfNotZero(resultSet.getInt("user2"), IDs);
+                addIfNotZero(resultSet.getInt("user3"), IDs);
+                addIfNotZero(resultSet.getInt("user4"), IDs);
+                }
+          
+            return (ArrayList<Integer>)IDs;
+        }catch (SQLException e){
+            return null;
+        }
+    }
+  
+    protected void addIfNotZero(int number, ArrayList<Integer> list){
+        if(number!=0){
+            list.add(number);
+        }
+    }
 }
+ 
